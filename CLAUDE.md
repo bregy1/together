@@ -10,7 +10,16 @@ The project expects the **claude-skills** kit to be installed (https://github.co
 
 ## Stack
 
-_Not decided yet._ Each choice is made with `/spec-decide` and recorded as an ADR in `spec/tech/decisions/`. Keep this section a short summary of the accepted ADRs.
+Summary of the accepted ADRs in `spec/tech/decisions/`; details in `spec/tech/architecture.md`.
+
+- Data protection: Swiss revFADP + EU GDPR; stored personal data in Switzerland only (ADR-0001)
+- Minimum age 18, self-declared birth date (ADR-0002)
+- App: Expo SDK 58, React Native, TypeScript; OTA via `expo-updates` and self-hosted xprem (ADR-0003)
+- Backend: Go, ent + Atlas migrations, PostgreSQL, REST + OpenAPI spec-first, River jobs, Docker on Swiss servers, GitLab + gitlab-ci-local (ADR-0004)
+- Auth: custom phone + SMS-code flow in Go, opaque device sessions; production SMS provider open (ADR-0005)
+- Realtime & push: event table + `pg_notify` → Go hub → WebSocket; push direct to APNs and FCM (ADR-0006)
+- i18n: i18next + react-i18next + expo-localization (ADR-0007)
+- Tests: Jest + RNTL, Maestro, Go testing + testify (ADR-0008)
 
 ## Commands
 
@@ -18,7 +27,7 @@ _None yet._ The project-setup task of the first baseline CR fills in the install
 
 ## Team
 
-Specialists active in this project: _full roster available (see `/team-manager`); narrowed once the stack is decided._
+Specialists active in this project (see `/team-manager`): `expo-react-native-expert`, `backend-developer`, `postgres-pro`, `websocket-engineer`, `auth-integration-engineer`, `api-designer`, `test-automator`, `code-reviewer`, `security-auditor`, `privacy-compliance`, `accessibility-tester`, `ui-designer`, `devops-engineer`, `mobile-release-engineer`, `product-manager`, `architect-reviewer`. Not used: `flutter-expert` (ADR-0003).
 
 ## Notes
 

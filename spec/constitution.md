@@ -23,7 +23,7 @@ The non-negotiables for this app. Every spec file, plan and line of code respect
 
 - **Targets:** iOS and Android
 - [NEEDS DECISION: Which form factors? — options: A) phones only, B) phones and tablets with the phone layout, C) phones plus tablet-optimised layouts — recommended: A for the first release, because the app is mobile-first and tablet layouts multiply design and test work]
-- Minimum OS versions are set together with the stack (`/spec-decide`).
+- **Minimum OS versions:** follow the Expo SDK in use (SDK 58: iOS 16.4 or later; Android at the SDK's minimum API level, confirmed at project setup) and rise with each SDK upgrade (ADR-0003, boss, 2026-11-08).
 
 ## Languages
 
