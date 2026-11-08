@@ -60,7 +60,16 @@ Notifications are asked for at the moment they make sense, e.g. after the first 
 
 ## Community rules
 
-ChatGPT revised them to **9 rules**; the text is not in the share.
+ChatGPT revised them to **9 rules**; the text is not in the share. An earlier **6-rule version** is visible in a screenshot Bregy attached in the chat (screen "Unsere Spielregeln — Gute Leute. Klare Regeln."):
+
+1. "Kein Flirten." — for shared activities and friendships; no dates or sexual advances. (Later softened: consensual flirting is fine, the app is just not a flirting platform.)
+2. "Kein Verkaufen." — no advertising, trading or paid services.
+3. "Kein Geld unter Teilnehmenden." — nobody asks for private transfers; you pay your own drinks at the venue.
+4. "Keine Privatadressen." — plans start at public, easily reachable meeting points.
+5. "Absagen statt Ghosten." — if you can't come, free your seat in time.
+6. "Melden statt Aushalten." — if something is not okay, report or block plans or people.
+
+Footer: "TOGETHER ist ab 18." Button: "Verstanden".
 - Consensual flirting is fine, but the app is not a flirting platform.
 - No sexual harassment, racism, hate, harassment or selling.
 - Partner events would need an explicit exception to "no selling": labelled, with transparent costs.
@@ -93,6 +102,13 @@ ChatGPT revised them to **9 rules**; the text is not in the share.
 - Bregy wanted real meetings rather than test users, then clarified that the current focus is the prototype only.
 - Reports need a named responsible person, even during the pilot. Who handles reports is still open.
 - Against an empty feed: partner organisations such as bars, bouldering gyms and bands could create plans, e.g. "Spieleabend im Dölaplace in Brig".
+
+## Visuals (seen 2026-11-08 in the shared chat's previews)
+
+- **Later phone previews** (registration "Ein Anfang. Gute Gesellschaft."): dark, near-black slightly green-tinted surfaces, muted dark-green inputs and info boxes, one bright lime accent on the full-width primary button, bold heavy two-line headlines, segmented progress bar ("Schritt 1 von 5").
+- **Earlier rules screen**: light, warm off-white background, near-black text, a black full-width button ("Verstanden ✓"), a beige info box, the same bold two-line headline style.
+- **Sample profile photos** (generated demo people): candid portraits in natural daylight in local settings: mountains, a lake, a climbing gym, a café, a backpack on a hike.
+- No colour values or font names are visible; the hosted prototype (together-oberwallis-roman…chatgpt.site) is private (HTTP 401).
 
 ## Wording
 
