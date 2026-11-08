@@ -2,7 +2,7 @@
 
 | Prefix | Area | Purpose | Priority | Spec |
 |---|---|---|---|---|
-| ONB | Onboarding | Sign up with a verified phone number and get a profile ready for the first plan | MVP | not started |
+| ONB | Onboarding | Sign up with a verified phone number and get a profile ready for the first plan | MVP | approved |
 | PROF | Profile | Show who someone is, only in the context of a plan or a friendship | MVP | not started |
 | FEED | Discover ("Entdecken") | Find plans to join in your region | MVP | not started |
 | PLAN | Hosting | Create, edit, cancel, share and reuse plans, with places hidden until acceptance | MVP | not started |

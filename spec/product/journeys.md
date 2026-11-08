@@ -7,11 +7,11 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Actor:** new member · **Priority:** MVP
 - **Trigger:** someone installs TOGETHER because they want company for an activity or are new to the region.
 - **Steps:**
-  1. Signs up: phone number and SMS code, first name, date of birth (18+), home region, interests, a portrait; accepts the terms of use and the community rules, including the notice that TOGETHER is not a dating app [ONB]
+  1. Signs up: phone number and SMS code, first name, date of birth (18+), home region, interests, a portrait; accepts the terms of use and the community rules, including the notice that TOGETHER is not a dating app [ONB-001…ONB-018]
   2. Browses the feed of plans in the region [FEED]
   3. Opens a plan and looks at the host's profile [PROF]
   4. Requests to join ("Teilnahme anfragen") with an optional message [JOIN]
-  5. Is asked in context whether to allow notifications [NOTIF]
+  5. Is asked in context whether to allow notifications [ONB-019]
   6. The host accepts; the member is notified [NOTIF]
   7. The location, the meeting point (if the host set one) and the plan chat unlock [PLAN, CHAT]
   8. Sees safety tips before the first meetup [MOD]
@@ -20,8 +20,8 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   11. Adds people from the plan as friends [FRND]
 - **Outcome:** the new member has met people in real life through a plan that really happened.
 - **What can go wrong:**
-  - The SMS code doesn't arrive or is wrong: resend after a wait, or correct the number [ONB].
-  - The birth date shows the person is under 18: sign-up stops with a friendly explanation, and no account is created [ONB].
+  - The SMS code doesn't arrive or is wrong: resend after a wait, or correct the number [ONB-005, ONB-006].
+  - The birth date shows the person is under 18: sign-up stops with a friendly explanation, and no account is created [ONB-010].
   - The feed is empty in the region: the member is invited to host the first plan or to widen the region [FEED, PLAN].
   - The request is declined, expires or the group fills up: similar plans are suggested, or the member can create a similar plan ("Ähnlichen Plan erstellen") [FEED, JOIN, PLAN].
 
@@ -31,7 +31,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Trigger:** a member has an idea for an activity and wants people to join.
 - **Steps:**
   1. Creates a plan from the feed or the calendar: title naming the activity, category, start time and expected end time, seats, region, location and an optional meeting point, accepted cancellation reasons [PLAN, CAL]
-  2. The plan appears in the feed with the coarse region only [FEED]
+  2. The plan appears in the feed with the coarse region only; a first-time host is asked about notifications [FEED, ONB-024]
   3. Join requests come in [NOTIF]
   4. Looks at the requesters' profiles and trust labels [PROF, TRUST]
   5. Accepts or declines each request before it expires [JOIN]
