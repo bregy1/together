@@ -12,6 +12,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - Tabs: Entdecken · Meine Pläne (with friends) · Profil (`direction.md`)
   - Profil → SCR-prof-own → SCR-prof-edit
   - a host, requester, participant or friend → SCR-prof-view
+  - "Plan erstellen" → SCR-plan-create; a plan card or link → SCR-plan-view → SCR-plan-edit, SCR-plan-cancel (host) or SCR-plan-takeover (participant, after the host left)
 - After the first join request, or after publishing the first plan
   - SCR-notif-ask → system permission prompt
 
@@ -30,6 +31,11 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 | SCR-prof-view | Another member's profile | PROF | A plan (host), a join request, a plan's participants, the friends list |
 | SCR-prof-own | Own profile | PROF | Tab "Profil" |
 | SCR-prof-edit | Edit profile | PROF | SCR-prof-own |
+| SCR-plan-create | Create a plan | PLAN | "Plan erstellen" in Entdecken or Meine Pläne; reuse of a plan |
+| SCR-plan-view | A plan | PLAN | A card in Entdecken or Meine Pläne; a shared link; a notification |
+| SCR-plan-edit | Edit a plan | PLAN | SCR-plan-view (host) |
+| SCR-plan-cancel | Cancel a plan | PLAN | SCR-plan-view (host) |
+| SCR-plan-takeover | Host has left | PLAN | SCR-plan-view (participant); notification |
 
 ## States per screen
 
@@ -123,3 +129,45 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
   - **invalid:** field errors (`prof.edit.error.*`), e.g. last photo, "Über mich" too long or blocked, name change too soon.
   - **unsaved changes:** leaving asks `prof.edit.discard`.
   - **saving / offline:** progress; offline keeps the input and offers retry.
+
+### SCR-plan-create Create a plan
+- **Purpose:** publish a plan.
+- **Requirements:** PLAN-001 … PLAN-006, PLAN-008, PLAN-009, PLAN-015
+- **States:**
+  - **default:** title (hint to name the activity, counter 60), activity, start and expected end, group size (default 5, 2–12), a map for the location and an optional meeting point with a note, description (counter 500), accepted cancellation reasons; one primary button "Plan erstellen".
+  - **reused:** filled from an earlier plan; date and time empty.
+  - **invalid:** field errors (`plan.create.error.*`).
+  - **publishing / offline:** progress; offline keeps everything and offers retry; a retry never creates a second plan.
+
+### SCR-plan-view A plan
+- **Purpose:** see a plan; for members not yet accepted, decide whether to request; for participants and the host, everything needed to go.
+- **Requirements:** PLAN-007, PLAN-009, PLAN-016, PLAN-022, PLAN-023 (joining itself: JOIN)
+- **States:**
+  - **public (not accepted):** title, activity tag, time, region name, group size and free seats, host, description, accepted cancellation reasons; no map, no location, no meeting point.
+  - **participant / host:** additionally the map with location and meeting point, "open in maps", the plan chat; host actions (edit, cancel, remove a participant).
+  - **changed:** the badge naming what changed, dismissible (PLAN-022).
+  - **host left:** see SCR-plan-takeover.
+  - **past / cancelled / unavailable:** a short note (`plan.view.unavailable`); no actions except reuse.
+
+### SCR-plan-edit Edit a plan
+- **Purpose:** change a plan.
+- **Requirements:** PLAN-010, PLAN-011, PLAN-020
+- **States:**
+  - **default:** the same fields as SCR-plan-create, filled in.
+  - **crucial change:** before saving, the friendly note `plan.edit.crucialInfo` with change or back.
+  - **invalid:** e.g. `plan.edit.error.groupSizeTooSmall`.
+
+### SCR-plan-cancel Cancel a plan
+- **Purpose:** cancel with a reason; hand the plan over or cancel it completely.
+- **Requirements:** PLAN-012, PLAN-024
+- **States:**
+  - **without participants:** reason, confirm.
+  - **with participants:** reason, then "leave the plan to the group" (recommended) or "cancel completely" with the note `plan.cancel.cancelAllInfo`.
+
+### SCR-plan-takeover Host has left
+- **Purpose:** tell participants that the host left and let one of them take over.
+- **Requirements:** PLAN-013, PLAN-014
+- **States:**
+  - **open:** `plan.takeover.hostLeft`, "Ich übernehme" until the start.
+  - **taken over:** who the new host is.
+  - **cancelled:** the reason and "War dieser Abbruch für dich okay?" (`plan.cancelled.okay`).

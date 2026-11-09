@@ -66,6 +66,10 @@ Phone numbers in E.164, `+41` only at launch; 6-digit hashed single-use codes, 5
 
 - **SMS provider:** behind a provider interface. Development and early testing use a free development sender that must never run in production. [NEEDS DECISION: Which SMS provider sends login codes in production? — options: A) ASPSMS (Swiss, prepaid, about 4–7 euro cents per SMS, DPA and data location to confirm), B) eCall, C) Swisscom Enterprise SMS — recommended: A, because it is Swiss, prepaid and has no minimum contract — decide before the first store deployment]
 
+## Maps
+
+Hosts pick a plan's location on a map; accepted participants see it on a map (PLAN-006, PLAN-007; boss, 2026-11-09). [NEEDS DECISION: Which map service? — the choice touches ADR-0001 (map-tile and search requests reveal which area someone looks at), cost and the app framework. Options to research in `/spec-decide`: A) the phones' native maps (Apple Maps on iOS, Google Maps on Android) through the app framework, B) a Swiss provider (e.g. MapTiler, swisstopo), C) self-hosted OpenStreetMap tiles and place search on our Swiss servers — no recommendation before research]
+
 ## Storage (files and media)
 
 Profile photos on a Docker volume behind a `Storage` interface, re-encoded on upload with size limits (removes EXIF location data), served through authenticated or signed URLs; S3-compatible storage (e.g. Garage) can be added behind the same interface later. MinIO is not used (ADR-0004).

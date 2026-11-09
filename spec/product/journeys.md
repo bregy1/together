@@ -13,7 +13,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   4. Requests to join ("Bin dabei") with an optional message [JOIN]
   5. Is asked in context whether to allow notifications [ONB-019]
   6. The host accepts; the member is notified [NOTIF]
-  7. The location, the meeting point (if the host set one) and the plan chat unlock [PLAN, CHAT]
+  7. The location, the meeting point (if the host set one) and the plan chat unlock; the places can be opened in the maps app [PLAN-007, PLAN-023, CHAT]
   8. Sees safety tips before the first meetup [MOD]
   9. Attends; attendance is confirmed after the plan [JOIN]
   10. The trust label starts to grow [TRUST]
@@ -30,15 +30,15 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Actor:** host · **Priority:** MVP
 - **Trigger:** a member has an idea for an activity and wants people to join.
 - **Steps:**
-  1. Creates a plan from the feed or the calendar: title naming the activity, category, start time and expected end time, seats, region, location and an optional meeting point, accepted cancellation reasons [PLAN, CAL]
+  1. Creates a plan from the feed or the calendar: title naming the activity, activity, start time and expected end time, group size, location and an optional meeting point on a map, accepted cancellation reasons [PLAN-001…PLAN-009, CAL]
   2. The plan appears in the feed with the coarse region only; a first-time host is asked about notifications [FEED, ONB-024]
   3. Join requests come in [NOTIF]
   4. Looks at the requesters' profiles and trust labels [PROF-001, PROF-002, TRUST]
   5. Accepts or declines each request before it expires [JOIN]
   6. When the last seat is taken, open requests end with "Die Gruppe ist inzwischen voll" and the plan leaves the feed [JOIN, FEED]
-  7. Coordinates with the group in the plan chat; a change of the meeting point notifies everyone [CHAT, PLAN, NOTIF]
+  7. Coordinates with the group in the plan chat; a change of the meeting point or another crucial change is confirmed, announced and marked with a badge [CHAT, PLAN-010, PLAN-011, PLAN-020…PLAN-022, NOTIF]
   8. The plan takes place; attendance is confirmed [JOIN]
-  9. Reuses the plan next time [PLAN]
+  9. Reuses the plan next time [PLAN-015]
 - **Outcome:** the plan took place with people who showed up, and it can be run again with little effort.
 - **What can go wrong:**
   - Nobody requests to join.
@@ -52,13 +52,13 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Trigger:** friends want to do something together.
 - **Steps:**
   1. Adds friends by name + ID, or after a shared plan [FRND]
-  2. Creates a plan [PLAN]
+  2. Creates a plan [PLAN-001]
   3. Invites friends directly as participants; they are notified [FRND, NOTIF]
-  4. Shares a link, which shows only the region, with people who are not on Yaruno yet [PLAN]
+  4. Shares a link, which shows only the region, with people who are not on Yaruno yet [PLAN-016]
   5. Others request to join, and the host decides [JOIN]
   6. The group coordinates in the plan chat [CHAT]
   7. Everyone sees the plan in their calendar [CAL]
-  8. After the plan, it is reused for next time [PLAN]
+  8. After the plan, it is reused for next time [PLAN-015]
 - **Outcome:** the group planned an activity without a WhatsApp thread, and can run it again.
 - **What can go wrong:**
   - A friend is not on Yaruno yet: the shared link leads to sign-up.
@@ -75,9 +75,9 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   4. The seat becomes free; a full plan shows up in the feed again [FEED]
   5. The trust score is affected only by a short-term cancellation that nobody accepted [TRUST]
 - **Steps (host cancels):**
-  1. Cancels and gives a reason [PLAN]
-  2. Accepted members are asked "Wer möchte übernehmen?"; if one takes over, the plan continues with a new host [PLAN, NOTIF]
-  3. Otherwise the plan is cancelled; members see the reason and are asked "War dieser Abbruch für dich okay?" [PLAN, NOTIF]
+  1. Cancels and gives a reason, choosing to leave the plan to the group or, if it cannot happen without them, to cancel it completely [PLAN-012, PLAN-024]
+  2. If the host left, participants learn that the host has left and are asked "Wer möchte übernehmen?" until the start; if one takes over, the plan continues with a new host [PLAN-013, NOTIF]
+  3. Otherwise the plan is cancelled; members see the reason and are asked "War dieser Abbruch für dich okay?" [PLAN-014, NOTIF]
   4. The trust score is affected only by a short-term cancellation that was not accepted [TRUST]
 - Admins can review cancellations [ADM].
 - **Outcome:** cancelling is easy and honest; only annoying short-term cancellations count.

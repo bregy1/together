@@ -130,10 +130,10 @@ Sign up with a verified phone number and get a profile ready for the first plan;
 
 ### ONB-013 Interests
 - **Status:** approved · **Priority:** MVP · **Since:** —
-- **Requirement:** WHEN the person picks interests on SCR-onb-interests, THE SYSTEM SHALL offer only interests from the curated list, searchable and grouped by category, and allow from 0 to 5.
-- **Rationale:** Up to 5 interests from a curated list; search finds existing interests only, so free text cannot create tags (`features.md` → ONB; prototype chat); none are required (boss, 2026-11-08).
+- **Requirement:** WHEN the person picks interests on SCR-onb-interests, THE SYSTEM SHALL offer only the general activities of the curated activity list (e.g. "Outdoor", "Sport", "Kultur"), searchable, and allow from 0 to 5.
+- **Rationale:** Up to 5 interests from a curated list; search finds existing interests only, so free text cannot create tags (`features.md` → ONB; prototype chat); none are required (boss, 2026-11-08); interests are general so the choice is not overwhelming, while plans can name specific activities (boss, 2026-11-09; PLAN-003).
 - **Scenarios:**
-  - **S1** Given SCR-onb-interests, when the person searches "boul", then "Bouldern" is offered; typing a word that is not on the list creates nothing.
+  - **S1** Given SCR-onb-interests, when the person searches "out", then "Outdoor" is offered; typing a word that is not on the list creates nothing.
   - **S2** Given 5 interests are chosen, when the person tries to pick a sixth, then `onb.interests.limit` is shown and the sixth is not added.
   - **S3** Given no interest is chosen, when the person continues, then SCR-onb-photos is shown.
 

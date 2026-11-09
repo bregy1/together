@@ -4,7 +4,7 @@ One canonical term per concept, in every UI language. The spec, code identifiers
 
 | Concept | Meaning | de | fr | en | Avoid |
 |---|---|---|---|---|---|
-| activity | The kind of thing done in a plan (e.g. bouldering, hiking); used as the plan's category | Aktivität | *activité* | activity | Aktivität as a name for the plan itself |
+| activity | What a plan is about, from the curated list: either a general activity (e.g. Outdoor), which is also an interest, or a specific activity under one (e.g. Wandern under Outdoor) | Aktivität | *activité* | activity | Aktivität as a name for the plan itself, Kategorie |
 | admin | A person on the Yaruno team who runs the app: everything a moderator does, plus cancellation reviews and the interest list | Admin | *admin* | admin | — |
 | block | Stop another member from interacting with you | blockieren | *bloquer* | block | — |
 | cancel | Withdraw from a plan (participant) or call off a plan (host); always with a reason | absagen; die Absage | *annuler; l'annulation* | cancel; cancellation | abmelden (means "log out") |
@@ -13,7 +13,7 @@ One canonical term per concept, in every UI language. The spec, code identifiers
 | discover | The feed of open plans in the member's region | Entdecken | *Découvrir* | Discover | Feed (in UI text) |
 | free seat | An open place in a plan | freier Platz | *place libre* | free seat | Slot |
 | host | The member who created a plan and decides who joins | Gastgeber | *hôte* | host | Ersteller, Organisator, plan maker |
-| interest | One of up to five topics from the curated list on a profile | Interesse | *centre d'intérêt* | interest | Tag, Hobby |
+| interest | One of up to five general activities a member likes, shown on the profile (e.g. Outdoor, Sport) | Interesse | *centre d'intérêt* | interest | Tag, Hobby |
 | location | Where the activity of a plan happens; required; visible only to participants | Ort | *lieu* | location | event location, Standort |
 | login code | The one-time code sent by SMS to verify a phone number | Code; SMS-Code | *code; code SMS* | code | Passwort, PIN, TAN |
 | meeting point | Optional place where the group meets before the location; visible only to participants | Treffpunkt | *point de rencontre* | meeting point | — |

@@ -62,3 +62,11 @@ Alle Kontrastwerte im Guide stimmen (nachgerechnet). Zwei Bauteile erreichen abe
 - Region-Chip mit Distanz im Feed («Brig · 10 km») und Filter-Chips «Für dich», «Heute», «Outdoor» – klären wir beim Feed (FEED)
 - Landingpage mit E-Mail-Warteliste: braucht die Datenschutzerklärung
 - Markenschutz «Yaruno» bei Swissreg (Klassen 9, 38, 42, 45, ca. CHF 550), Domain yaruno.ch oder yaruno.app, Instagram @yaruno sichern
+
+## Nachtrag 9. November – aus der Spezifikation der Pläne (PLAN)
+
+| Thema | Guide | Entscheid | Warum |
+|---|---|---|---|
+| Gruppengrösse | Maximal 6 Personen, Gastgeber bis 8; «Neue starten mit mindestens drei» | **Mindestens 2** (Gastgeber plus eine Person), **Standard 5**, frei einstellbar **bis 12** | Bregy: Wir wollen Freiheit geben und nicht einschränken. |
+| Ort auf der Karte | «Standort nur ungefähr», «der Punkt auf der Karte» | Der Ort wird **auf einer Karte** gewählt (Suche oder Pin); vor der Annahme sehen andere nur die Region, keinen Pin | Bregy: Ohne Karte teilen die Leute sowieso Google-Maps-Links im Chat. Welcher Kartendienst, wird noch technisch entschieden (Datenschutz). |
+| Aktivitäten | Kategorie-Tags («WANDERN», «FEIERABEND») | **Interessen = allgemeine Aktivitäten** (z. B. Outdoor, Sport), **Pläne = allgemein oder spezifisch** (z. B. Wandern unter Outdoor) | Interessen sollen nicht überwältigen; Pläne dürfen konkret sein. |
