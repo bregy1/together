@@ -10,6 +10,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - Unfinished sign-up, app reopened
   - the step where the person left (ONB-008)
 - Tabs: Entdecken · Meine Pläne (with friends) · Profil (`direction.md`)
+  - Entdecken → SCR-feed → SCR-feed-filter, SCR-feed-area, a plan card → SCR-plan-view
   - Profil → SCR-prof-own → SCR-prof-edit
   - a host, requester, participant or friend → SCR-prof-view
   - "Plan erstellen" → SCR-plan-create; a plan card or link → SCR-plan-view → SCR-plan-edit, SCR-plan-cancel (host) or SCR-plan-takeover (participant, after the host left)
@@ -40,6 +41,9 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 | SCR-plan-requests | Open requests (host) | JOIN | SCR-plan-view (host); notification |
 | SCR-join-cancel | Cancel participation | JOIN | "Doch nicht" on SCR-plan-view |
 | SCR-join-attendance | Who was missing | JOIN | SCR-plan-view of a past plan; notification after the end |
+| SCR-feed | Entdecken | FEED | Tab "Entdecken"; first screen after sign-up |
+| SCR-feed-filter | Filters | FEED | SCR-feed |
+| SCR-feed-area | Feed area (radius) | FEED | Region chip on SCR-feed; settings |
 
 ## States per screen
 
@@ -206,3 +210,26 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - **States:**
   - **default:** the people of the plan with "war nicht da" next to each; no ratings.
   - **closed:** 48 hours after the end, no longer offered.
+
+### SCR-feed Entdecken
+- **Purpose:** find plans to join in your area.
+- **Requirements:** FEED-001 … FEED-013
+- **States:**
+  - **default:** small wordmark, region chip ("Brig · 10 km"), headline, chips ("Für dich" active by default, "Heute", main categories), search, a list of cards (activity illustration, activity tag, time, title, region, "3 von 6 dabei", friends who are in, "angefragt" where requested); one primary button "Plan erstellen".
+  - **filtered:** active filters visible, clearable in one step.
+  - **new plans:** a small "Neue Pläne" hint; the list does not move.
+  - **empty:** "Nichts dabei? Mach den ersten Schritt." with "Plan erstellen" and "Umkreis vergrössern" or "Filter zurücksetzen".
+  - **loading / error:** loading indicator; "Das hat nicht geklappt. Nochmal?" with retry.
+  - **offline:** the last loaded plans, marked `feed.offline`; "Bin dabei" disabled (FEED-014).
+
+### SCR-feed-filter Filters
+- **Purpose:** narrow the feed.
+- **Requirements:** FEED-005
+- **States:**
+  - **default:** date (Heute, Morgen, Wochenende, a day), main activity categories (several), maximum group size; apply and reset.
+
+### SCR-feed-area Feed area
+- **Purpose:** choose the radius around the home municipality.
+- **Requirements:** FEED-003
+- **States:**
+  - **default:** 5, 10 (default), 25 or 50 km around the home municipality.

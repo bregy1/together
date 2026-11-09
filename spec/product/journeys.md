@@ -8,7 +8,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Trigger:** someone installs Yaruno because they want company for an activity or are new to the region.
 - **Steps:**
   1. Signs up: phone number and SMS code, first name, date of birth (18+), home region, interests, a portrait; accepts the terms of use and the community rules, including the notice that Yaruno is not a dating app [ONB-001…ONB-018]
-  2. Browses the feed of plans in the region [FEED]
+  2. Browses the plans in their area, "Für dich" first, with filters and search [FEED-001…FEED-006]
   3. Opens a plan and looks at the host's profile [PROF-001, PROF-002]
   4. Requests to join ("Bin dabei") with an optional message [JOIN-001]
   5. Is asked in context whether to allow notifications [ONB-019]
@@ -22,7 +22,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **What can go wrong:**
   - The SMS code doesn't arrive or is wrong: resend after a wait, or correct the number [ONB-005, ONB-006].
   - The birth date shows the person is under 18: sign-up stops with a friendly explanation, and no account is created [ONB-010].
-  - The feed is empty in the region: the member is invited to host the first plan or to widen the region [FEED, PLAN].
+  - The feed is empty in the region: the member is invited to host the first plan or to widen the area [FEED-008, PLAN-001].
   - The request is declined, the group fills up or the plan starts without a decision: similar plans are suggested, or the member can create a similar plan ("Ähnlichen Plan erstellen") [FEED, JOIN-005…JOIN-008, PLAN-015].
 
 ## J-02 Host a plan
@@ -31,11 +31,11 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Trigger:** a member has an idea for an activity and wants people to join.
 - **Steps:**
   1. Creates a plan from the feed or the calendar: title naming the activity, activity, start time and expected end time, group size, location and an optional meeting point on a map, accepted cancellation reasons [PLAN-001…PLAN-009, CAL]
-  2. The plan appears in the feed with the coarse region only; a first-time host is asked about notifications [FEED, ONB-024]
+  2. The plan appears in the feed with the coarse region only; a first-time host is asked about notifications [FEED-001, FEED-002, ONB-024]
   3. Join requests come in [NOTIF]
   4. Looks at the requesters' profiles and trust labels [PROF-001, PROF-002, TRUST]
   5. Accepts or declines each request; a reminder comes if one stays open [JOIN-003…JOIN-005, JOIN-016]
-  6. When the last seat is taken, open requests end with "Die Gruppe ist inzwischen voll" and the plan leaves the feed [JOIN, FEED]
+  6. When the last seat is taken, open requests end with "Die Gruppe ist inzwischen voll" and the plan leaves the feed [JOIN-007, FEED-013]
   7. Coordinates with the group in the plan chat; a change of the meeting point or another crucial change is confirmed, announced and marked with a badge [CHAT, PLAN-010, PLAN-011, PLAN-020…PLAN-022, NOTIF]
   8. The plan takes place; anyone missing can be reported afterwards [JOIN-015, JOIN-017]
   9. Reuses the plan next time [PLAN-015]
@@ -72,7 +72,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   1. Taps "Doch nicht", confirms ("Teilnahme wirklich absagen?") and gives a reason [JOIN-012]
   2. The host and the group are notified and see the reason [NOTIF]
   3. The group is asked whether the cancellation is fine; the host can mark it as legitimate [JOIN-014]
-  4. The seat becomes free; a full plan shows up in the feed again [JOIN-013, FEED]
+  4. The seat becomes free; a full plan shows up in the feed again [JOIN-013, FEED-001]
   5. The trust score is affected only by a short-term cancellation that nobody accepted [TRUST]
 - **Steps (host cancels):**
   1. Cancels and gives a reason, choosing to leave the plan to the group or, if it cannot happen without them, to cancel it completely [PLAN-012, PLAN-024]

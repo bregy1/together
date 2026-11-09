@@ -4,7 +4,7 @@
 |---|---|---|---|---|
 | ONB | Onboarding | Sign up with a verified phone number and get a profile ready for the first plan | MVP | approved |
 | PROF | Profile | Show who someone is, only in the context of a plan or a friendship | MVP | approved |
-| FEED | Discover ("Entdecken") | Find plans to join in your region | MVP | not started |
+| FEED | Discover ("Entdecken") | Find plans to join in your region | MVP | approved |
 | PLAN | Hosting | Create, edit, cancel, share and reuse plans, with places hidden until acceptance | MVP | approved |
 | JOIN | Joining | Request to join, get accepted, show up, and confirm who was there | MVP | approved |
 | CAL | My plans ("Kalender") | See your hosted, requested and accepted plans as a list or a calendar | MVP | not started |
@@ -51,7 +51,10 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Full plans disappear from the feed — MVP
 - Similar plans are suggested when a join request doesn't work out (declined, group full, plan started without a decision) — MVP
 - Create a plan from the feed — MVP
-- Input from the brand guide (p.12), to confirm in `/spec-write FEED`: a region chip with a distance ("Brig · 10 km") and filter chips "Für dich", "Heute", "Outdoor"
+- Feed area: the home municipality plus a radius, 10 km by default, changed in the settings; the region chip shows it ("Brig · 10 km") (boss, 2026-11-09) — MVP
+- "Für dich" first: plans matching the member's interests on top (boss, 2026-11-09) — MVP
+- Filters: date, the main activity categories and group size (boss, 2026-11-09) — MVP
+- Each card shows the drawn picture of its main activity category; no uploads (boss, 2026-11-09) — MVP
 
 ## PLAN — Hosting
 
@@ -146,6 +149,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 ## SET — Settings & account
 
 - Language, notification settings (each kind of notification, e.g. reminders, can be switched on or off), blocked users — MVP
+- Feed radius for Entdecken (10 km by default) [FEED-003] — MVP
 - Legal texts: terms of use, privacy policy, community rules — MVP
 - Help and support: FAQ and a contact option — MVP
 - Data export: members can get a copy of their data — MVP
@@ -167,6 +171,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 
 - Voluntary "buy us a coffee" support link — idea; store rules for tips and donations to be checked (topic 9)
 - ID check for hosts — idea; considered later, not for the start, because it is a big hurdle (boss, 2026-11-09; proposed in the brand guide)
+- Hosts upload their own plan picture instead of the activity illustration — maybe; to be discussed (needs upload and image moderation) (boss, 2026-11-09)
 
 ## Dropped
 

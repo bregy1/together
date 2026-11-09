@@ -132,6 +132,7 @@ Level: see `constitution.md`. The guide's rules support it: every text pair cont
 - **Fonts:** Archivo and Fraunces, both SIL Open Font License 1.1, free including app embedding. Cooper Black (optional) is commercial and must be cleared before use.
 - **Source files:** kept in the repository next to the code, in `design/brand/` (boss, 2026-11-09): the guide, its CSS tokens, all tokens as `tokens.json`, and the Archivo and Fraunces font files with their licences. The wordmark, short mark and app-icon files, the click prototype and the research document are still missing (list in `design/brand/README.md`) — waiting for Romi.
 - **Photos:** our own pictures with the consent of everyone shown.
+- **Activity illustrations:** one subtle, drawn illustration per general activity, for plan cards (clash 15). [NEEDS DECISION: Who makes or picks the activity illustrations, and by when? — options: A) Romi, in the brand's style, before the pilot, B) an openly licensed illustration set that Romi adapts — recommended: A, because they appear on every card and must match the brand — waiting for Romi]
 
 ## Clashes between the brand guide and the spec
 
@@ -151,3 +152,4 @@ The spec applies until the boss decides each point.
 12. **Feed layout — decided: the guide applies** (boss, 2026-11-09). Decision: the feed is a list of cards with an image area on top, not Reels-like full-height cards (`features.md` → FEED).
 13. **Tab bar — decided: three tabs** (boss, 2026-11-09). Decision: "Entdecken · Meine Pläne · Profil"; friends are embedded in "Meine Pläne" instead of a fourth tab (`features.md` → FRND).
 14. **Reminders — decided: added** (boss, 2026-11-09). Guide p.13 shows a reminder ("Morgen 05:30, Lea rechnet mit dir."). Decision: participants get a reminder the day before a plan, on by default; like every kind of notification it can be switched off in the settings (`features.md` → NOTIF, SET).
+15. **Pictures on plan cards — decided: drawn, not photos** (boss, 2026-11-09). Guide (Imagery; mock-ups on p.12): photos of people in image areas. Decision: every plan card shows the picture of its general activity, a subtle, drawn illustration, never a photo of real people; members cannot upload their own plan picture for now (`features.md` → FEED; an upload is in the Ideas parking lot). Photos of real people stay for profiles and marketing.
