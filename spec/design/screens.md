@@ -41,7 +41,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 | SCR-join-request | Request to join | JOIN | "Bin dabei" on SCR-plan-view |
 | SCR-plan-requests | Open requests (host) | JOIN | SCR-plan-view (host); notification |
 | SCR-join-cancel | Cancel participation | JOIN | "Doch nicht" on SCR-plan-view |
-| SCR-join-attendance | Who was missing | JOIN | SCR-plan-view of a past plan; notification after the end |
+| SCR-join-attendance | Who was missing | JOIN | SCR-plan-view of a past plan; "War jemand nicht da?" in Meine Pläne (48 hours, NOTIF-007) |
 | SCR-feed | Entdecken | FEED | Tab "Entdecken"; first screen after sign-up |
 | SCR-feed-filter | Filters | FEED | SCR-feed |
 | SCR-feed-area | Feed area (radius) | FEED | Region chip on SCR-feed; settings |

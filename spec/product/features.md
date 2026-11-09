@@ -11,7 +11,7 @@
 | TRUST | Trust score | Signal reliability with a coloured bar, mainly by flagging repeated bad behaviour | MVP | approved |
 | MOD | Safety | Report, block, filter texts, community rules and safety tips | MVP | approved |
 | ADM | Admin tools | Review reports, sanction users, manage the interest list | MVP | approved |
-| NOTIF | Notifications | Tell people about requests, decisions and changes to their plans | MVP | not started |
+| NOTIF | Notifications | Tell people about requests, decisions and changes to their plans | MVP | approved |
 | FRND | Friends | Add friends and bring them into plans | MVP | approved |
 | CHAT | Chat | Plan chat for a plan's host and accepted participants | MVP | approved |
 | SET | Settings & account | Settings, legal texts, help, data export and account deletion | MVP | not started |
@@ -131,13 +131,14 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Request accepted, declined, group full or ended at the start (requester); reminder to the host about an open request — MVP
 - Plan changed (e.g. meeting point, time) or cancelled; a member cancelled — MVP
 - Host takeover offered ("Wer möchte übernehmen?") — MVP
-- Reminder the day before a plan for its participants (e.g. "Morgen 05:30, Lea rechnet mit dir.") — on by default, can be switched off in the settings (boss, 2026-11-09) — MVP
+- Reminder at 18:00 the evening before a plan, for its participants and its host (e.g. "Morgen 05:30, Lea rechnet mit dir.") — on by default, can be switched off in the settings (boss, 2026-11-09 and 2026-11-10) — MVP
 - Friend request received; invited into a plan by a friend who hosts it — MVP
 - New plan chat messages: the first at once, further ones grouped at most every 10 minutes ("4 neue Nachrichten"), never with the text; a single plan's chat can be muted (boss, 2026-11-10) — MVP
 - A plan you were in is reopened with a new date: "Bist du wieder dabei?" — MVP
 - A thank-you after a report, only if the moderator chooses to send one (MOD-003) — MVP
 - A sanction with the rule it is about and the way to object; the outcome of an objection (ADM-006, ADM-007) — MVP
 - Moderators: a new report or objection, and a reminder when one is still open after 24 hours (ADM-010) — MVP
+- Push only, no notification list in the app; every notification can be switched off on its own; quiet hours are a setting; no push after a plan to report who was missing (boss, 2026-11-10) — MVP
 
 ## FRND — Friends
 
@@ -156,7 +157,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 
 ## SET — Settings & account
 
-- Language, notification settings (each kind of notification, e.g. reminders, can be switched on or off), "Freunde sehen, wo ich dabei bin" (on by default, FRND-006), "Ungefilterte Sprache anzeigen" (off by default, MOD-011), blocked users — MVP
+- Language, notification settings (every notification can be switched on or off on its own; quiet hours, off by default; NOTIF-004, NOTIF-006), "Freunde sehen, wo ich dabei bin" (on by default, FRND-006), "Ungefilterte Sprache anzeigen" (off by default, MOD-011), blocked users — MVP
 - Feed radius for Entdecken (10 km by default) [FEED-003] — MVP
 - Legal texts: terms of use, privacy policy, community rules — MVP
 - Help and support: FAQ and a contact option — MVP
