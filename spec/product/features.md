@@ -14,7 +14,7 @@
 | NOTIF | Notifications | Tell people about requests, decisions and changes to their plans | MVP | approved |
 | FRND | Friends | Add friends and bring them into plans | MVP | approved |
 | CHAT | Chat | Plan chat for a plan's host and accepted participants | MVP | approved |
-| SET | Settings & account | Settings, legal texts, help, data export and account deletion | MVP | not started |
+| SET | Settings & account | Settings, legal texts, help, data export and account deletion | MVP | approved |
 | PART | Partner organisations | Organisations publish open events anyone can join | later | not started |
 
 ## MVP cut
@@ -161,8 +161,9 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Feed radius for Entdecken (10 km by default) [FEED-003] — MVP
 - Legal texts: terms of use, privacy policy, community rules — MVP
 - Help and support: FAQ and a contact option — MVP
-- Data export: members can get a copy of their data — MVP
-- Log out; delete the account in the app — MVP
+- Data export: members get a copy of their data at once as a ZIP (JSON plus photos) (boss, 2026-11-10) — MVP
+- Log out; delete the account in the app: closed at once, upcoming plans as for a suspension, deleted after 14 days unless the member signs in again; messages stay as "Ehemaliges Mitglied"; a web page explains deletion and takes requests by e-mail (boss, 2026-11-10) — MVP
+- Change the phone number in the settings with an SMS code (boss, 2026-11-10) — MVP
 
 ## PART — Partner organisations
 

@@ -12,7 +12,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - Tabs: Entdecken · Meine Pläne (with friends) · Profil (`direction.md`)
   - Entdecken → SCR-feed → SCR-feed-filter, SCR-feed-area, a plan card → SCR-plan-view
   - Meine Pläne → SCR-cal-list ⇄ SCR-cal-month; → SCR-cal-kept; → SCR-frnd-list → SCR-frnd-add; an entry → SCR-plan-view or SCR-plan-requests
-  - Profil → SCR-prof-own → SCR-prof-edit; → SCR-adm-home (moderators and admins) → SCR-adm-report, SCR-adm-objection, SCR-adm-cancellations, SCR-adm-activities, SCR-adm-words, SCR-adm-roles
+  - Profil → SCR-prof-own → SCR-prof-edit; → SCR-set-home → SCR-set-notif, SCR-set-blocked, SCR-set-help, SCR-set-delete, SCR-set-number, SCR-feed-area, SCR-mod-rules, SCR-mod-tips; → SCR-adm-home (moderators and admins) → SCR-adm-report, SCR-adm-objection, SCR-adm-cancellations, SCR-adm-activities, SCR-adm-words, SCR-adm-roles
   - a host, requester, participant or friend → SCR-prof-view
   - "Plan erstellen" → SCR-plan-create; a plan card or link → SCR-plan-view → SCR-plan-chat (host, participant), SCR-plan-edit, SCR-plan-cancel, SCR-plan-invite (host) or SCR-plan-takeover (participant, after the host left)
 - After the first join request, or after publishing the first plan
@@ -62,6 +62,12 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 | SCR-adm-activities | Activity list | ADM | SCR-adm-home (admins) |
 | SCR-adm-words | Word lists | ADM | SCR-adm-home (admins) |
 | SCR-adm-roles | Roles, reviewer access and log | ADM | SCR-adm-home (admins) |
+| SCR-set-home | Einstellungen | SET | SCR-prof-own |
+| SCR-set-notif | Notifications | SET | SCR-set-home |
+| SCR-set-blocked | Blocked members | SET | SCR-set-home |
+| SCR-set-help | Help | SET | SCR-set-home |
+| SCR-set-delete | Delete account | SET | SCR-set-home |
+| SCR-set-number | New phone number | SET | SCR-set-home |
 
 ## States per screen
 
@@ -143,7 +149,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 
 ### SCR-prof-own Own profile
 - **Purpose:** see your profile as others see it.
-- **Requirements:** PROF-003, PROF-004, ADM-002
+- **Requirements:** PROF-003, PROF-004, ADM-002, SET-001
 - **States:**
   - **default:** the profile as on SCR-prof-view, plus `prof.own.edit` and the link to the Spielregeln (`prof.own.rules`); no report or block actions.
   - **bar lowered:** a short hint under the own trust bar (TRUST-011).
@@ -379,3 +385,45 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - **Requirements:** ADM-001, ADM-013, ADM-014
 - **States:**
   - **default:** moderators with "Rolle entfernen"; add a moderator by name + ID; reviewer access on or off; the decision log, newest first.
+
+### SCR-set-home Einstellungen
+- **Purpose:** every setting and account action in one list.
+- **Requirements:** SET-001, SET-002, SET-004, SET-005, SET-007, SET-009, SET-010
+- **States:**
+  - **default:** language (only if more than one ships), notifications, "Freunde sehen, wo ich dabei bin", "Ungefilterte Sprache anzeigen", feed radius, blocked members, new phone number, Spielregeln, safety tips, terms of use, privacy policy, help, "Meine Daten" (ZIP via the share sheet), log out (with confirmation), delete account.
+  - **export failed / offline:** `Das hat nicht geklappt. Nochmal?`.
+
+### SCR-set-notif Notifications
+- **Purpose:** switch notifications and quiet hours.
+- **Requirements:** SET-003, NOTIF-004, NOTIF-006, NOTIF-008
+- **States:**
+  - **default:** one switch per notification, grouped by kind (requests, plan changes, reminders, chat, friends, account, and moderation for moderators); quiet hours with from and to.
+  - **pushes not allowed:** `notif.permission.off` with a button to the phone's settings, above the switches.
+
+### SCR-set-blocked Blocked members
+- **Purpose:** see and undo blocks.
+- **Requirements:** SET-006
+- **States:**
+  - **default:** blocked members by first name, each with "Blockierung aufheben" and a confirmation.
+  - **empty:** a short note that nobody is blocked.
+
+### SCR-set-help Help
+- **Purpose:** answers and a way to the team.
+- **Requirements:** SET-008
+- **States:**
+  - **default:** the FAQ and "Kontakt" (mail app to the support address).
+  - **no mail app:** the address, ready to copy.
+
+### SCR-set-delete Delete account
+- **Purpose:** leave Yaruno.
+- **Requirements:** SET-011, SET-012
+- **States:**
+  - **default:** what happens (upcoming plans, 14 days to change one's mind, what stays as "Ehemaliges Mitglied"), the hint to take a copy of the data first, confirm.
+  - **pending deletion (after signing in again):** "Doch bleiben" (`set.delete.cancel`) or continue deleting.
+
+### SCR-set-number New phone number
+- **Purpose:** move the account to a new number.
+- **Requirements:** SET-014
+- **States:**
+  - **default:** the new number, "Code senden", then the code field as in sign-up.
+  - **taken / banned:** `set.number.error.taken` or the ban message; nothing changes.

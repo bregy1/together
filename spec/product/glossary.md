@@ -11,6 +11,7 @@ One canonical term per concept, in every UI language. The spec, code identifiers
 | co-host | A member the host adds to a plan, who can edit it with the host | Co-Gastgeber | *co-hôte* | co-host | Mitbearbeiter |
 | community rules | The rules every member accepts at sign-up and can read at any time | Spielregeln | *règles du jeu* | community rules | Community-Regeln |
 | discover | The feed of open plans in the member's region | Entdecken | *Découvrir* | Discover | Feed (in UI text) |
+| former member | How a deleted account appears where it is still shown, e.g. as the author of chat messages | Ehemaliges Mitglied | *ancien membre* | former member | Gelöschter Nutzer |
 | free seat | An open place in a plan | freier Platz | *place libre* | free seat | Slot |
 | friend | A member with whom a friend request was accepted; friends see where the other is in and can be invited into plans | Freund, Freundin; die Freunde | *ami·e* | friend | Kontakt, Follower |
 | friend request | Ask another member, by name + ID or after a shared plan, to become friends; they accept or decline | Freundschaftsanfrage | *demande d'ami* | friend request | Anfrage (means a request to join) |

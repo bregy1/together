@@ -105,10 +105,10 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Actor:** member · **Priority:** MVP
 - **Trigger:** a member wants a copy of their data or wants to leave.
 - **Steps:**
-  1. Requests a copy of their data in the settings [SET]
-  2. Deletes the account in the app after a confirmation [SET]
-  3. The account and the personal data are deleted [SET]
+  1. Requests a copy of their data in the settings and gets it at once as a ZIP [SET-009]
+  2. Deletes the account in the app after a confirmation; it is closed at once, and upcoming plans are handled as for a suspension [SET-011, ADM-009]
+  3. After 14 days without signing in again, the account and the personal data are deleted; remaining chat messages show "Ehemaliges Mitglied" [SET-011, SET-012]
 - **Outcome:** the member has left, and their personal data is gone.
 - **What can go wrong:**
   - The member still hosts upcoming plans or has accepted places.
-- **Open:** [NEEDS DECISION: What happens to upcoming plans when a member deletes their account? — options: A) they are cancelled automatically, with the takeover question for hosted plans, and with no trust effect, B) deletion is possible only after the member has cancelled or handed over everything, C) the account is deleted at once and the plans are cancelled without a takeover question — recommended: A, because both stores expect account deletion to be easy, and the takeover keeps plans alive]
+  - The member changes their mind within 14 days: signing in again cancels the deletion [SET-011].
