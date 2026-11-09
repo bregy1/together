@@ -1,4 +1,4 @@
-# Constitution — TOGETHER
+# Constitution — Yaruno
 
 The non-negotiables for this app. Every spec file, plan and line of code respects them. Only the boss changes this file; a significant change also gets an ADR (`/spec-decide`).
 
@@ -45,5 +45,5 @@ The non-negotiables for this app. Every spec file, plan and line of code respect
 - **Permissions in context:** request a device permission only when a feature needs it, at the moment it is needed. The reason is recorded in `product/app.md`.
 - **No tracking by default:** no third-party analytics, advertising or tracking SDK without a boss decision (ADR).
 - **No secrets in the repository:** keys, tokens, passwords and certificates stay out of version control.
-- **Data-protection law:** the app complies with the Swiss revFADP and the EU GDPR; for now TOGETHER sticks to Switzerland (boss, 2026-11-08).
+- **Data-protection law:** the app complies with the Swiss revFADP and the EU GDPR; for now Yaruno sticks to Switzerland (boss, 2026-11-08).
 - **Data residency:** personal data is stored and processed in Switzerland only (boss, 2026-11-08).

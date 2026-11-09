@@ -1,14 +1,16 @@
-# Vision — TOGETHER
+# Vision — Yaruno
 
 ## Idea
 
 An app to plan activities and let people join: hosts choose who comes, and a trust score filters out people who don't show up.
 
-TOGETHER starts in Oberwallis and is available in Switzerland.
+Yaruno starts in Oberwallis and is available in Switzerland.
 
 ## Problem
 
 People want to meet others and do things together, but everyday life is dominated by phones and little real conversation. Getting a group together for an activity is hard, and when strangers do say yes, there is no way to tell whether they will actually come.
+
+Figures from Romi's brand guide (v1.0, p.3; quoted from the guide, not checked against the original studies): 42 % of the Swiss population feel lonely sometimes to very often (Federal Statistical Office, 2022), and among 15–24-year-olds "very often" has doubled since 2017; it takes about 50 hours of shared time to turn an acquaintance into a friend, and after studies or a job change the places for that are missing; 69 % of dating apps are deleted within a month, and over 90 % of Gen Z prefer meeting people at events and in groups.
 
 What people do today, and why it falls short:
 
@@ -17,11 +19,11 @@ What people do today, and why it falls short:
 - **Clubs (Vereine):** need membership and a regular commitment; not made for a one-off or spontaneous activity.
 - **Nothing:** people stay at home or do the activity alone.
 
-TOGETHER answers this with plans that keep their details in one place and can be reused, hosts who decide who joins, and a trust score that gives a sense of whether people actually come. The score is computed internally, but users only see it as a subtle, friendly label (e.g. "trustworthy, usually comes", "sometimes has other plans last minute"), never as a number.
+Yaruno answers this with plans that keep their details in one place and can be reused, hosts who decide who joins, and a trust score that gives a sense of whether people actually come. The score is computed internally, but users only see it as a subtle, friendly label (e.g. "trustworthy, usually comes", "sometimes has other plans last minute"), never as a number.
 
 ## Goal and success
 
-TOGETHER is a non-profit project to help people meet people in real life, from locals for locals: no big company, just some people building something for people. A reusable group-planning tool comes as a side effect. Success means the app gets running and is actually used; in the best case, voluntary support from users ("buy us a coffee") covers the running costs, which are low at the start.
+Yaruno is a non-profit project to help people meet people in real life, from locals for locals: no big company, just some people building something for people. A reusable group-planning tool comes as a side effect. Success means the app gets running and is actually used; in the best case, voluntary support from users ("buy us a coffee") covers the running costs, which are low at the start.
 
 The focus is on plans that really happen, not on app activity.
 
@@ -46,10 +48,12 @@ Secondary:
 - **Friend groups organising:** existing groups that want a better tool than WhatsApp to plan, change and reuse their events.
 - **Hosts with a hobby:** people who regularly run an activity (a walk, board games, bouldering) and want others to join.
 
+Brand focus (Romi's brand guide v1.0, p.3): 20- to 40-year-olds around Brig, Visp and Naters who are new to the region or whose circle of friends is changing: people who moved for a job, returners after their studies, locals whose friends moved away, weekly residents.
+
 All groups use the app at home when planning ahead, on the go for something spontaneous, right before and during an activity (meeting point, who is coming, running late), and afterwards (who was there, reusing the plan, adding friends).
 
 - **Minimum age:** 18. The app is for adults only.
-- **Markets:** Switzerland only at launch; both stores list TOGETHER in Switzerland only. The pilot runs in Oberwallis, but members can use any region in Switzerland. Other countries come later.
+- **Markets:** Switzerland only at launch; both stores list Yaruno in Switzerland only. The pilot runs in Oberwallis, but members can use any region in Switzerland. Other countries come later.
 
 ### Roles in the app
 
@@ -58,11 +62,11 @@ All groups use the app at home when planning ahead, on the go for something spon
 - **Co-host:** a member the host adds to a plan, who can edit it together with the host.
 - **Partner organisation:** an organisation such as a bar, a gym or a band that publishes events everyone can join. Members can see which of their friends are going, or copy the event and ask other people to go with them.
 - **Moderator:** a role that allows reviewing reports and deciding on them. In the pilot, Bregy and Romi moderate.
-- **Admin:** runs TOGETHER: everything a moderator can do, plus reviewing cancellations and managing the interest list.
+- **Admin:** runs Yaruno: everything a moderator can do, plus reviewing cancellations and managing the interest list.
 
 ## Core value
 
-Plans that really happen, with people who show up. If TOGETHER fails at this, nothing else matters.
+Plans that really happen, with people who show up. If Yaruno fails at this, nothing else matters.
 
 ## Principles
 
@@ -74,11 +78,12 @@ Plans that really happen, with people who show up. If TOGETHER fails at this, no
 ## Non-goals
 
 - **No payment of any kind required from users:** no paywall, no paid features, no deposit or penalty fee. Every feature is free; voluntary support only. Why: the goal is that people meet, not revenue.
-- **Not a dating app:** TOGETHER tells users so explicitly; it is for meeting up and planning events. Consensual flirting is fine, but there is no matching or swiping on people. Why: dating dynamics would undermine trust and safety in groups.
+- **Not a dating app:** Yaruno tells users so explicitly; it is for meeting up and planning events. Consensual flirting is fine, but there is no matching or swiping on people. Why: dating dynamics would undermine trust and safety in groups.
 - **No people directory:** profiles are visible only in the context of a plan or between friends; nobody can browse or search people. Why: protects members from being looked up.
 - **No live location:** users are never tracked; only a plan's places exist. Why: privacy.
 - **No required location or contacts access:** the region is entered by hand, and there is no address-book upload. Why: keep it safe and collect only what is needed.
-- **No selling between users:** TOGETHER is not a marketplace. Partner events are labelled, with transparent costs. Why: keeps plans about the activity, not business.
+- **No selling between users:** Yaruno is not a marketplace. Partner events are labelled, with transparent costs. Why: keeps plans about the activity, not business.
+- **Not a social network with likes, not an event ticket shop, not a club with mandatory membership** (Romi's brand guide v1.0, p.3). Why: Yaruno is about plans, not profiles, followers or sales.
 
 ## Risks and constraints
 
@@ -91,7 +96,7 @@ Risks:
 - **Store rules for user content** (Apple App Review Guideline 1.2, Google Play User Generated Content policy): filtering, reporting, blocking and timely action are covered by [MOD, ADM].
 - **Moderation load:** two moderators in the pilot; reports may pile up. The moderator role lets more people help [ADM].
 - **Empty feed at launch:** in the app, members are invited to host the first plan [FEED, PLAN]; recruiting the first hosts is organisational, not an app feature.
-- **Liability for what happens during an activity:** the terms of use state that TOGETHER only helps people find activities; legal review is open (`app.md` → Legal).
+- **Liability for what happens during an activity:** the terms of use state that Yaruno only helps people find activities; legal review is open (`app.md` → Legal).
 - **Data in Switzerland only** (`constitution.md`): push notifications pass through Apple's and Google's servers, and SMS codes through carriers. `/spec-decide` must define what "Switzerland only" covers (e.g. stored data in Switzerland, minimal content in push messages).
 - **SMS costs and abuse:** SMS codes cost money per message, and bots can trigger mass sending (SMS pumping); rate limits and the SMS provider's fraud protection belong in the authentication decision (`/spec-decide`).
 - **Biometric data** (later, with the selfie badge): face scans are sensitive data; explicit consent, deletion right after the check.

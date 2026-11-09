@@ -26,7 +26,7 @@ Sign up with a verified phone number and get a profile ready for the first plan;
 ### ONB-002 Swiss mobile numbers only
 - **Status:** approved · **Priority:** MVP · **Since:** —
 - **Requirement:** IF the entered number is not a valid Swiss phone number (`+41`), THEN THE SYSTEM SHALL refuse it with a message (`onb.phone.error.notSwiss`) and send no code.
-- **Rationale:** TOGETHER launches in Switzerland only (`vision.md` → Markets); limiting numbers also limits SMS abuse (ADR-0005).
+- **Rationale:** Yaruno launches in Switzerland only (`vision.md` → Markets); limiting numbers also limits SMS abuse (ADR-0005).
 - **Scenarios:**
   - **S1** Given SCR-onb-phone, when the person enters a German number (`+49 …`), then `onb.phone.error.notSwiss` is shown and no SMS is sent.
   - **S2** Given SCR-onb-phone, when the person enters a number with too few digits, then `onb.phone.error.invalid` is shown and no SMS is sent.
@@ -103,7 +103,7 @@ Sign up with a verified phone number and get a profile ready for the first plan;
 ### ONB-010 Age check
 - **Status:** approved · **Priority:** MVP · **Since:** —
 - **Requirement:** IF the entered date of birth shows that the person is younger than 18, THEN THE SYSTEM SHALL stop the sign-up on SCR-onb-age-stop with a friendly explanation (`onb.age.stop`) and create no member account.
-- **Rationale:** TOGETHER is for adults only, self-declared birth date (ADR-0002); J-01 failure case.
+- **Rationale:** Yaruno is for adults only, self-declared birth date (ADR-0002); J-01 failure case.
 - **Scenarios:**
   - **S1** Given a person who enters a birth date 17 years ago, when they continue, then SCR-onb-age-stop is shown and no profile is created.
   - **S2** Given a person who turns 18 today, when they continue, then the sign-up goes on.
@@ -165,7 +165,7 @@ Sign up with a verified phone number and get a profile ready for the first plan;
 
 ### ONB-017 Not a dating app
 - **Status:** approved · **Priority:** MVP · **Since:** —
-- **Requirement:** WHILE SCR-onb-rules is shown, THE SYSTEM SHALL state clearly that TOGETHER is for meeting up and planning, not a dating app (`onb.rules.notDating`).
+- **Requirement:** WHILE SCR-onb-rules is shown, THE SYSTEM SHALL state clearly that Yaruno is for meeting up and planning, not a dating app (`onb.rules.notDating`).
 - **Rationale:** "We inform users that we are NOT a dating app" (boss, 2026-11-08; `vision.md` → Non-goals).
 - **Scenarios:**
   - **S1** Given SCR-onb-rules, when it is shown, then `onb.rules.notDating` is visible without scrolling past the Spielregeln.

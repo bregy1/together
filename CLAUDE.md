@@ -1,4 +1,4 @@
-# TOGETHER
+# Yaruno
 
 An app to plan activities and let people join: hosts choose who comes, and a trust score filters out people who don't show up.
 

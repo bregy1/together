@@ -1,9 +1,9 @@
-# Feature map — TOGETHER
+# Feature map — Yaruno
 
 | Prefix | Area | Purpose | Priority | Spec |
 |---|---|---|---|---|
 | ONB | Onboarding | Sign up with a verified phone number and get a profile ready for the first plan | MVP | approved |
-| PROF | Profile | Show who someone is, only in the context of a plan or a friendship | MVP | not started |
+| PROF | Profile | Show who someone is, only in the context of a plan or a friendship | MVP | approved |
 | FEED | Discover ("Entdecken") | Find plans to join in your region | MVP | not started |
 | PLAN | Hosting | Create, edit, cancel, share and reuse plans, with places hidden until acceptance | MVP | not started |
 | JOIN | Joining | Request to join, get accepted, show up, and confirm who was there | MVP | not started |
@@ -19,7 +19,7 @@
 
 ## MVP cut
 
-The MVP is the smallest set in which a member signs up, finds or hosts a plan, gets accepted, shows up and confirms who was there, because that is the core value ("plans that really happen") and what the north star measures. Friends, the plan chat, the calendar view and plan links are in because the boss chose them for the pilot: they make TOGETHER an alternative to planning in WhatsApp groups (see `vision.md` → Problem). Safety, admin tools and account settings are in because the stores require reporting, blocking and in-app account deletion for apps with accounts and user content.
+The MVP is the smallest set in which a member signs up, finds or hosts a plan, gets accepted, shows up and confirms who was there, because that is the core value ("plans that really happen") and what the north star measures. Friends, the plan chat, the calendar view and plan links are in because the boss chose them for the pilot: they make Yaruno an alternative to planning in WhatsApp groups (see `vision.md` → Problem). Safety, admin tools and account settings are in because the stores require reporting, blocking and in-app account deletion for apps with accounts and user content.
 
 ## ONB — Onboarding
 
@@ -28,7 +28,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Home region entered by hand, without location permission — MVP
 - Up to 5 interests from a curated list with search and categories; free text cannot create new interests — MVP
 - Profile photos: one clear portrait is required; up to three more are optional — MVP
-- Accept the terms of use (EULA) and confirm the community rules, including a clear notice that TOGETHER is not a dating app — MVP
+- Accept the terms of use (EULA) and confirm the community rules, including a clear notice that Yaruno is not a dating app — MVP
 - Notification permission asked in context (e.g. after the first join request), with "Nicht jetzt" — MVP
 - Suggest a missing interest for review — later
 - Add an e-mail address for account recovery — later
@@ -45,12 +45,13 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 
 ## FEED — Discover ("Entdecken")
 
-- Feed of open plans in the member's region, as reel-like cards — MVP
+- Feed of open plans in the member's region, as a list of cards with an image area on top (brand guide; boss, 2026-11-09) — MVP
 - The feed and the public plan view show only the coarse region and hints (e.g. "central, reachable by public transport"), never the exact place — MVP
 - Search and filters — MVP
 - Full plans disappear from the feed — MVP
 - Similar plans are suggested when a join request doesn't work out (declined, expired, group full) — MVP
 - Create a plan from the feed — MVP
+- Input from the brand guide (p.12), to confirm in `/spec-write FEED`: a region chip with a distance ("Brig · 10 km") and filter chips "Für dich", "Heute", "Outdoor"
 
 ## PLAN — Hosting
 
@@ -66,10 +67,11 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Share a plan link that shows only the coarse region — MVP
 - Co-hosts who can edit the plan together with the host — later
 - Participants confirm a significant meeting-point change ("Gesehen"); the host sees who has not seen it — later
+- Input from the brand guide (p.14), to confirm in `/spec-write PLAN`: groups of at most 6 people, a host may allow up to 8; "Neue starten mit mindestens drei" (meaning to clarify); meeting points are public places, never private addresses
 
 ## JOIN — Joining
 
-- Request to join ("Teilnahme anfragen") with an optional short message — MVP
+- Request to join with the button "Bin dabei", with an optional short message; the plan then shows the request as "angefragt" until the host decides — MVP
 - The host accepts or declines — MVP
 - Requests have a visible expiry and lapse automatically — MVP
 - Request states: requested, accepted, declined, expired, group full; only an accepted request takes a seat and unlocks the places and the plan chat — MVP
@@ -92,7 +94,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - New members start neutral (grey) until they have attended enough plans; solo plans don't count — MVP
 - Attending plans raises the score gently, so normal members reach an ok-to-good score — MVP
 - Repeated no-shows lower the score; a single miss does not — MVP
-- Only annoying short-term cancellations lower the score: a member's cancellation within 48 hours of the start, a host's cancellation within 14 days of the start — MVP
+- Only annoying short-term cancellations lower the score: a member's cancellation within 24 hours of the start, a host's cancellation within 14 days of the start — MVP
 - These cancellations have no effect: a plan cancelled while it has no participants; a cancellation for one of the plan's accepted reasons (e.g. bad weather for an outdoor plan); a member's cancellation the host marked as legitimate; any cancellation the rest of the group said was fine — MVP
 - [NEEDS DECISION: What counts when not every group member answers the "is this cancellation fine?" question? — options: A) only answers given count, so no answer means fine, B) no answer means not fine, C) the majority of the answers decides — recommended: A, because silence should never punish anyone and the score must stay gentle]
 - Reports affect the score only after an admin has reviewed them; automatic text-filter hits do not count — MVP
@@ -103,7 +105,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Report a user, a plan or a chat message, with reasons that match the community rules — MVP
 - Block a user — MVP
 - Text filter for plan, profile and chat texts — MVP
-- Community rules, reachable at any time — MVP [NEEDS DECISION: Which rules text applies? — options: A) the revised 9-rule version from the ChatGPT chat, which the boss pastes into `notes/`, B) start from the earlier 6 rules in `notes/chatgpt-prototype-chat.md` and adapt them (e.g. soften "Kein Flirten" to "not a flirting platform") — recommended: A if the 9 rules can still be retrieved, because they already include the boss's corrections]
+- Community rules (Spielregeln), reachable at any time: the six rules from the brand guide (p.13), the first one reworded by the boss — "Keine Dating-App.", "Kein Verkaufen.", "Kein Geld unter Teilnehmenden.", "Keine Privatadressen.", "Absagen statt Ghosten.", "Melden statt Aushalten."; one explaining sentence each is written in `/spec-write MOD` — MVP
 - Safety tips before a member's first meetup — MVP
 
 ## ADM — Admin tools
@@ -121,10 +123,12 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Request accepted, declined, expired or group full (requester) — MVP
 - Plan changed (e.g. meeting point, time) or cancelled; a member cancelled — MVP
 - Host takeover offered ("Wer möchte übernehmen?") — MVP
+- Reminder the day before a plan for its participants (e.g. "Morgen 05:30, Lea rechnet mit dir.") — on by default, can be switched off in the settings (boss, 2026-11-09) — MVP
 - Invited to a plan by a friend — MVP
 
 ## FRND — Friends
 
+- Friends live inside "Meine Pläne"; there is no separate tab (boss, 2026-11-09) — MVP
 - Add friends by name + ID (like Discord); there is no people search — MVP
 - Add people as friends after a shared plan — MVP
 - Invite friends directly into a plan as participants, with a notification — MVP
@@ -138,7 +142,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 
 ## SET — Settings & account
 
-- Language, notification settings, blocked users — MVP
+- Language, notification settings (each kind of notification, e.g. reminders, can be switched on or off), blocked users — MVP
 - Legal texts: terms of use, privacy policy, community rules — MVP
 - Help and support: FAQ and a contact option — MVP
 - Data export: members can get a copy of their data — MVP
@@ -159,6 +163,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 ## Ideas parking lot
 
 - Voluntary "buy us a coffee" support link — idea; store rules for tips and donations to be checked (topic 9)
+- ID check for hosts — idea; considered later, not for the start, because it is a big hurdle (boss, 2026-11-09; proposed in the brand guide)
 
 ## Dropped
 

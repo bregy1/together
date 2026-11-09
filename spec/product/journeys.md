@@ -1,23 +1,23 @@
-# Journeys — TOGETHER
+# Journeys — Yaruno
 
 Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; requirement IDs follow with `/spec-write`.
 
 ## J-01 First launch to first plan attended
 
 - **Actor:** new member · **Priority:** MVP
-- **Trigger:** someone installs TOGETHER because they want company for an activity or are new to the region.
+- **Trigger:** someone installs Yaruno because they want company for an activity or are new to the region.
 - **Steps:**
-  1. Signs up: phone number and SMS code, first name, date of birth (18+), home region, interests, a portrait; accepts the terms of use and the community rules, including the notice that TOGETHER is not a dating app [ONB-001…ONB-018]
+  1. Signs up: phone number and SMS code, first name, date of birth (18+), home region, interests, a portrait; accepts the terms of use and the community rules, including the notice that Yaruno is not a dating app [ONB-001…ONB-018]
   2. Browses the feed of plans in the region [FEED]
-  3. Opens a plan and looks at the host's profile [PROF]
-  4. Requests to join ("Teilnahme anfragen") with an optional message [JOIN]
+  3. Opens a plan and looks at the host's profile [PROF-001, PROF-002]
+  4. Requests to join ("Bin dabei") with an optional message [JOIN]
   5. Is asked in context whether to allow notifications [ONB-019]
   6. The host accepts; the member is notified [NOTIF]
   7. The location, the meeting point (if the host set one) and the plan chat unlock [PLAN, CHAT]
   8. Sees safety tips before the first meetup [MOD]
   9. Attends; attendance is confirmed after the plan [JOIN]
   10. The trust label starts to grow [TRUST]
-  11. Adds people from the plan as friends [FRND]
+  11. Adds people from the plan as friends, within a week after the plan [FRND, PROF-002]
 - **Outcome:** the new member has met people in real life through a plan that really happened.
 - **What can go wrong:**
   - The SMS code doesn't arrive or is wrong: resend after a wait, or correct the number [ONB-005, ONB-006].
@@ -33,7 +33,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   1. Creates a plan from the feed or the calendar: title naming the activity, category, start time and expected end time, seats, region, location and an optional meeting point, accepted cancellation reasons [PLAN, CAL]
   2. The plan appears in the feed with the coarse region only; a first-time host is asked about notifications [FEED, ONB-024]
   3. Join requests come in [NOTIF]
-  4. Looks at the requesters' profiles and trust labels [PROF, TRUST]
+  4. Looks at the requesters' profiles and trust labels [PROF-001, PROF-002, TRUST]
   5. Accepts or declines each request before it expires [JOIN]
   6. When the last seat is taken, open requests end with "Die Gruppe ist inzwischen voll" and the plan leaves the feed [JOIN, FEED]
   7. Coordinates with the group in the plan chat; a change of the meeting point notifies everyone [CHAT, PLAN, NOTIF]
@@ -54,14 +54,14 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   1. Adds friends by name + ID, or after a shared plan [FRND]
   2. Creates a plan [PLAN]
   3. Invites friends directly as participants; they are notified [FRND, NOTIF]
-  4. Shares a link, which shows only the region, with people who are not on TOGETHER yet [PLAN]
+  4. Shares a link, which shows only the region, with people who are not on Yaruno yet [PLAN]
   5. Others request to join, and the host decides [JOIN]
   6. The group coordinates in the plan chat [CHAT]
   7. Everyone sees the plan in their calendar [CAL]
   8. After the plan, it is reused for next time [PLAN]
 - **Outcome:** the group planned an activity without a WhatsApp thread, and can run it again.
 - **What can go wrong:**
-  - A friend is not on TOGETHER yet: the shared link leads to sign-up.
+  - A friend is not on Yaruno yet: the shared link leads to sign-up.
   - An invited friend declines.
 
 ## J-04 Cancel

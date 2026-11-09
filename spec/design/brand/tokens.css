@@ -1,0 +1,23 @@
+/*
+ * Yaruno design tokens, exactly as given in Romi's "Yaruno Brand Guide v1.0"
+ * (November 2026), page 16 ("Design-Tokens (CSS)"), transcribed 2026-11-09.
+ * The full token set, the light/dark roles and the usage rules are in
+ * spec/design/tokens.md and spec/design/direction.md. Change values only
+ * with Romi and the founding team.
+ */
+:root {
+  --nacht: #0F1412;
+  --eis: #E8EEEA;
+  --mint: #7CF5C0;
+  --gletscherblau: #1D3A3F;
+  --nebel: #9BB0AC;
+  --schiefer: #17201D;
+  --linie: #2A3733;
+  --senf: #F4C542;
+  --koralle: #FF8A80;
+  --font-wordmark: 'Fraunces', serif; /* nur Logo: wght 900, SOFT 100 */
+  --font: 'Archivo', sans-serif; /* alles andere */
+  --radius-button: 999px;
+  --radius-card: 24px;
+  --radius-input: 16px;
+}
