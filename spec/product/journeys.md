@@ -13,8 +13,8 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   4. Requests to join ("Bin dabei") with an optional message [JOIN-001]
   5. Is asked in context whether to allow notifications [ONB-019]
   6. The host accepts; the member is notified [NOTIF]
-  7. The location, the meeting point (if the host set one) and the plan chat unlock; the places can be opened in the maps app [PLAN-007, PLAN-023, CHAT]
-  8. Sees safety tips before the first meetup [MOD]
+  7. The location, the meeting point (if the host set one) and the plan chat unlock; the places can be opened in the maps app [PLAN-007, PLAN-023, CHAT-001]
+  8. Sees safety tips before the first meetup [MOD-009]
   9. Attends; nobody reports them missing, so they count as having attended [JOIN-015]
   10. The trust label starts to grow [TRUST]
   11. Adds people from the plan as friends, within a week after the plan [FRND-003, PROF-002]
@@ -36,7 +36,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   4. Looks at the requesters' profiles and trust labels [PROF-001, PROF-002, TRUST]
   5. Accepts or declines each request; a reminder comes if one stays open [JOIN-003…JOIN-005, JOIN-016]
   6. When the last seat is taken, open requests end with "Die Gruppe ist inzwischen voll" and the plan leaves the feed [JOIN-007, FEED-013]
-  7. Coordinates with the group in the plan chat; a change of the meeting point or another crucial change is confirmed, announced and marked with a badge [CHAT, PLAN-010, PLAN-011, PLAN-020…PLAN-022, NOTIF]
+  7. Coordinates with the group in the plan chat; a change of the meeting point or another crucial change is confirmed, announced and marked with a badge [CHAT-004, CHAT-007, CHAT-008, PLAN-010, PLAN-011, PLAN-020…PLAN-022, NOTIF]
   8. The plan takes place; anyone missing can be reported afterwards [JOIN-015, JOIN-017]
   9. Reuses the plan next time [PLAN-015]
 - **Outcome:** the plan took place with people who showed up, and it can be run again with little effort.
@@ -56,9 +56,9 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   3. Invites friends directly as participants; they are notified [FRND-005, NOTIF]
   4. Shares a link, which shows only the region, with people who are not on Yaruno yet [PLAN-016]
   5. Others request to join, and the host decides [JOIN]
-  6. The group coordinates in the plan chat [CHAT]
+  6. The group coordinates in the plan chat [CHAT-001, CHAT-004, CHAT-006]
   7. Everyone sees the plan in Meine Pläne and its calendar [CAL-001, CAL-006]
-  8. After the plan, it is reused for next time [PLAN-015]
+  8. After the plan, it is reused or reopened with a new date for next time [PLAN-015, PLAN-025]
 - **Outcome:** the group planned an activity without a WhatsApp thread, and can run it again.
 - **What can go wrong:**
   - A friend is not on Yaruno yet: the shared link leads to sign-up.
@@ -91,7 +91,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Actor:** member, admin · **Priority:** MVP
 - **Trigger:** someone behaves badly.
 - **Steps:**
-  1. A member reports a user, a plan or a chat message with a reason, and may block the user [MOD]
+  1. A member reports a user, a plan or a chat message with a reason, and may block the user [MOD-001, MOD-002, MOD-004]
   2. An admin reviews the report and decides: no action, warning, hide the content, suspend or ban [ADM]
   3. A confirmed report lowers the reported person's trust score [TRUST]
   4. The reported person is informed and can object [ADM, NOTIF]

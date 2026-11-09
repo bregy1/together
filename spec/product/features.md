@@ -9,11 +9,11 @@
 | JOIN | Joining | Request to join, get accepted, show up, and confirm who was there | MVP | approved |
 | CAL | My plans ("Kalender") | See your hosted, requested and accepted plans as a list or a calendar | MVP | approved |
 | TRUST | Trust score | Signal reliability with a coloured bar, mainly by flagging repeated bad behaviour | MVP | approved |
-| MOD | Safety | Report, block, filter texts, community rules and safety tips | MVP | not started |
+| MOD | Safety | Report, block, filter texts, community rules and safety tips | MVP | approved |
 | ADM | Admin tools | Review reports, sanction users, manage the interest list | MVP | not started |
 | NOTIF | Notifications | Tell people about requests, decisions and changes to their plans | MVP | not started |
 | FRND | Friends | Add friends and bring them into plans | MVP | approved |
-| CHAT | Chat | Plan chat for a plan's host and accepted participants | MVP | not started |
+| CHAT | Chat | Plan chat for a plan's host and accepted participants | MVP | approved |
 | SET | Settings & account | Settings, legal texts, help, data export and account deletion | MVP | not started |
 | PART | Partner organisations | Organisations publish open events anyone can join | later | not started |
 
@@ -73,6 +73,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Participants confirm a significant meeting-point change ("Gesehen"); the host sees who has not seen it — later
 - Things to bring: the host lists what the plan needs (e.g. a climbing rope), and participants say "Ich bringe das mit" — later (version 2); until then the group sorts it out in the plan chat (boss, 2026-11-09)
 - Input from the brand guide (p.14), to confirm in `/spec-write PLAN`: groups of at most 6 people, a host may allow up to 8; "Neue starten mit mindestens drei" (meaning to clarify); meeting points are public places, never private addresses
+- The host can reopen a past or cancelled plan with a new date, within a month; earlier participants confirm whether they are in again, and the chat continues (boss, 2026-11-10) — MVP
 
 ## JOIN — Joining
 
@@ -110,7 +111,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 
 - Report a user, a plan or a chat message, with reasons that match the community rules — MVP
 - Block a user — MVP
-- Text filter for plan, profile and chat texts — MVP
+- Text filter for plan, profile and chat texts, in two levels: hate, slurs and sexual harassment are refused; milder swear words are shown masked unless the member turns on "Ungefilterte Sprache anzeigen" (boss, 2026-11-10) — MVP
 - Community rules (Spielregeln), reachable at any time: the six rules from the brand guide (p.13), the first one reworded by the boss — "Keine Dating-App.", "Kein Verkaufen.", "Kein Geld unter Teilnehmenden.", "Keine Privatadressen.", "Absagen statt Ghosten.", "Melden statt Aushalten."; one explaining sentence each is written in `/spec-write MOD` — MVP
 - Safety tips before a member's first meetup — MVP
 
@@ -131,6 +132,9 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Host takeover offered ("Wer möchte übernehmen?") — MVP
 - Reminder the day before a plan for its participants (e.g. "Morgen 05:30, Lea rechnet mit dir.") — on by default, can be switched off in the settings (boss, 2026-11-09) — MVP
 - Friend request received; invited into a plan by a friend who hosts it — MVP
+- New plan chat messages: the first at once, further ones grouped at most every 10 minutes ("4 neue Nachrichten"), never with the text; a single plan's chat can be muted (boss, 2026-11-10) — MVP
+- A plan you were in is reopened with a new date: "Bist du wieder dabei?" — MVP
+- A thank-you after a report, only if the moderator chooses to send one (MOD-003) — MVP
 
 ## FRND — Friends
 
@@ -144,11 +148,12 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 ## CHAT — Chat
 
 - A plan chat for the host and the participants of each plan; access ends when someone cancels or is removed — MVP
+- Text and emoji only; own messages can be edited or deleted for 3 minutes; writable until 7 days after the plan, then read-only, deleted after a month (boss, 2026-11-10) — MVP
 - Group chat beyond a single plan (e.g. for a friend group) — later; the concept is to be rethought
 
 ## SET — Settings & account
 
-- Language, notification settings (each kind of notification, e.g. reminders, can be switched on or off), "Freunde sehen, wo ich dabei bin" (on by default, FRND-006), blocked users — MVP
+- Language, notification settings (each kind of notification, e.g. reminders, can be switched on or off), "Freunde sehen, wo ich dabei bin" (on by default, FRND-006), "Ungefilterte Sprache anzeigen" (off by default, MOD-011), blocked users — MVP
 - Feed radius for Entdecken (10 km by default) [FEED-003] — MVP
 - Legal texts: terms of use, privacy policy, community rules — MVP
 - Help and support: FAQ and a contact option — MVP

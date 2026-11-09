@@ -14,7 +14,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
   - Meine Pläne → SCR-cal-list ⇄ SCR-cal-month; → SCR-cal-kept; → SCR-frnd-list → SCR-frnd-add; an entry → SCR-plan-view or SCR-plan-requests
   - Profil → SCR-prof-own → SCR-prof-edit
   - a host, requester, participant or friend → SCR-prof-view
-  - "Plan erstellen" → SCR-plan-create; a plan card or link → SCR-plan-view → SCR-plan-edit, SCR-plan-cancel, SCR-plan-invite (host) or SCR-plan-takeover (participant, after the host left)
+  - "Plan erstellen" → SCR-plan-create; a plan card or link → SCR-plan-view → SCR-plan-chat (host, participant), SCR-plan-edit, SCR-plan-cancel, SCR-plan-invite (host) or SCR-plan-takeover (participant, after the host left)
 - After the first join request, or after publishing the first plan
   - SCR-notif-ask → system permission prompt
 
@@ -51,6 +51,10 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 | SCR-frnd-list | Freunde | FRND | `cal.friends` in Meine Pläne |
 | SCR-frnd-add | Add a friend | FRND | SCR-frnd-list |
 | SCR-plan-invite | Invite friends | FRND | SCR-plan-view (host) |
+| SCR-plan-chat | Chat | CHAT | SCR-plan-view (host, participant); a chat notification |
+| SCR-mod-report | Report | MOD | A plan, another member's profile or chat message |
+| SCR-mod-rules | Spielregeln | MOD | SCR-prof-own; settings; SCR-mod-report |
+| SCR-mod-tips | Safety tips | MOD | First accepted plan (once); SCR-plan-view; settings |
 
 ## States per screen
 
@@ -123,7 +127,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 
 ### SCR-prof-view Another member's profile
 - **Purpose:** see who someone is before requesting, deciding or meeting.
-- **Requirements:** PROF-001, PROF-002, PROF-010
+- **Requirements:** PROF-001, PROF-002, PROF-010, MOD-004, MOD-007
 - **States:**
   - **default:** main photo large with first name and age, further photos, interests in the owner's order, "Über mich", the trust bar with its info sign; report and block actions.
   - **sparse:** sections without content (no interests, no "Über mich") are left out.
@@ -157,14 +161,16 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 
 ### SCR-plan-view A plan
 - **Purpose:** see a plan; for members not yet accepted, decide whether to request; for participants and the host, everything needed to go.
-- **Requirements:** PLAN-007, PLAN-009, PLAN-016, PLAN-022, PLAN-023, JOIN-002, JOIN-006, JOIN-007, JOIN-008, JOIN-011, JOIN-014, FRND-003, FRND-005, FRND-006, FRND-009
+- **Requirements:** PLAN-007, PLAN-009, PLAN-016, PLAN-022, PLAN-023, JOIN-002, JOIN-006, JOIN-007, JOIN-008, JOIN-011, JOIN-014, FRND-003, FRND-005, FRND-006, FRND-009, CHAT-001, CHAT-015, PLAN-025, MOD-007, MOD-009
 - **States:**
-  - **public (not accepted):** title, activity tag, time, region name, group size and free seats, host, description, accepted cancellation reasons; no map, no location, no meeting point.
-  - **participant / host:** additionally the map with location and meeting point, "open in maps", the plan chat; host actions (edit, cancel, remove a participant, invite friends); friends who are in (FRND-006).
+  - **public (not accepted):** title, activity tag, time, region name, group size and free seats, host, description, accepted cancellation reasons, report; no map, no location, no meeting point.
+  - **first plan accepted:** the safety tips open once (SCR-mod-tips); afterwards they stay reachable from the plan.
+  - **participant / host:** additionally the map with location and meeting point, "open in maps", the way into the chat with its unread count; host actions (edit, cancel, remove a participant, invite friends); friends who are in (FRND-006).
   - **invited:** who invited the member, with accept and decline (FRND-005, FRND-009).
+  - **reopened:** the new date and "Bist du wieder dabei?" with yes and no (`plan.reopen.ask`, PLAN-025).
   - **changed:** the badge naming what changed, dismissible (PLAN-022).
   - **host left:** see SCR-plan-takeover.
-  - **past / cancelled / unavailable:** a short note (`plan.view.unavailable`); no actions except reuse, and within 7 days after the end "Als Freund hinzufügen" next to the people (`frnd.addFromPlan`, FRND-003).
+  - **past / cancelled / unavailable:** a short note (`plan.view.unavailable`); no actions except reuse, and within 7 days after the end "Als Freund hinzufügen" next to the people (`frnd.addFromPlan`, FRND-003); within a month after the end or cancellation, the host can reopen it with a new date (`plan.reopen`, PLAN-025); the chat stays readable (CHAT-012).
 
 ### SCR-plan-edit Edit a plan
 - **Purpose:** change a plan.
@@ -191,10 +197,11 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 
 ### SCR-join-request Request to join
 - **Purpose:** send a join request with an optional message.
-- **Requirements:** JOIN-001, JOIN-010
+- **Requirements:** JOIN-001, JOIN-010, MOD-010
 - **States:**
   - **default:** the plan's title and time, an optional message, send.
   - **overlap:** `join.overlap.warning` naming the other plan and whether it is requested or confirmed; sending is still possible.
+  - **blocked person in it:** the small hint `mod.block.inPlan`, naming nobody; sending is still possible (MOD-010).
   - **sent:** the plan now shows "angefragt" with "Anfrage zurückziehen" (`join.request.withdraw`).
   - **error / offline:** `Das hat nicht geklappt. Nochmal?`; the message is kept.
 
@@ -245,9 +252,9 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 
 ### SCR-cal-list Meine Pläne (list)
 - **Purpose:** the member's upcoming and past plans.
-- **Requirements:** CAL-001 … CAL-005, CAL-007 … CAL-010, FRND-009
+- **Requirements:** CAL-001 … CAL-005, CAL-007 … CAL-010, FRND-009, CHAT-015
 - **States:**
-  - **default:** upcoming plans by start time, each marked "Ich organisiere", "Ich nehme teil", "angefragt" or "eingeladen" (FRND-009); request counts on hosted plans; "changed" badges; takeover state; the filters of Entdecken; the way to friends and to "Gemerkte Pläne"; one primary button "Plan erstellen".
+  - **default:** upcoming plans by start time, each marked "Ich organisiere", "Ich nehme teil", "angefragt" or "eingeladen" (FRND-009); request counts on hosted plans; unread chat messages (CHAT-015); "changed" badges; takeover state; the filters of Entdecken; the way to friends and to "Gemerkte Pläne"; one primary button "Plan erstellen".
   - **past:** plans that ended within the last month, newest first, with the hint `cal.past.hint`, "war nicht da" (within 48 hours), reuse and "Merken".
   - **empty:** `cal.empty` with "Plan erstellen" and the way to Entdecken.
   - **offline:** `cal.offline` with retry.
@@ -287,3 +294,33 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - **States:**
   - **default:** the host's friends with photo and first name to select, the free seats, "Einladen" (`plan.invite`); friends already in the plan or invited are marked.
   - **no friends:** a short note with the way to add friends (SCR-frnd-add).
+
+### SCR-plan-chat Chat
+- **Purpose:** the plan's host and participants coordinate.
+- **Requirements:** CHAT-001 … CHAT-016, MOD-005, MOD-011
+- **States:**
+  - **default:** messages with first name, photo and time, oldest first, scrolled to the newest; highlighted app messages (e.g. the changed meeting point) and short event lines set apart; the input field (up to 1000 characters) with send; mute and unmute (`chat.mute`); for an own message under 3 minutes old, edit and delete; for others' messages, report; messages of someone the member blocked are hidden; milder swear words masked unless the member turned on unfiltered language.
+  - **empty:** `chat.empty` and the input field.
+  - **read-only:** the messages without the input field, with `chat.readOnly` (7 days after the end, until the plan is reopened or deleted).
+  - **offline:** the messages loaded last; a message written offline shows "nicht gesendet" with retry.
+
+### SCR-mod-report Report
+- **Purpose:** report a member, a plan or a chat message.
+- **Requirements:** MOD-001, MOD-002
+- **States:**
+  - **default:** what is reported, the nine reasons, an optional text (required for "Etwas anderes"), a link to the Spielregeln, send; for a member, the offer to block them as well.
+  - **missing reason or text:** `mod.report.error.reasonRequired` or `mod.report.error.textRequired`.
+  - **sent:** `mod.report.sent`.
+  - **error / offline:** `Das hat nicht geklappt. Nochmal?`; the choice and text are kept.
+
+### SCR-mod-rules Spielregeln
+- **Purpose:** read the six rules at any time.
+- **Requirements:** MOD-008
+- **States:**
+  - **default:** the six rules, each with its sentence, and "Yaruno ist ab 18."
+
+### SCR-mod-tips Safety tips
+- **Purpose:** short advice before meeting people from the app.
+- **Requirements:** MOD-009
+- **States:**
+  - **default:** the tips, the emergency numbers 117, 144 and 112, and "Verstanden".

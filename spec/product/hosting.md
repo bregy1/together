@@ -229,3 +229,15 @@ Create, edit, cancel, share and reuse plans, with the location and the meeting p
 - **Scenarios:**
   - **S1** Given a plan whose expected end was at 20:00, when it is 20:01, then it no longer appears in Entdecken and shows as past in Meine Pläne.
 - **Depends on:** JOIN
+
+### PLAN-025 Reopen a plan with a new date
+- **Status:** approved · **Priority:** MVP · **Since:** —
+- **Requirement:** WHEN the host reopens a past or cancelled plan with a new date and time (`plan.reopen`) within one month after its end or cancellation, THE SYSTEM SHALL make the same plan, with its chat, upcoming again, ask each earlier participant whether they are in again (`plan.reopen.ask`), and make them participants again only once they confirm while a seat is free.
+- **Rationale:** The host can reopen the event with a new date; the chat is coupled to the event (boss, 2026-11-10). Nobody is put into a plan without a yes; within the month, because the plan and its chat are deleted after that (CAL-004, CHAT-012). Unlike reusing (PLAN-015), which creates a new plan with a new chat, reopening keeps the same plan, group and chat.
+- **Scenarios:**
+  - **S1** Given a walk with four participants ended last Saturday, when the host reopens it for next Saturday, then the four are asked "Bist du wieder dabei?", and the walk is upcoming again in Meine Pläne.
+  - **S2** Given two of the four confirm, when the others have not answered, then the walk has two participants and free seats, and appears in Entdecken again.
+  - **S3** Given Max does not answer before the new start, when the walk starts, then he is not in it, and it has no trust effect for him.
+  - **S4** Given the host cancelled a plan completely 10 days ago, when they reopen it with a new date, then it works the same way.
+  - **S5** Given a plan that ended 5 weeks ago, when the host looks for the action, then it is no longer offered; they can still reuse a kept copy (CAL-012).
+- **Depends on:** CHAT-012, NOTIF
