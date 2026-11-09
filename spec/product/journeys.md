@@ -30,7 +30,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Actor:** host · **Priority:** MVP
 - **Trigger:** a member has an idea for an activity and wants people to join.
 - **Steps:**
-  1. Creates a plan from the feed or the calendar: title naming the activity, activity, start time and expected end time, group size, location and an optional meeting point on a map, accepted cancellation reasons [PLAN-001…PLAN-009, CAL]
+  1. Creates a plan from the feed or the calendar: title naming the activity, activity, start time and expected end time, group size, location and an optional meeting point on a map, accepted cancellation reasons [PLAN-001…PLAN-009, CAL-007]
   2. The plan appears in the feed with the coarse region only; a first-time host is asked about notifications [FEED-001, FEED-002, ONB-024]
   3. Join requests come in [NOTIF]
   4. Looks at the requesters' profiles and trust labels [PROF-001, PROF-002, TRUST]
@@ -57,7 +57,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   4. Shares a link, which shows only the region, with people who are not on Yaruno yet [PLAN-016]
   5. Others request to join, and the host decides [JOIN]
   6. The group coordinates in the plan chat [CHAT]
-  7. Everyone sees the plan in their calendar [CAL]
+  7. Everyone sees the plan in Meine Pläne and its calendar [CAL-001, CAL-006]
   8. After the plan, it is reused for next time [PLAN-015]
 - **Outcome:** the group planned an activity without a WhatsApp thread, and can run it again.
 - **What can go wrong:**

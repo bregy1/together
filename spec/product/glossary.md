@@ -14,6 +14,7 @@ One canonical term per concept, in every UI language. The spec, code identifiers
 | free seat | An open place in a plan | freier Platz | *place libre* | free seat | Slot |
 | host | The member who created a plan and decides who joins | Gastgeber | *hôte* | host | Ersteller, Organisator, plan maker |
 | interest | One of up to five general activities a member likes, shown on the profile (e.g. Outdoor, Sport) | Interesse | *centre d'intérêt* | interest | Tag, Hobby |
+| kept plan | A member's saved copy of a past plan, to reuse later | gemerkter Plan; merken | *plan gardé; garder* | saved plan; save | Vorlage, Favorit |
 | location | Where the activity of a plan happens; required; visible only to participants | Ort | *lieu* | location | event location, Standort |
 | login code | The one-time code sent by SMS to verify a phone number | Code; SMS-Code | *code; code SMS* | code | Passwort, PIN, TAN |
 | meeting point | Optional place where the group meets before the location; visible only to participants | Treffpunkt | *point de rencontre* | meeting point | — |

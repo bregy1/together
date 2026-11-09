@@ -7,7 +7,7 @@
 | FEED | Discover ("Entdecken") | Find plans to join in your region | MVP | approved |
 | PLAN | Hosting | Create, edit, cancel, share and reuse plans, with places hidden until acceptance | MVP | approved |
 | JOIN | Joining | Request to join, get accepted, show up, and confirm who was there | MVP | approved |
-| CAL | My plans ("Kalender") | See your hosted, requested and accepted plans as a list or a calendar | MVP | not started |
+| CAL | My plans ("Kalender") | See your hosted, requested and accepted plans as a list or a calendar | MVP | approved |
 | TRUST | Trust score | Signal reliability with a coloured bar, mainly by flagging repeated bad behaviour | MVP | approved |
 | MOD | Safety | Report, block, filter texts, community rules and safety tips | MVP | not started |
 | ADM | Admin tools | Review reports, sanction users, manage the interest list | MVP | not started |
@@ -171,6 +171,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 
 - Voluntary "buy us a coffee" support link — idea; store rules for tips and donations to be checked (topic 9)
 - ID check for hosts — idea; considered later, not for the start, because it is a big hurdle (boss, 2026-11-09; proposed in the brand guide)
+- Add a plan to the phone's own calendar — idea; not now (boss, 2026-11-09)
 - Hosts upload their own plan picture instead of the activity illustration — maybe; to be discussed (needs upload and image moderation) (boss, 2026-11-09)
 
 ## Dropped

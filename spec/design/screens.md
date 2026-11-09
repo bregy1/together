@@ -11,6 +11,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
   - the step where the person left (ONB-008)
 - Tabs: Entdecken · Meine Pläne (with friends) · Profil (`direction.md`)
   - Entdecken → SCR-feed → SCR-feed-filter, SCR-feed-area, a plan card → SCR-plan-view
+  - Meine Pläne → SCR-cal-list ⇄ SCR-cal-month; → SCR-cal-kept; → friends (FRND); an entry → SCR-plan-view or SCR-plan-requests
   - Profil → SCR-prof-own → SCR-prof-edit
   - a host, requester, participant or friend → SCR-prof-view
   - "Plan erstellen" → SCR-plan-create; a plan card or link → SCR-plan-view → SCR-plan-edit, SCR-plan-cancel (host) or SCR-plan-takeover (participant, after the host left)
@@ -44,6 +45,9 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 | SCR-feed | Entdecken | FEED | Tab "Entdecken"; first screen after sign-up |
 | SCR-feed-filter | Filters | FEED | SCR-feed |
 | SCR-feed-area | Feed area (radius) | FEED | Region chip on SCR-feed; settings |
+| SCR-cal-list | Meine Pläne (list) | CAL | Tab "Meine Pläne" |
+| SCR-cal-month | Meine Pläne (month) | CAL | SCR-cal-list |
+| SCR-cal-kept | Gemerkte Pläne | CAL | SCR-cal-list |
 
 ## States per screen
 
@@ -234,3 +238,25 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - **Requirements:** FEED-003
 - **States:**
   - **default:** 5, 10 (default), 25 or 50 km around the home municipality.
+
+### SCR-cal-list Meine Pläne (list)
+- **Purpose:** the member's upcoming and past plans.
+- **Requirements:** CAL-001 … CAL-005, CAL-007 … CAL-010
+- **States:**
+  - **default:** upcoming plans by start time, each marked "Ich organisiere", "Ich nehme teil" or "angefragt"; request counts on hosted plans; "changed" badges; takeover state; the filters of Entdecken; the way to friends and to "Gemerkte Pläne"; one primary button "Plan erstellen".
+  - **past:** plans that ended within the last month, newest first, with the hint `cal.past.hint`, "war nicht da" (within 48 hours), reuse and "Merken".
+  - **empty:** `cal.empty` with "Plan erstellen" and the way to Entdecken.
+  - **offline:** `cal.offline` with retry.
+
+### SCR-cal-month Meine Pläne (month)
+- **Purpose:** the same plans as a month.
+- **Requirements:** CAL-006, CAL-007
+- **States:**
+  - **default:** a month with a dot on each day that has a plan; tapping a day lists its plans; "Plan erstellen" uses the selected day.
+
+### SCR-cal-kept Gemerkte Pläne
+- **Purpose:** the member's kept copies of past plans.
+- **Requirements:** CAL-012
+- **States:**
+  - **default:** the copies; each can become a new plan or be deleted.
+  - **empty:** a short note on how to keep a plan.
