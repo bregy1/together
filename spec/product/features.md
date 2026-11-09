@@ -10,7 +10,7 @@
 | CAL | My plans ("Kalender") | See your hosted, requested and accepted plans as a list or a calendar | MVP | approved |
 | TRUST | Trust score | Signal reliability with a coloured bar, mainly by flagging repeated bad behaviour | MVP | approved |
 | MOD | Safety | Report, block, filter texts, community rules and safety tips | MVP | approved |
-| ADM | Admin tools | Review reports, sanction users, manage the interest list | MVP | not started |
+| ADM | Admin tools | Review reports, sanction users, manage the interest list | MVP | approved |
 | NOTIF | Notifications | Tell people about requests, decisions and changes to their plans | MVP | not started |
 | FRND | Friends | Add friends and bring them into plans | MVP | approved |
 | CHAT | Chat | Plan chat for a plan's host and accepted participants | MVP | approved |
@@ -122,6 +122,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Review cancellations; at the start, admins can review every cancellation — MVP
 - Sanctions: warn, hide content, suspend, ban; the person can object — MVP
 - Manage the curated interest list — MVP
+- The trust score is never edited by hand; it changes only as a side effect of decisions, and heavier sanctions lower it more (warning 1 issue up to a 90-day suspension 4) (boss, 2026-11-10) — MVP
 - Review suggested interests — later
 
 ## NOTIF — Notifications
@@ -135,6 +136,8 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - New plan chat messages: the first at once, further ones grouped at most every 10 minutes ("4 neue Nachrichten"), never with the text; a single plan's chat can be muted (boss, 2026-11-10) — MVP
 - A plan you were in is reopened with a new date: "Bist du wieder dabei?" — MVP
 - A thank-you after a report, only if the moderator chooses to send one (MOD-003) — MVP
+- A sanction with the rule it is about and the way to object; the outcome of an objection (ADM-006, ADM-007) — MVP
+- Moderators: a new report or objection, and a reminder when one is still open after 24 hours (ADM-010) — MVP
 
 ## FRND — Friends
 

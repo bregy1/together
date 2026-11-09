@@ -81,11 +81,11 @@ A gentle reliability signal ("Verlässlichkeit") that mainly flags repeated bad 
 
 ### TRUST-008 Reports count only after review
 - **Status:** approved · **Priority:** MVP · **Since:** —
-- **Requirement:** WHEN a report about a member is confirmed by a moderator, THE SYSTEM SHALL count it as an issue; unreviewed or rejected reports and automatic text-filter hits SHALL not count.
+- **Requirement:** WHEN a report about a member is confirmed by a moderator, THE SYSTEM SHALL count it with the issues of its sanction (TRUST-014); unreviewed or rejected reports and automatic text-filter hits SHALL not count.
 - **Rationale:** Reports affect the score only once reviewed (boss, 2026-11-08); filter hits don't count (`features.md` → Dropped).
 - **Scenarios:**
   - **S1** Given a report about Max that is still open, when his label is computed, then it has no effect.
-  - **S2** Given the moderators confirm the report, when his label is computed, then it counts as one issue.
+  - **S2** Given the moderators confirm the report with a warning, when his label is computed, then it counts as one issue.
 - **Depends on:** ADM
 
 ### TRUST-009 Casual removals count against the host
@@ -130,3 +130,13 @@ A gentle reliability signal ("Verlässlichkeit") that mainly flags repeated bad 
 - **Scenarios:**
   - **S1** Given any trust bar, when the member taps the info sign, then the explanation opens and names no-shows, short-term cancellations and confirmed reports as what lowers it, and going to plans as what brings it back.
 - **Depends on:** TRUST-001, TRUST-004
+
+### TRUST-014 Sanctions lower the bar by how bad they are
+- **Status:** approved · **Priority:** MVP · **Since:** —
+- **Requirement:** WHEN a report is confirmed with a sanction (ADM-004), THE SYSTEM SHALL count it as issues by the sanction: a warning or hidden content 1, a suspension of 7 days 2, of 30 days 3, of 90 days 4.
+- **Rationale:** The trust score is never edited directly; it is always a side effect of a sanction, in relation to how bad the sanction is (boss, 2026-11-10; ADM-017). Issues within the last 10 plans decide the state, and drop out as the member attends further plans (TRUST-001, TRUST-004).
+- **Scenarios:**
+  - **S1** Given Max gets a warning and has no other issue, when his bar is computed, then it stays normal (1 issue).
+  - **S2** Given Max is suspended for 7 days, when his bar is computed after the suspension, then it is lowered (Senf, 2 issues).
+  - **S3** Given Max is suspended for 90 days, when his bar is computed after the suspension, then it is low (Koralle, 4 issues), and it recovers only as he attends further plans.
+- **Depends on:** ADM-004, TRUST-004

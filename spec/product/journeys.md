@@ -79,7 +79,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   2. If the host left, participants learn that the host has left and are asked "Wer möchte übernehmen?" until the start; if one takes over, the plan continues with a new host [PLAN-013, NOTIF]
   3. Otherwise the plan is cancelled; members see the reason and are asked "War dieser Abbruch für dich okay?" [PLAN-014, NOTIF]
   4. The trust score is affected only by a short-term cancellation that was not accepted [TRUST]
-- Admins can review cancellations [ADM].
+- Admins can review cancellations and lift unfair ones [ADM-008].
 - **Outcome:** cancelling is easy and honest; only annoying short-term cancellations count.
 - **What can go wrong:**
   - Nobody answers the "is this fine?" question (open decision in `features.md` → TRUST).
@@ -92,9 +92,9 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Trigger:** someone behaves badly.
 - **Steps:**
   1. A member reports a user, a plan or a chat message with a reason, and may block the user [MOD-001, MOD-002, MOD-004]
-  2. An admin reviews the report and decides: no action, warning, hide the content, suspend or ban [ADM]
+  2. A moderator reviews the report and decides: no action, warning, hide the content, suspend or ban [ADM-003, ADM-004, ADM-005]
   3. A confirmed report lowers the reported person's trust score [TRUST]
-  4. The reported person is informed and can object [ADM, NOTIF]
+  4. The reported person is informed and can object [ADM-006, ADM-007, NOTIF]
 - **Outcome:** bad behaviour has consequences, and normal members are protected.
 - **What can go wrong:**
   - False or revenge reports.

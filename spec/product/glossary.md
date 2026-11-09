@@ -25,6 +25,7 @@ One canonical term per concept, in every UI language. The spec, code identifiers
 | moderator | A person with the role that allows reviewing reports and deciding on them | Moderator/-in | *modérateur·rice* | moderator | — |
 | my plans | The member's hosted, requested and accepted plans, as a list or a calendar | Meine Pläne | *Mes plans* | My plans | — |
 | name + ID | A member's first name plus a four-digit number the app assigns (e.g. Lea#4821), used to add them as a friend | Name + ID | *nom + ID* | name + ID | Username, Benutzername |
+| objection | A member's request to review a sanction or a no-show again, within 14 days, once | widersprechen; der Widerspruch | *contester; la contestation* | object; objection | Einsprache, Beschwerde |
 | participant | A member who is accepted into a plan (or was invited by the host) | Teilnehmer/-in | *participant·e* | participant | — |
 | partner organisation | An organisation (bar, gym, band) that publishes open events | Partner | *partenaire* | partner | Sponsor |
 | plan | Something a host creates that others can join: an activity at a time and a place | Plan | *plan* | plan | Aktivität, Event, Slot, Treffen (for this concept) |
@@ -38,6 +39,7 @@ One canonical term per concept, in every UI language. The spec, code identifiers
 | request states | requested · accepted · declined · withdrawn · group full · ended at the start | angefragt · angenommen · nicht angenommen · zurückgezogen · Gruppe voll · beendet | *demandé · accepté · refusé · retiré · complet · terminé* | requested · accepted · declined · withdrawn · group full · ended | abgelaufen, abgelehnt (in UI text) |
 | request to join | Ask the host to be let into a plan; the button reads "Bin dabei" and sends a request the host still has to accept | Bin dabei (button); die Anfrage | *Je suis partant·e (bouton); la demande* | *I'm in* (button); request | Teilnehmen, Beitreten, Teilnahme anfragen |
 | safety tips | Short advice for meeting people from the app, shown once at the first plan and reachable at any time | Sicherheitstipps | *conseils de sécurité* | safety tips | — |
+| sanction | What a moderator decides on a confirmed report: warning, hidden content, suspension for 7, 30 or 90 days, or ban | Massnahme: Verwarnung, Inhalt entfernt, Sperre (7, 30 oder 90 Tage), dauerhafte Sperre | *sanction* | sanction | Strafe |
 | sign in | Get into an existing account on a device with phone number and code | anmelden; die Anmeldung | *se connecter* | sign in | Login, einloggen |
 | sign up | Create a new account: phone number, code and the profile steps | Konto anlegen; die Registrierung | *créer un compte* | sign up | Account erstellen |
 | take over | A participant becomes the host when the host cancels | übernehmen | *reprendre* | take over | — |

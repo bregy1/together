@@ -12,7 +12,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - Tabs: Entdecken · Meine Pläne (with friends) · Profil (`direction.md`)
   - Entdecken → SCR-feed → SCR-feed-filter, SCR-feed-area, a plan card → SCR-plan-view
   - Meine Pläne → SCR-cal-list ⇄ SCR-cal-month; → SCR-cal-kept; → SCR-frnd-list → SCR-frnd-add; an entry → SCR-plan-view or SCR-plan-requests
-  - Profil → SCR-prof-own → SCR-prof-edit
+  - Profil → SCR-prof-own → SCR-prof-edit; → SCR-adm-home (moderators and admins) → SCR-adm-report, SCR-adm-objection, SCR-adm-cancellations, SCR-adm-activities, SCR-adm-words, SCR-adm-roles
   - a host, requester, participant or friend → SCR-prof-view
   - "Plan erstellen" → SCR-plan-create; a plan card or link → SCR-plan-view → SCR-plan-chat (host, participant), SCR-plan-edit, SCR-plan-cancel, SCR-plan-invite (host) or SCR-plan-takeover (participant, after the host left)
 - After the first join request, or after publishing the first plan
@@ -55,6 +55,13 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 | SCR-mod-report | Report | MOD | A plan, another member's profile or chat message |
 | SCR-mod-rules | Spielregeln | MOD | SCR-prof-own; settings; SCR-mod-report |
 | SCR-mod-tips | Safety tips | MOD | First accepted plan (once); SCR-plan-view; settings |
+| SCR-adm-home | Moderation | ADM | SCR-prof-own (moderators, admins); a moderation push |
+| SCR-adm-report | A report | ADM | SCR-adm-home; a moderation push |
+| SCR-adm-objection | An objection | ADM | SCR-adm-home; a moderation push |
+| SCR-adm-cancellations | Cancellations that count | ADM | SCR-adm-home (admins) |
+| SCR-adm-activities | Activity list | ADM | SCR-adm-home (admins) |
+| SCR-adm-words | Word lists | ADM | SCR-adm-home (admins) |
+| SCR-adm-roles | Roles, reviewer access and log | ADM | SCR-adm-home (admins) |
 
 ## States per screen
 
@@ -136,7 +143,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 
 ### SCR-prof-own Own profile
 - **Purpose:** see your profile as others see it.
-- **Requirements:** PROF-003, PROF-004
+- **Requirements:** PROF-003, PROF-004, ADM-002
 - **States:**
   - **default:** the profile as on SCR-prof-view, plus `prof.own.edit` and the link to the Spielregeln (`prof.own.rules`); no report or block actions.
   - **bar lowered:** a short hint under the own trust bar (TRUST-011).
@@ -324,3 +331,51 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - **Requirements:** MOD-009
 - **States:**
   - **default:** the tips, the emergency numbers 117, 144 and 112, and "Verstanden".
+
+### SCR-adm-home Moderation
+- **Purpose:** the way into everything the member's role allows.
+- **Requirements:** ADM-001, ADM-002
+- **States:**
+  - **moderator:** open reports and objections, oldest first, with their count.
+  - **admin:** additionally cancellations that count, the activity list, the word lists, roles, reviewer access and the decision log.
+  - **nothing open:** a short note that all is done.
+
+### SCR-adm-report A report
+- **Purpose:** review one report and decide.
+- **Requirements:** ADM-003, ADM-004, ADM-005, ADM-015
+- **States:**
+  - **default:** what was reported as it was then, reason, text, reporter, earlier decisions about the member; the decisions (no action, warning, hide, suspension 7/30/90 days, ban), a note, "Danke senden", "Missbräuchliche Meldung".
+  - **missing note:** `adm.decision.error.noteRequired`.
+  - **already decided:** who decided, when and what (another moderator was faster).
+
+### SCR-adm-objection An objection
+- **Purpose:** review an objection to a sanction or a no-show.
+- **Requirements:** ADM-007
+- **States:**
+  - **default:** the original decision with its note, the member's objection text; accept (lifts the decision) or reject, with a note.
+  - **own decision:** for a moderator, not offered; for an admin, offered.
+
+### SCR-adm-cancellations Cancellations that count
+- **Purpose:** lift unfair cancellations.
+- **Requirements:** ADM-008
+- **States:**
+  - **default:** cancellations that count, with plan, reason and the group's answers; "Aufheben" with a note.
+  - **empty:** a short note.
+
+### SCR-adm-activities Activity list
+- **Purpose:** keep the curated activities.
+- **Requirements:** ADM-011
+- **States:**
+  - **default:** general activities with their specific ones, each with German, French and English names; add, rename, deactivate.
+
+### SCR-adm-words Word lists
+- **Purpose:** keep the text-filter lists.
+- **Requirements:** ADM-012
+- **States:**
+  - **default:** the refused and the masked list, per language; add and remove.
+
+### SCR-adm-roles Roles, reviewer access and log
+- **Purpose:** give or take the moderator role, switch store reviewer access, read the decision log.
+- **Requirements:** ADM-001, ADM-013, ADM-014
+- **States:**
+  - **default:** moderators with "Rolle entfernen"; add a moderator by name + ID; reviewer access on or off; the decision log, newest first.
