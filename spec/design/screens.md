@@ -11,10 +11,10 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
   - the step where the person left (ONB-008)
 - Tabs: Entdecken · Meine Pläne (with friends) · Profil (`direction.md`)
   - Entdecken → SCR-feed → SCR-feed-filter, SCR-feed-area, a plan card → SCR-plan-view
-  - Meine Pläne → SCR-cal-list ⇄ SCR-cal-month; → SCR-cal-kept; → friends (FRND); an entry → SCR-plan-view or SCR-plan-requests
+  - Meine Pläne → SCR-cal-list ⇄ SCR-cal-month; → SCR-cal-kept; → SCR-frnd-list → SCR-frnd-add; an entry → SCR-plan-view or SCR-plan-requests
   - Profil → SCR-prof-own → SCR-prof-edit
   - a host, requester, participant or friend → SCR-prof-view
-  - "Plan erstellen" → SCR-plan-create; a plan card or link → SCR-plan-view → SCR-plan-edit, SCR-plan-cancel (host) or SCR-plan-takeover (participant, after the host left)
+  - "Plan erstellen" → SCR-plan-create; a plan card or link → SCR-plan-view → SCR-plan-edit, SCR-plan-cancel, SCR-plan-invite (host) or SCR-plan-takeover (participant, after the host left)
 - After the first join request, or after publishing the first plan
   - SCR-notif-ask → system permission prompt
 
@@ -48,6 +48,9 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 | SCR-cal-list | Meine Pläne (list) | CAL | Tab "Meine Pläne" |
 | SCR-cal-month | Meine Pläne (month) | CAL | SCR-cal-list |
 | SCR-cal-kept | Gemerkte Pläne | CAL | SCR-cal-list |
+| SCR-frnd-list | Freunde | FRND | `cal.friends` in Meine Pläne |
+| SCR-frnd-add | Add a friend | FRND | SCR-frnd-list |
+| SCR-plan-invite | Invite friends | FRND | SCR-plan-view (host) |
 
 ## States per screen
 
@@ -154,13 +157,14 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 
 ### SCR-plan-view A plan
 - **Purpose:** see a plan; for members not yet accepted, decide whether to request; for participants and the host, everything needed to go.
-- **Requirements:** PLAN-007, PLAN-009, PLAN-016, PLAN-022, PLAN-023, JOIN-002, JOIN-006, JOIN-007, JOIN-008, JOIN-011, JOIN-014
+- **Requirements:** PLAN-007, PLAN-009, PLAN-016, PLAN-022, PLAN-023, JOIN-002, JOIN-006, JOIN-007, JOIN-008, JOIN-011, JOIN-014, FRND-003, FRND-005, FRND-006, FRND-009
 - **States:**
   - **public (not accepted):** title, activity tag, time, region name, group size and free seats, host, description, accepted cancellation reasons; no map, no location, no meeting point.
-  - **participant / host:** additionally the map with location and meeting point, "open in maps", the plan chat; host actions (edit, cancel, remove a participant).
+  - **participant / host:** additionally the map with location and meeting point, "open in maps", the plan chat; host actions (edit, cancel, remove a participant, invite friends); friends who are in (FRND-006).
+  - **invited:** who invited the member, with accept and decline (FRND-005, FRND-009).
   - **changed:** the badge naming what changed, dismissible (PLAN-022).
   - **host left:** see SCR-plan-takeover.
-  - **past / cancelled / unavailable:** a short note (`plan.view.unavailable`); no actions except reuse.
+  - **past / cancelled / unavailable:** a short note (`plan.view.unavailable`); no actions except reuse, and within 7 days after the end "Als Freund hinzufügen" next to the people (`frnd.addFromPlan`, FRND-003).
 
 ### SCR-plan-edit Edit a plan
 - **Purpose:** change a plan.
@@ -241,9 +245,9 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 
 ### SCR-cal-list Meine Pläne (list)
 - **Purpose:** the member's upcoming and past plans.
-- **Requirements:** CAL-001 … CAL-005, CAL-007 … CAL-010
+- **Requirements:** CAL-001 … CAL-005, CAL-007 … CAL-010, FRND-009
 - **States:**
-  - **default:** upcoming plans by start time, each marked "Ich organisiere", "Ich nehme teil" or "angefragt"; request counts on hosted plans; "changed" badges; takeover state; the filters of Entdecken; the way to friends and to "Gemerkte Pläne"; one primary button "Plan erstellen".
+  - **default:** upcoming plans by start time, each marked "Ich organisiere", "Ich nehme teil", "angefragt" or "eingeladen" (FRND-009); request counts on hosted plans; "changed" badges; takeover state; the filters of Entdecken; the way to friends and to "Gemerkte Pläne"; one primary button "Plan erstellen".
   - **past:** plans that ended within the last month, newest first, with the hint `cal.past.hint`, "war nicht da" (within 48 hours), reuse and "Merken".
   - **empty:** `cal.empty` with "Plan erstellen" and the way to Entdecken.
   - **offline:** `cal.offline` with retry.
@@ -260,3 +264,26 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - **States:**
   - **default:** the copies; each can become a new plan or be deleted.
   - **empty:** a short note on how to keep a plan.
+
+### SCR-frnd-list Freunde
+- **Purpose:** the member's friends, their open friend requests and their own name + ID.
+- **Requirements:** FRND-001, FRND-004, FRND-007, FRND-008
+- **States:**
+  - **default:** own name + ID with share (`frnd.myId`); open friend requests on top with accept and decline; friends with photo and first name, each leading to SCR-prof-view, where the friend can be removed or blocked; "Freund hinzufügen".
+  - **empty:** own name + ID, a short note on how to add friends (`frnd.empty`) and "Freund hinzufügen".
+  - **offline:** `cal.offline` with retry, as in Meine Pläne (CAL-010).
+
+### SCR-frnd-add Add a friend
+- **Purpose:** send a friend request by name + ID.
+- **Requirements:** FRND-002
+- **States:**
+  - **default:** one field for the name + ID (e.g. "Lea#4821") and "Freundschaftsanfrage senden".
+  - **sent:** a short confirmation; the request waits for the other person's answer.
+  - **not found:** `frnd.add.notFound`; nobody is suggested.
+
+### SCR-plan-invite Invite friends
+- **Purpose:** the host picks friends to invite into their plan.
+- **Requirements:** FRND-005
+- **States:**
+  - **default:** the host's friends with photo and first name to select, the free seats, "Einladen" (`plan.invite`); friends already in the plan or invited are marked.
+  - **no friends:** a short note with the way to add friends (SCR-frnd-add).

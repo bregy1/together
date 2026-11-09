@@ -17,7 +17,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
   8. Sees safety tips before the first meetup [MOD]
   9. Attends; nobody reports them missing, so they count as having attended [JOIN-015]
   10. The trust label starts to grow [TRUST]
-  11. Adds people from the plan as friends, within a week after the plan [FRND, PROF-002]
+  11. Adds people from the plan as friends, within a week after the plan [FRND-003, PROF-002]
 - **Outcome:** the new member has met people in real life through a plan that really happened.
 - **What can go wrong:**
   - The SMS code doesn't arrive or is wrong: resend after a wait, or correct the number [ONB-005, ONB-006].
@@ -51,9 +51,9 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Actor:** member of a friend group · **Priority:** MVP
 - **Trigger:** friends want to do something together.
 - **Steps:**
-  1. Adds friends by name + ID, or after a shared plan [FRND]
+  1. Adds friends by name + ID, or after a shared plan [FRND-001, FRND-002, FRND-003]
   2. Creates a plan [PLAN-001]
-  3. Invites friends directly as participants; they are notified [FRND, NOTIF]
+  3. Invites friends directly as participants; they are notified [FRND-005, NOTIF]
   4. Shares a link, which shows only the region, with people who are not on Yaruno yet [PLAN-016]
   5. Others request to join, and the host decides [JOIN]
   6. The group coordinates in the plan chat [CHAT]
@@ -62,7 +62,7 @@ Six MVP journeys: J-01 to J-06. Steps cite area prefixes from `features.md`; req
 - **Outcome:** the group planned an activity without a WhatsApp thread, and can run it again.
 - **What can go wrong:**
   - A friend is not on Yaruno yet: the shared link leads to sign-up.
-  - An invited friend declines.
+  - An invited friend declines [FRND-005].
 
 ## J-04 Cancel
 

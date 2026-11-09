@@ -12,7 +12,7 @@
 | MOD | Safety | Report, block, filter texts, community rules and safety tips | MVP | not started |
 | ADM | Admin tools | Review reports, sanction users, manage the interest list | MVP | not started |
 | NOTIF | Notifications | Tell people about requests, decisions and changes to their plans | MVP | not started |
-| FRND | Friends | Add friends and bring them into plans | MVP | not started |
+| FRND | Friends | Add friends and bring them into plans | MVP | approved |
 | CHAT | Chat | Plan chat for a plan's host and accepted participants | MVP | not started |
 | SET | Settings & account | Settings, legal texts, help, data export and account deletion | MVP | not started |
 | PART | Partner organisations | Organisations publish open events anyone can join | later | not started |
@@ -130,7 +130,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Plan changed (e.g. meeting point, time) or cancelled; a member cancelled — MVP
 - Host takeover offered ("Wer möchte übernehmen?") — MVP
 - Reminder the day before a plan for its participants (e.g. "Morgen 05:30, Lea rechnet mit dir.") — on by default, can be switched off in the settings (boss, 2026-11-09) — MVP
-- Invited to a plan by a friend — MVP
+- Friend request received; invited into a plan by a friend who hosts it — MVP
 
 ## FRND — Friends
 
@@ -148,7 +148,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 
 ## SET — Settings & account
 
-- Language, notification settings (each kind of notification, e.g. reminders, can be switched on or off), blocked users — MVP
+- Language, notification settings (each kind of notification, e.g. reminders, can be switched on or off), "Freunde sehen, wo ich dabei bin" (on by default, FRND-006), blocked users — MVP
 - Feed radius for Entdecken (10 km by default) [FEED-003] — MVP
 - Legal texts: terms of use, privacy policy, community rules — MVP
 - Help and support: FAQ and a contact option — MVP
