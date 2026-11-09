@@ -34,7 +34,7 @@ The focus is on plans that really happen, not on app activity.
 | Come back | Share of people who join or host a second plan within 30 days of their first | ≥ 40 % | 6 months after pilot launch |
 | Reports | Reviewed reports per 100 plans that took place | < 2 | 6 months after pilot launch |
 
-Watched without a target: active users; requests answered (share of join requests the host accepts or declines before they expire).
+Watched without a target: active users; requests answered (share of join requests the host accepts or declines before the plan starts).
 
 ## Target users
 

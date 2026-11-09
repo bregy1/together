@@ -100,11 +100,12 @@ Create, edit, cancel, share and reuse plans, with the location and the meeting p
 ### PLAN-009 Accepted cancellation reasons
 - **Status:** approved · **Priority:** MVP · **Since:** —
 - **Requirement:** WHEN a member creates a plan, THE SYSTEM SHALL let them pick accepted cancellation reasons from a fixed list ("schlechtes Wetter", "zu wenige Leute", "krank") and add one short reason of their own, and show all of them to members before they request to join.
-- **Rationale:** Accepted cancellation reasons (`features.md` → PLAN; boss, 2026-11-08); a fixed list plus free text, where only the few fixed reasons count without any side effect (boss, 2026-11-09).
+- **Rationale:** Accepted cancellation reasons (`features.md` → PLAN; boss, 2026-11-08); the host decides how easy cancelling is: every reason the host sets, from the list or their own, makes a cancellation fine (boss, 2026-11-09: "make it easy if they want it easy, a bit more structured if they want to").
 - **Scenarios:**
   - **S1** Given a hiking plan with "schlechtes Wetter" as an accepted reason, when a member views it before requesting, then the reason is shown (`plan.view.acceptedReasons`).
   - **S2** Given a cancellation for "schlechtes Wetter" on that plan, when the trust effect is decided, then it has none.
-  - **S3** Given the host's own reason "Halle geschlossen", when someone cancels for it, then it is shown with the cancellation, but the usual trust rules apply (the group can still say it was fine).
+  - **S3** Given the host's own reason "Halle geschlossen", when someone cancels for it, then the cancellation has no trust effect, like a reason from the list.
+  - **S4** Given a host who sets no accepted reasons, when someone cancels, then the usual trust rules apply.
 - **Depends on:** TRUST
 
 ### PLAN-010 Edit a plan

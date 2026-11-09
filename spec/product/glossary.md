@@ -30,7 +30,7 @@ One canonical term per concept, in every UI language. The spec, code identifiers
 | region | The coarse area shown publicly, e.g. "Brig" | Region | *région* | region | Standort |
 | report | Flag a member, a plan or a message to the admins | melden; die Meldung | *signaler; le signalement* | report | — |
 | request to join | Ask the host to be let into a plan; the button reads "Bin dabei" and sends a request the host still has to accept | Bin dabei (button); die Anfrage | *Je suis partant·e (bouton); la demande* | *I'm in* (button); request | Teilnehmen, Beitreten, Teilnahme anfragen |
-| request states | requested · accepted · declined · expired · group full | angefragt · angenommen · abgelehnt · abgelaufen · Gruppe voll | *demandé · accepté · refusé · expiré · complet* | requested · accepted · declined · expired · group full | — |
+| request states | requested · accepted · declined · withdrawn · group full · ended at the start | angefragt · angenommen · nicht angenommen · zurückgezogen · Gruppe voll · beendet | *demandé · accepté · refusé · retiré · complet · terminé* | requested · accepted · declined · withdrawn · group full · ended | abgelaufen, abgelehnt (in UI text) |
 | sign in | Get into an existing account on a device with phone number and code | anmelden; die Anmeldung | *se connecter* | sign in | Login, einloggen |
 | sign up | Create a new account: phone number, code and the profile steps | Konto anlegen; die Registrierung | *créer un compte* | sign up | Account erstellen |
 | take over | A participant becomes the host when the host cancels | übernehmen | *reprendre* | take over | — |

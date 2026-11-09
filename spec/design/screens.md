@@ -36,6 +36,10 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 | SCR-plan-edit | Edit a plan | PLAN | SCR-plan-view (host) |
 | SCR-plan-cancel | Cancel a plan | PLAN | SCR-plan-view (host) |
 | SCR-plan-takeover | Host has left | PLAN | SCR-plan-view (participant); notification |
+| SCR-join-request | Request to join | JOIN | "Bin dabei" on SCR-plan-view |
+| SCR-plan-requests | Open requests (host) | JOIN | SCR-plan-view (host); notification |
+| SCR-join-cancel | Cancel participation | JOIN | "Doch nicht" on SCR-plan-view |
+| SCR-join-attendance | Who was missing | JOIN | SCR-plan-view of a past plan; notification after the end |
 
 ## States per screen
 
@@ -141,7 +145,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 
 ### SCR-plan-view A plan
 - **Purpose:** see a plan; for members not yet accepted, decide whether to request; for participants and the host, everything needed to go.
-- **Requirements:** PLAN-007, PLAN-009, PLAN-016, PLAN-022, PLAN-023 (joining itself: JOIN)
+- **Requirements:** PLAN-007, PLAN-009, PLAN-016, PLAN-022, PLAN-023, JOIN-002, JOIN-006, JOIN-007, JOIN-008, JOIN-011, JOIN-014
 - **States:**
   - **public (not accepted):** title, activity tag, time, region name, group size and free seats, host, description, accepted cancellation reasons; no map, no location, no meeting point.
   - **participant / host:** additionally the map with location and meeting point, "open in maps", the plan chat; host actions (edit, cancel, remove a participant).
@@ -171,3 +175,34 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
   - **open:** `plan.takeover.hostLeft`, "Ich übernehme" until the start.
   - **taken over:** who the new host is.
   - **cancelled:** the reason and "War dieser Abbruch für dich okay?" (`plan.cancelled.okay`).
+
+### SCR-join-request Request to join
+- **Purpose:** send a join request with an optional message.
+- **Requirements:** JOIN-001, JOIN-010
+- **States:**
+  - **default:** the plan's title and time, an optional message, send.
+  - **overlap:** `join.overlap.warning` naming the other plan and whether it is requested or confirmed; sending is still possible.
+  - **sent:** the plan now shows "angefragt" with "Anfrage zurückziehen" (`join.request.withdraw`).
+  - **error / offline:** `Das hat nicht geklappt. Nochmal?`; the message is kept.
+
+### SCR-plan-requests Open requests (host)
+- **Purpose:** decide on requests.
+- **Requirements:** JOIN-003, JOIN-004, JOIN-005, JOIN-016
+- **States:**
+  - **default:** one card per request: main photo, first name, age, trust label, message; accept and decline; tap opens the profile.
+  - **empty:** no open requests.
+  - **full:** accepting is no longer possible (`join.accept.error.full`).
+
+### SCR-join-cancel Cancel participation
+- **Purpose:** leave a plan with a reason.
+- **Requirements:** JOIN-012
+- **States:**
+  - **default:** "Teilnahme wirklich absagen?", reasons (the plan's accepted reasons, "krank", "etwas ist dazwischengekommen", own text), confirm and back.
+  - **short notice:** within 24 hours of the start, additionally `join.cancel.shortNotice`.
+
+### SCR-join-attendance Who was missing
+- **Purpose:** after a plan, report anyone who did not come; otherwise nothing to do.
+- **Requirements:** JOIN-015, JOIN-017
+- **States:**
+  - **default:** the people of the plan with "war nicht da" next to each; no ratings.
+  - **closed:** 48 hours after the end, no longer offered.

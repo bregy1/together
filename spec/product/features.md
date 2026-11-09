@@ -6,7 +6,7 @@
 | PROF | Profile | Show who someone is, only in the context of a plan or a friendship | MVP | approved |
 | FEED | Discover ("Entdecken") | Find plans to join in your region | MVP | not started |
 | PLAN | Hosting | Create, edit, cancel, share and reuse plans, with places hidden until acceptance | MVP | approved |
-| JOIN | Joining | Request to join, get accepted, show up, and confirm who was there | MVP | not started |
+| JOIN | Joining | Request to join, get accepted, show up, and confirm who was there | MVP | approved |
 | CAL | My plans ("Kalender") | See your hosted, requested and accepted plans as a list or a calendar | MVP | not started |
 | TRUST | Trust score | Signal reliability with a friendly label, mainly by flagging repeated bad behaviour | MVP | not started |
 | MOD | Safety | Report, block, filter texts, community rules and safety tips | MVP | not started |
@@ -49,7 +49,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - The feed and the public plan view show only the coarse region and hints (e.g. "central, reachable by public transport"), never the exact place — MVP
 - Search and filters — MVP
 - Full plans disappear from the feed — MVP
-- Similar plans are suggested when a join request doesn't work out (declined, expired, group full) — MVP
+- Similar plans are suggested when a join request doesn't work out (declined, group full, plan started without a decision) — MVP
 - Create a plan from the feed — MVP
 - Input from the brand guide (p.12), to confirm in `/spec-write FEED`: a region chip with a distance ("Brig · 10 km") and filter chips "Für dich", "Heute", "Outdoor"
 
@@ -58,7 +58,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Create a plan: a title naming the concrete activity (optional tagline), category, start time and expected end time, number of seats, coarse region, description — MVP
 - A location ("Ort", required) and an optional separate meeting point ("Treffpunkt"); both are shown only to accepted participants and are never delivered to anyone else — MVP
 - Edit a plan; edits that make no sense (e.g. after people have joined) are restricted — MVP
-- Accepted cancellation reasons: when creating a plan, the host picks from a fixed list (e.g. bad weather) and may add one reason of their own; members see them before requesting; only the fixed reasons count without any trust effect — MVP
+- Accepted cancellation reasons: when creating a plan, the host picks from a fixed list (e.g. bad weather) and may add one reason of their own; members see them before requesting; every reason the host sets makes a cancellation fine — MVP
 - Cancel a plan: a reason is always required; the host picks one of a few reasons or writes a short one; everyone is notified — MVP
 - Host takeover: before a plan with participants is cancelled, they are asked "Wer möchte übernehmen?"; if one takes over, the plan continues with a new host — MVP
 - After a host cancels, each participant sees the reason and is asked "War dieser Abbruch für dich okay?" — MVP
@@ -75,13 +75,13 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 
 - Request to join with the button "Bin dabei", with an optional short message; the plan then shows the request as "angefragt" until the host decides — MVP
 - The host accepts or declines — MVP
-- Requests have a visible expiry and lapse automatically — MVP
-- Request states: requested, accepted, declined, expired, group full; only an accepted request takes a seat and unlocks the places and the plan chat — MVP
+- Requests have no expiry: they stay until the host decides, the requester withdraws them (any time, no trust effect), the group is full or the plan starts (boss, 2026-11-09) — MVP
+- Request states: requested, accepted, declined, withdrawn, group full, ended at the start; only an accepted request takes a seat and unlocks the places and the plan chat — MVP
 - When the last seat is taken, open requests end with "Die Gruppe ist inzwischen voll"; this is not a personal rejection — MVP
 - Overlap warning when plans overlap in time (requested or confirmed); the request is still allowed, and nothing is cancelled automatically — MVP
 - Cancel participation after a confirmation ("Teilnahme wirklich absagen?"); a reason is always required; the member picks one of a few reasons or writes a short one — MVP
 - After a member cancels, the host and the other participants see the reason and are asked whether the cancellation is fine; the host can also mark it as legitimate. This lets friends cancel among themselves without any penalty — MVP
-- After the plan, attendance is confirmed (who was there); it feeds the north star and the trust score — MVP
+- After the plan, anyone in the group can report that a person was missing; without a report everyone counts as having attended; it feeds the north star and the trust score (boss, 2026-11-09) — MVP
 
 ## CAL — My plans ("Kalender")
 
@@ -97,7 +97,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 - Attending plans raises the score gently, so normal members reach an ok-to-good score — MVP
 - Repeated no-shows lower the score; a single miss does not — MVP
 - Only annoying short-term cancellations lower the score: a member's cancellation within 24 hours of the start, a host's cancellation within 14 days of the start; a host who leaves a plan that a participant then takes over counts like a member (PLAN-013) — MVP
-- These cancellations have no effect: a plan cancelled while it has no participants; a cancellation for one of the plan's accepted fixed reasons (e.g. bad weather for an outdoor plan); a member's cancellation the host marked as legitimate; any cancellation the rest of the group said was fine; a participant's cancellation after the host changed crucial information of the plan (PLAN-019) — MVP
+- These cancellations have no effect: a plan cancelled while it has no participants; a cancellation for one of the reasons the host accepted for the plan (e.g. bad weather for an outdoor plan); a member's cancellation the host marked as legitimate; any cancellation the rest of the group said was fine; a participant's cancellation after the host changed crucial information of the plan (PLAN-019) — MVP
 - [NEEDS DECISION: What counts when not every group member answers the "is this cancellation fine?" question? — options: A) only answers given count, so no answer means fine, B) no answer means not fine, C) the majority of the answers decides — recommended: A, because silence should never punish anyone and the score must stay gentle]
 - Reports affect the score only after an admin has reviewed them; automatic text-filter hits do not count — MVP
 - Hosts who remove participants casually lower their own score: a removal whose report the moderators do not confirm counts against the host; a single one does not (boss, 2026-11-09; PLAN-017) — MVP
@@ -123,7 +123,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 ## NOTIF — Notifications
 
 - Join request received (host) — MVP
-- Request accepted, declined, expired or group full (requester) — MVP
+- Request accepted, declined, group full or ended at the start (requester); reminder to the host about an open request — MVP
 - Plan changed (e.g. meeting point, time) or cancelled; a member cancelled — MVP
 - Host takeover offered ("Wer möchte übernehmen?") — MVP
 - Reminder the day before a plan for its participants (e.g. "Morgen 05:30, Lea rechnet mit dir.") — on by default, can be switched off in the settings (boss, 2026-11-09) — MVP
