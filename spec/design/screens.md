@@ -118,7 +118,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - **Purpose:** see who someone is before requesting, deciding or meeting.
 - **Requirements:** PROF-001, PROF-002, PROF-010
 - **States:**
-  - **default:** main photo large with first name and age, further photos, interests in the owner's order, "Über mich", the trust label; report and block actions.
+  - **default:** main photo large with first name and age, further photos, interests in the owner's order, "Über mich", the trust bar with its info sign; report and block actions.
   - **sparse:** sections without content (no interests, no "Über mich") are left out.
   - **unavailable:** `prof.view.unavailable` when there is no shared context (PROF-002); no profile data shown.
   - **loading / error / offline:** loading indicator; `Das hat nicht geklappt. Nochmal?` with retry.
@@ -128,6 +128,7 @@ Navigation, screen inventory and the states of every screen. Behaviour lives in 
 - **Requirements:** PROF-003, PROF-004
 - **States:**
   - **default:** the profile as on SCR-prof-view, plus `prof.own.edit` and the link to the Spielregeln (`prof.own.rules`); no report or block actions.
+  - **bar lowered:** a short hint under the own trust bar (TRUST-011).
 
 ### SCR-prof-edit Edit profile
 - **Purpose:** change first name, photos and their order, home region, interests and their order, "Über mich".

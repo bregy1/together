@@ -8,7 +8,7 @@
 | PLAN | Hosting | Create, edit, cancel, share and reuse plans, with places hidden until acceptance | MVP | approved |
 | JOIN | Joining | Request to join, get accepted, show up, and confirm who was there | MVP | approved |
 | CAL | My plans ("Kalender") | See your hosted, requested and accepted plans as a list or a calendar | MVP | not started |
-| TRUST | Trust score | Signal reliability with a friendly label, mainly by flagging repeated bad behaviour | MVP | not started |
+| TRUST | Trust score | Signal reliability with a coloured bar, mainly by flagging repeated bad behaviour | MVP | approved |
 | MOD | Safety | Report, block, filter texts, community rules and safety tips | MVP | not started |
 | ADM | Admin tools | Review reports, sanction users, manage the interest list | MVP | not started |
 | NOTIF | Notifications | Tell people about requests, decisions and changes to their plans | MVP | not started |
@@ -94,14 +94,14 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 
 ## TRUST — Trust score
 
-- The score is computed internally and never shown as a number; members see a subtle, friendly label (e.g. "trustworthy, usually comes", "sometimes has other plans last minute") — MVP
+- The score is computed internally and never shown as a number; members see a coloured bar with four fixed states (new, normal, lowered, low) and an info sign that explains it (boss, 2026-11-09) — MVP
 - The rules stay really simple and small; nothing is rated that a normal member would have to work for — MVP
 - New members start neutral (grey) until they have attended enough plans; solo plans don't count — MVP
 - Attending plans raises the score gently, so normal members reach an ok-to-good score — MVP
 - Repeated no-shows lower the score; a single miss does not — MVP
 - Only annoying short-term cancellations lower the score: a member's cancellation within 24 hours of the start, a host's cancellation within 14 days of the start; a host who leaves a plan that a participant then takes over counts like a member (PLAN-013) — MVP
 - These cancellations have no effect: a plan cancelled while it has no participants; a cancellation for one of the reasons the host accepted for the plan (e.g. bad weather for an outdoor plan); a member's cancellation the host marked as legitimate; any cancellation the rest of the group said was fine; a participant's cancellation after the host changed crucial information of the plan (PLAN-019) — MVP
-- [NEEDS DECISION: What counts when not every group member answers the "is this cancellation fine?" question? — options: A) only answers given count, so no answer means fine, B) no answer means not fine, C) the majority of the answers decides — recommended: A, because silence should never punish anyone and the score must stay gentle]
+- Silence on "is this cancellation fine?" counts as fine; only an explicit "nicht okay" counts against (boss, 2026-11-09) — MVP
 - Reports affect the score only after an admin has reviewed them; automatic text-filter hits do not count — MVP
 - Hosts who remove participants casually lower their own score: a removal whose report the moderators do not confirm counts against the host; a single one does not (boss, 2026-11-09; PLAN-017) — MVP
 - Lateness is not rated; a member who is late in a way that really matters can be reported — MVP

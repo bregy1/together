@@ -19,7 +19,7 @@ What people do today, and why it falls short:
 - **Clubs (Vereine):** need membership and a regular commitment; not made for a one-off or spontaneous activity.
 - **Nothing:** people stay at home or do the activity alone.
 
-Yaruno answers this with plans that keep their details in one place and can be reused, hosts who decide who joins, and a trust score that gives a sense of whether people actually come. The score is computed internally, but users only see it as a subtle, friendly label (e.g. "trustworthy, usually comes", "sometimes has other plans last minute"), never as a number.
+Yaruno answers this with plans that keep their details in one place and can be reused, hosts who decide who joins, and a trust score that gives a sense of whether people actually come. The score is computed internally; users see it only as a coloured bar with four fixed states, never as a number (boss, 2026-11-09).
 
 ## Goal and success
 

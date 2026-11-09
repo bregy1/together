@@ -35,6 +35,6 @@ One canonical term per concept, in every UI language. The spec, code identifiers
 | sign up | Create a new account: phone number, code and the profile steps | Konto anlegen; die Registrierung | *créer un compte* | sign up | Account erstellen |
 | take over | A participant becomes the host when the host cancels | übernehmen | *reprendre* | take over | — |
 | terms of use | The legal terms every member accepts at sign-up | Nutzungsbedingungen | *conditions d'utilisation* | terms of use | AGB, EULA (in UI text) |
-| trust score | Internal measure of reliability; members only see a friendly label, never a number | Verlässlichkeit | *fiabilité* | reliability | Score, Punkte, Vertrauen |
+| trust score | Internal measure of reliability; members see a coloured bar with four fixed states (new, normal, lowered, low), never a number | Verlässlichkeit | *fiabilité* | reliability | Score, Punkte, Vertrauen |
 | verified | A member who passed the selfie check against their photos | verifiziert | *vérifié·e* | verified | — |
 | Yaruno | The name of the app; written "Yaruno" in text, lowercase only in the wordmark | Yaruno | Yaruno | Yaruno | TOGETHER (old working name), YARUNO, "die Yaruno-App", "in Yaruno" (say "auf Yaruno") |
