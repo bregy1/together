@@ -1,0 +1,19 @@
+{
+  "tabs": {
+    "discover": {
+      "title": "Découvrir"
+    },
+    "myPlans": {
+      "title": "Mes plans"
+    },
+    "profile": {
+      "title": "Profil"
+    }
+  },
+  "shell": {
+    "notFound": {
+      "title": "Cette page n'existe pas.",
+      "backToDiscover": "Vers Découvrir"
+    }
+  }
+}

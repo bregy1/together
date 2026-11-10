@@ -1,0 +1,11 @@
+node_modules/
+.expo/
+dist/
+web-build/
+coverage/
+expo-env.d.ts
+*.log
+
+# Native folders are generated (Continuous Native Generation, ADR-0003)
+/ios
+/android

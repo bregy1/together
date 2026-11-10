@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Yaruno",
+    "slug": "yaruno",
+    "version": "0.1.0",
+    "scheme": "yaruno",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "platforms": ["ios", "android", "web"],
+    "web": {
+      "output": "single"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
