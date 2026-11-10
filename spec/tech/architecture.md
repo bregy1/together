@@ -81,7 +81,7 @@ Phone numbers in E.164, `+41` only at launch; 6-digit hashed single-use codes, 5
 
 ## Repository and local development
 
-One repository: `app/` (Expo app), `server/` (Go service), `api/` (the OpenAPI file both sides generate from), `deploy/` (Docker files), next to `spec/` and `notes/`. On a developer machine PostgreSQL runs in Docker, the Go server runs directly and restarts on save (`air`), and the app runs on Expo's dev server with hot reload in the browser and the emulator; one root command starts all three. The code is hosted on GitHub; the pipeline is a `.gitlab-ci.yml` run locally with gitlab-ci-local (ADR-0012, ADR-0009).
+One repository: `app/` (Expo app), `server/` (Go service), `api/` (the OpenAPI file both sides generate from), `deploy/` (Docker files), next to `spec/` and `notes/`. On a developer machine PostgreSQL runs in Docker, the Go server runs directly and restarts on save (`air`), and the app runs on Expo's dev server with hot reload in the browser and the emulator; one root command starts all three. The code is hosted on GitHub; the pipeline is a `.gitlab-ci.yml` run locally with gitlab-ci-local (ADR-0012, ADR-0009). No linters are used, neither for the app, the server nor the migrations (boss, 2026-11-11; this drops the migration lint named in ADR-0004): the checks are the compilers and type checks, `gofmt`, and the tests.
 
 ## Maps
 

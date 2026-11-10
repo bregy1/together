@@ -7,7 +7,7 @@
 **Client and server split:** the server decides access, limits and what is stored; the app does layout, input checks that only save a round trip, photo preparation and keeping entered data. Each task says which side it is.
 **Libraries:** only what an accepted ADR or *Approved libraries* names, plus official Expo SDK packages under ADR-0003 (`expo-router`, `expo-secure-store`, `expo-image-picker`, `expo-localization`, `expo-font`, `react-native-svg`). No other package is added without asking: no state or form library, no date-picker package (the birth date is three number fields), no icon set (the few icons are drawn with `react-native-svg`), and the root command is a small Node script of our own.
 **Prerequisites (checked on the boss's Windows machine, 2026-11-11):** Go is 1.22 in a 32-bit build, too old for `oapi-codegen` and `air` (a current 64-bit Go is needed); Docker is not installed (needed for PostgreSQL, ADR-0012); the Android SDK and emulator are not installed (the browser preview works without them); Node is 25, not a long-term-support version. T01, T03, T07 and every server task wait for Go and Docker; T17 waits for the emulator.
-**Rules for every task (boss, 2026-11-11):** npm is always run with `--ignore-scripts`, and the repository carries `ignore-scripts=true` in its `.npmrc` files; no `npx` of packages that are not project dependencies; the new 64-bit Go is at `C:\Program Files\Go\bin` and must be used ahead of the old one on the PATH; nothing is pushed. Docker and the Android emulator come later: tests that need PostgreSQL are skipped with a clear message while no database is configured and are listed as not run; the app is checked in the browser at phone size first.
+**Rules for every task (boss, 2026-11-11):** npm is always run with `--ignore-scripts`, and the repository carries `ignore-scripts=true` in its `.npmrc` files; no `npx` of packages that are not project dependencies; the new 64-bit Go is at `C:\Program Files\Go\bin` and must be used ahead of the old one on the PATH; nothing is pushed. No linters (boss, 2026-11-11): no ESLint, no migration lint and no lint step; the checks are the compilers and type checks, `gofmt`, and the tests, and a rule that would be a lint rule is written as a test. Docker and the Android emulator come later: tests that need PostgreSQL are skipped with a clear message while no database is configured and are listed as not run; the app is checked in the browser at phone size first.
 **Risks:**
 - Expo SDK 58, `oapi-codegen` and their Go and Node versions are confirmed in T01 and T02; a version problem there blocks everything after.
 - Maestro on Windows may need WSL; if it does not run locally, T17 falls back to the Mac or is reported as blocked.
@@ -17,34 +17,42 @@
 
 ## Wave 1
 
-- [ ] **CR-0001.T01 [ADR-0004, ADR-0012]** Server skeleton
+- [x] **CR-0001.T01 [ADR-0004, ADR-0012]** Server skeleton
   - **Goal:** a Go service in `server/` that starts, connects to PostgreSQL, answers a health check, and has ent, Atlas migrations, configuration from the environment and the Go test setup in place (server side).
   - **Covers:** ADR-0004, ADR-0012 (groundwork)
   - **Tests:** written first in this task (health check, configuration, database connection)
   - **Touches:** `server/`, `api/openapi.yaml` (health only), `server/.air.toml` (likely)
   - **Specialist:** backend-developer
   - **Depends on:** —
-  - **Done when:** `go test ./...` passes against a local PostgreSQL; `go vet` and `gofmt` are clean; the server starts and `/healthz` answers; Go and tool versions are written into `server/README.md`
+  - **Done when:** `go test ./...` passes against a local PostgreSQL; `gofmt` is clean; the server starts and `/healthz` answers; Go and tool versions are written into `server/README.md`
+  - **Result:** 2026-11-11 · `go test ./...`: 5 packages ok, 14 tests passed; `go vet` clean; committed content is `gofmt`-clean · backend-developer (Opus) · commit c0e1a46
+  - **Not run here:** 2 tests that need PostgreSQL (`TestConnect_ReachesTheDatabase`, `TestHealthz_AgainstARealDatabase`) are skipped until Docker is installed; the 200 answer of `/healthz` was not seen live
+  - **Deviation:** the server keeps running and answers 503 on `/healthz` while the database is unreachable, so the root command can start both together; ent code generation is switched on in T07 with the first table (ent refuses an empty schema); the Atlas command-line tool is not installed (it no longer supports `go install`), so `atlas.hcl` is unchecked until T03 provides it; `gofmt -l` lists every file on a Windows checkout because of CRLF line endings, to be fixed by a root `.gitattributes` in T03
+  - **Carried into later tasks:** tests use a separate `TEST_DATABASE_URL` from T07 on, so they never wipe the development database; a development-or-production setting comes with T08 (needed for NFR-SEC-004)
 
-- [ ] **CR-0001.T02 [ADR-0003, ADR-0007, ADR-0009, NFR-INTL-001]** App skeleton and shell
+- [x] **CR-0001.T02 [ADR-0003, ADR-0007, ADR-0009, NFR-INTL-001]** App skeleton and shell
   - **Goal:** an Expo SDK 58 app in `app/` with file-based routing, the three tabs as bare placeholders, the brand theme in light and dark from `spec/design/brand/tokens.json`, the brand fonts, i18n with a German resource file, an API client wrapper with session storage (secure storage on the phone, a development stand-in on the web), and the Jest setup (client side).
   - **Covers:** NFR-INTL-001.S1, NFR-INTL-001.S2
   - **Tests:** written first in this task (a check that fails on hard-coded user-facing text; a test that adding a French resource switches the language without a code change; the shell renders in both looks)
   - **Touches:** `app/` (all new), copies of the fonts from `spec/design/brand/fonts/`
   - **Specialist:** expo-react-native-expert
   - **Depends on:** —
-  - **Done when:** tests tagged `@spec NFR-INTL-001.S1` and `@spec NFR-INTL-001.S2` pass; the app starts in the browser at phone size and in the Android emulator and shows the three tabs; lint is clean; design placeholders are marked
+  - **Done when:** tests tagged `@spec NFR-INTL-001.S1` and `@spec NFR-INTL-001.S2` pass; the app starts in the browser at phone size and shows the three tabs (the emulator is checked once it is installed); the TypeScript type check is clean; design placeholders are marked
+  - **Result:** 2026-11-11 · `npm test`: 6 suites, 17 tests passed; `tsc --noEmit` clean; three tabs seen in the browser at phone size in both looks · expo-react-native-expert (Opus) · commit 7f13ef0
+  - **Not run here:** Android emulator and iOS Simulator (not installed)
+  - **Deviation:** Expo SDK 58 does not support Node 25; everything runs on Node 24.11.1, and `app/.npmrc` refuses other versions (`engine-strict`); a `+not-found` screen was added because Expo Router's built-in one has hard-coded English text; no ESLint (boss, 2026-11-11)
+  - **Carried into later tasks:** the daylight input fill uses `weiss` as a marked placeholder (T05); the session token is stored for this device only (T09); the root pins Node 24 and sets the API base URL (T03); `expo-system-ui`, which Android needs to follow the dark setting, is added when the emulator is available
 
 ## Wave 2
 
 - [ ] **CR-0001.T03 [ADR-0012, ADR-0008]** Dev command, database, pipeline and docs
   - **Goal:** one root command starts PostgreSQL in Docker, the server with reload on save and the app dev server; the pipeline runs locally; the commands are documented.
   - **Covers:** ADR-0012, ADR-0008 (groundwork)
-  - **Tests:** the pipeline itself: lint, Go tests with PostgreSQL, app tests, OpenAPI validation
+  - **Tests:** the pipeline itself: build and type checks, `gofmt`, Go tests with PostgreSQL, app tests, OpenAPI validation
   - **Touches:** root `package.json`, `scripts/dev.mjs`, `deploy/docker-compose.yml`, `.gitlab-ci.yml`, `.gitignore`, `README.md`, `CLAUDE.md` (Commands only)
   - **Specialist:** devops-engineer
   - **Depends on:** CR-0001.T01, CR-0001.T02
-  - **Done when:** the root command brings up all three and a change in `server/` or `app/` shows without a manual restart; `gitlab-ci-local` runs the pipeline green; the *Commands* section of the project `CLAUDE.md` lists install, build, test, lint and run; `air` is not in any production image
+  - **Done when:** the root command brings up all three and a change in `server/` or `app/` shows without a manual restart; `gitlab-ci-local` runs the pipeline green; the *Commands* section of the project `CLAUDE.md` lists install, build, test, format check and run; a root `.gitattributes` keeps Go files on LF line endings and `.claude/` is ignored; `air` is not in any production image
 
 - [ ] **CR-0001.T04 [ADR-0004]** API contract for sign-up and generated code
   - **Goal:** the OpenAPI file describes every call sign-up needs (request and check a code, sign-up steps and resume, municipality search, interest list, photo upload, finish, session), with one error shape, and the Go stubs and the typed client are generated from it.

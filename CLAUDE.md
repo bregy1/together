@@ -26,7 +26,7 @@ Summary of the accepted ADRs in `spec/tech/decisions/`; details in `spec/tech/ar
 
 ## Commands
 
-_None yet._ The project-setup task of the first baseline CR fills in the install, build, test, lint and run commands.
+_None yet._ The project-setup task of the first baseline CR fills in the install, build, test and run commands. No linters are used (boss, 2026-11-11).
 
 ## Team
 
