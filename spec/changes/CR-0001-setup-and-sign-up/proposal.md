@@ -1,6 +1,6 @@
 # CR-0001 Project setup and sign-up
 
-- **Type:** baseline · **Status:** approved · **Opened:** 2026-11-11
+- **Type:** baseline · **Status:** in-progress · **Opened:** 2026-11-11
 - **Intent:** Set up the project so it runs locally with one command, and let a person sign up and sign in.
 
 ## Why
@@ -23,10 +23,11 @@ Nothing is built yet. The boss wants a local prototype first (milestone M0), sta
 - The standalone Spielregeln screen (MOD-008) and everything else in MOD, PROF, PLAN, FEED, JOIN, CAL, CHAT, FRND, TRUST, NOTIF, ADM and SET. The sign-up shows the six rules with the texts of MOD-008.
 - Push notifications, the WebSocket, the map, over-the-air updates, store builds, signing and any deployment to a server: later rounds; M0 runs locally only.
 - French and English texts: German only at first (`constitution.md`).
+- NFR-PRIV-001 (stored personal data in Switzerland): nothing is stored on a server in this round, so it cannot be checked; it returns with the round that first deploys (boss, 2026-11-11).
 
 ## Affected
 
-- **Areas and IDs:** ONB-001 … ONB-018, ONB-020; NFR-ACC-001, NFR-INTL-001, NFR-PRIV-001 … NFR-PRIV-003, NFR-SEC-001 … NFR-SEC-004
+- **Areas and IDs:** ONB-001 … ONB-018, ONB-020; NFR-ACC-001, NFR-INTL-001, NFR-PRIV-002, NFR-PRIV-003, NFR-SEC-001 … NFR-SEC-004
 - **Screens, ADRs, journeys:** SCR-onb-phone, SCR-onb-code, SCR-onb-about, SCR-onb-age-stop, SCR-onb-interests, SCR-onb-photos, SCR-onb-rules; ADR-0001, ADR-0003, ADR-0004, ADR-0005, ADR-0007, ADR-0008, ADR-0009, ADR-0011, ADR-0012; J-01 steps 1 to 3
 
 ## Regression guards
@@ -52,4 +53,6 @@ Nothing is built yet. The boss wants a local prototype first (milestone M0), sta
 ## History
 
 - 2026-11-11 drafted
+- 2026-11-11 amended during planning, approved by the boss: NFR-PRIV-001 moved out of scope to the first deployment round
 - 2026-11-11 approved by the boss, with the ten starter interests, placeholders for the open design values, and login codes that are checked but not sent
+- 2026-11-11 in progress
