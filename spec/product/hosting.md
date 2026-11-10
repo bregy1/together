@@ -68,7 +68,7 @@ Create, edit, cancel, share and reuse plans, with the location and the meeting p
   - **S2** Given a pin placed outside Switzerland, when the member publishes, then `plan.create.error.locationNotSwiss` is shown.
   - **S3** Given no location is set, when the member publishes, then `plan.create.error.locationRequired` is shown.
   - **S4** Given SCR-plan-create, when the member adds a meeting point, then they place a second pin and may add a note of at most 80 characters (e.g. "beim Kiosk"); without a meeting point the plan has only the location.
-- **Open:** Which map service the app uses is a technology decision with privacy impact (`tech/architecture.md` → Maps; `/spec-decide`).
+- **Map service:** decided in ADR-0010 (`tech/architecture.md` → Maps). Search finds places, addresses, stations, lifts, lakes and mountains, not businesses; a pin covers the rest.
 
 ### PLAN-007 Location only for participants
 - **Status:** approved · **Priority:** MVP · **Since:** —

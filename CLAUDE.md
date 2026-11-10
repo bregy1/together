@@ -16,10 +16,12 @@ Summary of the accepted ADRs in `spec/tech/decisions/`; details in `spec/tech/ar
 - Minimum age 18, self-declared birth date (ADR-0002)
 - App: Expo SDK 58, React Native, TypeScript; OTA via `expo-updates` and self-hosted xprem (ADR-0003)
 - Backend: Go, ent + Atlas migrations, PostgreSQL, REST + OpenAPI spec-first, River jobs, Docker on Swiss servers, GitLab + gitlab-ci-local (ADR-0004)
-- Auth: custom phone + SMS-code flow in Go, opaque device sessions; production SMS provider open (ADR-0005)
+- Auth: custom phone + SMS-code flow in Go, opaque device sessions; SMS through ASPSMS (ADR-0005, ADR-0011)
 - Realtime & push: event table + `pg_notify` → Go hub → WebSocket; push direct to APNs and FCM (ADR-0006)
 - i18n: i18next + react-i18next + expo-localization (ADR-0007)
 - Tests: Jest + RNTL, Maestro, Go testing + testify (ADR-0008)
+- Maps: swisstopo tiles on our own server, MapLibre, search through our backend to geo.admin.ch (ADR-0010)
+- Repository: monorepo with `app/`, `server/`, `api/`, `deploy/`; PostgreSQL in Docker, server and app reload on save; code on GitHub, pipeline run locally with gitlab-ci-local (ADR-0012)
 - Local preview: Android emulator and iOS Simulator, plus Expo web in a phone-sized browser, for development only (ADR-0009)
 
 ## Commands
