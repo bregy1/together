@@ -22,7 +22,7 @@ The non-negotiables for this app. Every spec file, plan and line of code respect
 ## Platforms
 
 - **Targets:** iOS and Android
-- [NEEDS DECISION: Which form factors? — options: A) phones only, B) phones and tablets with the phone layout, C) phones plus tablet-optimised layouts — recommended: A for the first release, because the app is mobile-first and tablet layouts multiply design and test work]
+- **Form factors:** phones only in the first release; the app is mobile-first, and tablet layouts would multiply design and test work (boss, 2026-11-10).
 - **Minimum OS versions:** follow the Expo SDK in use (SDK 58: iOS 16.4 or later; Android at the SDK's minimum API level, confirmed at project setup) and rise with each SDK upgrade (ADR-0003, boss, 2026-11-08).
 
 ## Languages
@@ -31,7 +31,7 @@ The non-negotiables for this app. Every spec file, plan and line of code respect
 - All user-facing text goes through i18n keys from the first line of code; nothing is hard-coded. Dates, times, numbers and currencies are formatted for the user's locale.
 - "Prepared" means a language can ship by adding translations, with no code change.
 - Canonical terms per language are fixed in `product/glossary.md`.
-- [NEEDS DECISION: Which languages ship in the first release? — options: A) German only, B) German, French and English — recommended: A for the pilot in Oberwallis, because translations can follow without code changes once the texts are stable; Valais is bilingual, so French becomes mandatory once the app is promoted in Lower Valais]
+- **First release:** German only, for the pilot in Oberwallis; French and English follow without code changes once the texts are stable. French becomes a must once Yaruno is promoted in Lower Valais (boss, 2026-11-10).
 
 ## Quality bars
 

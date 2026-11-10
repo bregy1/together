@@ -20,6 +20,7 @@ Summary of the accepted ADRs in `spec/tech/decisions/`; details in `spec/tech/ar
 - Realtime & push: event table + `pg_notify` → Go hub → WebSocket; push direct to APNs and FCM (ADR-0006)
 - i18n: i18next + react-i18next + expo-localization (ADR-0007)
 - Tests: Jest + RNTL, Maestro, Go testing + testify (ADR-0008)
+- Local preview: Android emulator and iOS Simulator, plus Expo web in a phone-sized browser, for development only (ADR-0009)
 
 ## Commands
 

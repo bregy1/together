@@ -174,6 +174,7 @@ The MVP is the smallest set in which a member signs up, finds or hosts a plan, g
 
 ## Milestones
 
+- **M0 — Local prototype:** build the app and the backend locally first and test them on the computer in a phone view, before the domain, the app ID, the legal entity and the store questions are decided (boss, 2026-11-10). Which features M0 covers is set in the first baseline change request.
 - **M1 — Pilot:** every feature marked MVP.
 - **Later:** every feature marked later waits in one list and is ordered into M2 once M1 is done, based on what the pilot shows.
 

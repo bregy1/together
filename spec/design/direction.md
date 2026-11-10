@@ -90,7 +90,7 @@ Image areas stay placeholders until real photos from the pilot exist. Several de
 Like a colleague texting you: "Hesch Zyt? Wir gehen um sechs." Short, direct, warm, no marketing tone. We ask, we invite, we don't push.
 
 - **German (source):** *du*, always, also in summaries of the terms of use. Verbs before nouns ("Plan erstellen", not "Aktivitätserstellung"). Concrete: place, time, number ("Sa 05:30, Talstation Blatten, 3 von 6"). Honest about commitment: we say that others count on you. Swiss spelling: "ss" instead of "ß"; "Velo", "Kafi", "Znüni" are welcome. English only in the claim; the German UI speaks German.
-- **French:** [NEEDS DECISION: French form of address — options: A) tu, B) vous — recommended: A, because it matches the German du and the local, informal personality]
+- **French:** *tu*, always, matching the German *du* and the local, informal personality (boss, 2026-11-10).
 - **English:** informal, matching the German tone.
 - **Microcopy** (guide p.13; the glossary still decides the terms):
 

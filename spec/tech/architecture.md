@@ -27,6 +27,7 @@ App (Expo) ──REST/OpenAPI──▶ Go service ──ent──▶ PostgreSQL 
 | i18n | i18next + react-i18next + expo-localization; server-side catalogue for push and SMS texts | ADR-0007 |
 | Testing | Jest + jest-expo + React Native Testing Library; Maestro; Go testing + testify with PostgreSQL in CI | ADR-0008 |
 | Hosting & environments | Docker on plain Linux servers in Switzerland; GitLab with gitlab-ci-local | ADR-0004, ADR-0001 |
+| Local preview | Android emulator and iOS Simulator for the real behaviour; Expo web target in a phone-sized browser for quick looks, development only, never shipped | ADR-0009 |
 
 ## Approved libraries
 
@@ -64,11 +65,11 @@ The app registers native APNs and FCM device tokens; the Go service sends direct
 
 Phone numbers in E.164, `+41` only at launch; 6-digit hashed single-use codes, 5-minute expiry, 5 attempts; rate limits per number, IP and device plus a global daily SMS cap; opaque device sessions (hash stored, sliding expiry) kept in `expo-secure-store`; the WebSocket upgrade is authenticated with the same token; log out, ban and deletion revoke sessions and close sockets (ADR-0005).
 
-- **SMS provider:** behind a provider interface. Development and early testing use a free development sender that must never run in production. [NEEDS DECISION: Which SMS provider sends login codes in production? — options: A) ASPSMS (Swiss, prepaid, about 4–7 euro cents per SMS, DPA and data location to confirm), B) eCall, C) Swisscom Enterprise SMS — recommended: A, because it is Swiss, prepaid and has no minimum contract — decide before the first store deployment]
+- **SMS provider:** behind a provider interface. Development and early testing use a free development sender that must never run in production. [NEEDS DECISION: Which SMS provider sends login codes in production? — options: A) ASPSMS (Swiss, prepaid, about 4–7 euro cents per SMS, DPA and data location to confirm), B) eCall, C) Swisscom Enterprise SMS — recommended: A, because it is Swiss, prepaid and has no minimum contract — decide before the first store deployment; the local prototype (M0) signs in with the development sender or a fixed code (boss, 2026-11-10)]
 
 ## Maps
 
-Hosts pick a plan's location on a map; accepted participants see it on a map (PLAN-006, PLAN-007; boss, 2026-11-09). [NEEDS DECISION: Which map service? — the choice touches ADR-0001 (map-tile and search requests reveal which area someone looks at), cost and the app framework. Options to research in `/spec-decide`: A) the phones' native maps (Apple Maps on iOS, Google Maps on Android) through the app framework, B) a Swiss provider (e.g. MapTiler, swisstopo), C) self-hosted OpenStreetMap tiles and place search on our Swiss servers — no recommendation before research]
+Hosts pick a plan's location on a map; accepted participants see it on a map (PLAN-006, PLAN-007; boss, 2026-11-09). [NEEDS DECISION: Which map service? — the choice touches ADR-0001 (map-tile and search requests reveal which area someone looks at), cost and the app framework. Options to research in `/spec-decide`: A) the phones' native maps (Apple Maps on iOS, Google Maps on Android) through the app framework, B) a Swiss provider (e.g. MapTiler, swisstopo), C) self-hosted OpenStreetMap tiles and place search on our Swiss servers — researched in ADR-0010 (proposed, 2026-11-10), which recommends swisstopo tiles on our own server with MapLibre; the boss has not chosen yet]
 
 ## Storage (files and media)
 
