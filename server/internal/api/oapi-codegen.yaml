@@ -1,0 +1,9 @@
+# Configuration for oapi-codegen v2 (ADR-0004, architecture.md -> APIs).
+# Generates the models and a strict server on the standard library net/http
+# router from ../../../api/openapi.yaml. Run with `go generate ./...` from server/.
+package: api
+output: api.gen.go
+generate:
+  models: true
+  std-http-server: true
+  strict-server: true

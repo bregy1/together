@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  title: Yaruno API
+  version: 0.1.0
+  description: |
+    The contract between the Yaruno app and the Go service (ADR-0004).
+    Written by hand first; the Go server code and the app's typed client are
+    generated from this file. For now it describes only the health check.
+servers:
+  - url: /
+tags:
+  - name: health
+    description: Operational endpoints.
+paths:
+  /healthz:
+    get:
+      operationId: getHealthz
+      tags: [health]
+      summary: Health check
+      description: |
+        Answers whether the service is running and can reach its database.
+        Carries no personal data and needs no session. Serves ADR-0004.
+      responses:
+        "200":
+          description: The service runs and its database answers.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+        "503":
+          description: The service runs but its database does not answer.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      additionalProperties: false
+      required: [status]
+      properties:
+        status:
+          type: string
+          description: Machine-readable state; never shown to members as text.
+          enum: [ok, unavailable]

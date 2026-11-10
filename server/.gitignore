@@ -1,0 +1,4 @@
+# Build output of air and go build
+/tmp/
+/server
+/server.exe
