@@ -1,0 +1,23 @@
+{
+  "name": "yaruno",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Yaruno monorepo root: development commands only, no dependencies (ADR-0012).",
+  "type": "module",
+  "engines": {
+    "node": "^22.13.0 || ^24.3.0 || >=26.0.0"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "db:start": "docker compose -f deploy/docker-compose.yml up -d --wait postgres",
+    "db:stop": "docker compose -f deploy/docker-compose.yml stop",
+    "install:app": "npm --prefix app ci --ignore-scripts",
+    "build:server": "node scripts/dev.mjs go build ./...",
+    "test:server": "node scripts/dev.mjs go test ./...",
+    "format:server": "node scripts/dev.mjs gofmt -l .",
+    "generate:server": "node scripts/dev.mjs go generate ./...",
+    "test:app": "npm --prefix app test --ignore-scripts",
+    "typecheck:app": "npm --prefix app run typecheck --ignore-scripts",
+    "generate:theme": "npm --prefix app run generate:theme --ignore-scripts"
+  }
+}

@@ -1,0 +1,30 @@
+# Claude Code local state and worktrees
+.claude/
+
+# Dependencies
+node_modules/
+
+# Build output
+server/tmp/
+server/server
+server/server.exe
+app/dist/
+app/web-build/
+app/.expo/
+coverage/
+
+# gitlab-ci-local working folder and the pipeline caches
+.gitlab-ci-local/
+.go-cache/
+.npm-cache/
+
+# Local environment files (never commit secrets)
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs and editor or OS files
+*.log
+.DS_Store
+Thumbs.db

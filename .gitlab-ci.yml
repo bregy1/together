@@ -1,0 +1,133 @@
+# Yaruno pipeline (ADR-0012, ADR-0008). The code is on GitHub; this pipeline is
+# run locally with gitlab-ci-local (https://github.com/firecow/gitlab-ci-local),
+# written against version 4.77.1:
+#
+#   gitlab-ci-local                 # the whole pipeline
+#   gitlab-ci-local --list          # list the jobs
+#   gitlab-ci-local server:test     # one job
+#
+# gitlab-ci-local copies only files Git tracks: commit (or `git add`) first.
+# No linters are used (boss, 2026-11-11): the checks are the compilers and the
+# type check, gofmt, the tests, and the OpenAPI contract through the generators.
+# air (GPL-3.0, development only) appears in no image and no job.
+#
+# Images are pinned to a tag and its digest (checked on Docker Hub 2026-11-11);
+# update both together.
+
+stages:
+  - check # fast: build, format, type check, contract
+  - test # tests, Go tests against PostgreSQL
+
+variables:
+  GOLANG_IMAGE: golang:1.27.4-trixie@sha256:b54b2639de8c1bfe538ec5ffc45f29b1932235ac5f6d63c059853646677112d9
+  NODE_IMAGE: node:24.22.2-trixie-slim@sha256:0820eaa85e07d0490446dd01d14707e17e6108a36988cf374899cd057eb3812d
+
+# ---------------------------------------------------------------- server (Go)
+
+.server:
+  image: $GOLANG_IMAGE
+  variables:
+    GOTOOLCHAIN: local # use the Go of the image; never download another one
+    GOFLAGS: -mod=readonly
+    GOMODCACHE: $CI_PROJECT_DIR/.go-cache/mod
+    GOCACHE: $CI_PROJECT_DIR/.go-cache/build
+  cache:
+    key:
+      files:
+        - server/go.sum
+    paths:
+      - .go-cache/
+  before_script:
+    - cd server
+    - go version
+    - go mod download
+
+server:build:
+  extends: .server
+  stage: check
+  script:
+    - go build ./...
+
+server:format:
+  extends: .server
+  stage: check
+  before_script:
+    - cd server
+  script:
+    - unformatted="$(gofmt -l .)"
+    - if [ -n "$unformatted" ]; then echo "Not gofmt-formatted (run gofmt -w):"; echo "$unformatted"; exit 1; fi
+
+# OpenAPI contract: the generator reads api/openapi.yaml and fails on an invalid
+# file; the committed generated code must match a fresh generation. The app side
+# (typed client) joins with its generator in CR-0001.T04.
+api:contract:
+  extends: .server
+  stage: check
+  script:
+    - cp -r . /tmp/server-before
+    - go generate ./...
+    - diff -ru /tmp/server-before . || { echo "Generated code is out of date: run 'npm run generate:server' and commit the result."; exit 1; }
+    - go build ./...
+
+server:test:
+  extends: .server
+  stage: test
+  services:
+    # Same version as deploy/docker-compose.yml.
+    - name: postgres:18.6-alpine@sha256:123b17998ccaf47e53b502e8c6a1e79afd8f579c6f3eec83c563da026f957395
+      alias: postgres
+  variables:
+    # Read by the postgres service container. CI-only throwaway values.
+    POSTGRES_USER: yaruno
+    POSTGRES_PASSWORD: yaruno-ci
+    POSTGRES_DB: yaruno_test
+    # Tests use TEST_DATABASE_URL; DATABASE_URL is set to the same test database
+    # until the Go tests switch to TEST_DATABASE_URL (CR-0001.T07).
+    TEST_DATABASE_URL: postgres://yaruno:yaruno-ci@postgres:5432/yaruno_test?sslmode=disable
+    DATABASE_URL: postgres://yaruno:yaruno-ci@postgres:5432/yaruno_test?sslmode=disable
+  script:
+    # Wait until PostgreSQL accepts TCP connections (it opens TCP only after its init).
+    - bash -c 'for i in $(seq 1 60); do (echo > /dev/tcp/postgres/5432) 2>/dev/null && exit 0; sleep 1; done; echo "PostgreSQL did not open port 5432"; exit 1'
+    - status=0; go test -count=1 -v ./... > "$CI_PROJECT_DIR/server-test.log" 2>&1 || status=$?
+    - cat "$CI_PROJECT_DIR/server-test.log"
+    - exit $status
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - server-test.log
+
+# ---------------------------------------------------------------- app (Expo)
+
+.app:
+  image: $NODE_IMAGE
+  cache:
+    key:
+      files:
+        - app/package-lock.json
+    paths:
+      - .npm-cache/
+  before_script:
+    - cd app
+    - node --version
+    # npm never runs install scripts (boss, 2026-11-11; also set in app/.npmrc).
+    - npm ci --ignore-scripts --cache "$CI_PROJECT_DIR/.npm-cache" --prefer-offline --no-audit --no-fund
+
+app:typecheck:
+  extends: .app
+  stage: check
+  script:
+    - npm run typecheck --ignore-scripts
+
+app:test:
+  extends: .app
+  stage: test
+  script:
+    - status=0; npm test --ignore-scripts -- --ci > "$CI_PROJECT_DIR/app-test.log" 2>&1 || status=$?
+    - cat "$CI_PROJECT_DIR/app-test.log"
+    - exit $status
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - app-test.log

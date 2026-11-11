@@ -26,7 +26,13 @@ Summary of the accepted ADRs in `spec/tech/decisions/`; details in `spec/tech/ar
 
 ## Commands
 
-_None yet._ The project-setup task of the first baseline CR fills in the install, build, test and run commands. No linters are used (boss, 2026-11-11).
+Details in `README.md`. npm always runs with `--ignore-scripts`; Go must be the 64-bit 1.27 (the root scripts find it in `C:\Program Files\Go\bin` or `YARUNO_GO_BIN`). No linters are used (boss, 2026-11-11).
+
+- **Everything (PostgreSQL in Docker, server with reload, Expo web):** `npm run dev --ignore-scripts` → app http://localhost:8081, server http://127.0.0.1:8080/healthz
+- **Server** (`server/`): install `go mod download` and `go install github.com/air-verse/air@v1.67.4` · build `go build ./...` · test `go test ./...` · format check `gofmt -l .` · generate `go generate ./...` · run `air` (or `go run ./cmd/server`) — from the root: `npm run build:server | test:server | format:server | generate:server`
+- **App** (`app/`): install `npm ci --ignore-scripts` · build (type check) `npm run typecheck` · test `npm test` · format check: none (no formatter is approved) · generate `npm run generate:theme` · run `npm run web` — from the root: `npm run install:app | typecheck:app | test:app | generate:theme`
+- **Database:** `npm run db:start` / `npm run db:stop`; tests use `TEST_DATABASE_URL` (database `yaruno_test`)
+- **Pipeline:** `gitlab-ci-local` (runs `.gitlab-ci.yml` locally)
 
 ## Team
 

@@ -1,0 +1,68 @@
+# Local development services for Yaruno (ADR-0012). Development only:
+# never use this file, its password or its databases for anything real.
+#
+# Start:   docker compose -f deploy/docker-compose.yml up -d --wait
+#          (the root command `npm run dev` does this for you)
+# Stop:    docker compose -f deploy/docker-compose.yml stop
+# Wipe:    docker compose -f deploy/docker-compose.yml down -v   (deletes all local data)
+#
+# Databases (created on the first start, when the volume is empty):
+#   yaruno            development data      DATABASE_URL
+#   yaruno_test       Go tests only          TEST_DATABASE_URL
+#   yaruno_atlas_dev  empty scratch database Atlas may wipe (ATLAS_DEV_URL)
+# URLs from the host (the password is a local-only development value):
+#   postgres://yaruno:yaruno-local-dev@127.0.0.1:5432/yaruno?sslmode=disable
+#   postgres://yaruno:yaruno-local-dev@127.0.0.1:5432/yaruno_test?sslmode=disable
+
+name: yaruno
+
+services:
+  postgres:
+    # PostgreSQL 18 is the newest stable major version (19 is only a release
+    # candidate as of 2026-11-11). Pin the minor so every developer runs the same.
+    image: postgres:18.6-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: yaruno
+      POSTGRES_DB: yaruno
+      # Local-only development password. Not a secret; never reuse it elsewhere.
+      POSTGRES_PASSWORD: yaruno-local-dev
+    ports:
+      # Reachable from this machine only, never from the network.
+      - "127.0.0.1:5432:5432"
+    volumes:
+      # PostgreSQL 18+ images keep their data under /var/lib/postgresql/18/docker;
+      # the volume is mounted on the parent folder, as the image documentation asks.
+      - postgres-data:/var/lib/postgresql
+      # Creates the test and Atlas scratch databases on the first start.
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yaruno -d yaruno"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
+
+  # Atlas command-line tool (Community Edition, Apache-2.0), so migrations can be
+  # applied without installing Atlas. Only started on demand (profile "tools"):
+  #   docker compose -f deploy/docker-compose.yml run --rm atlas migrate status --env local
+  #   docker compose -f deploy/docker-compose.yml run --rm atlas migrate apply --env local
+  # The Community Edition cannot read the ent schema (`ent://`), so
+  # `migrate diff` does not work with it; see README.md -> Migrations.
+  atlas:
+    image: arigaio/atlas:1.3.9-community-alpine
+    profiles: ["tools"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    working_dir: /work
+    volumes:
+      - ../server:/work
+    environment:
+      # Inside the Compose network the database host is "postgres".
+      DATABASE_URL: postgres://yaruno:yaruno-local-dev@postgres:5432/yaruno?sslmode=disable
+      ATLAS_DEV_URL: postgres://yaruno:yaruno-local-dev@postgres:5432/yaruno_atlas_dev?sslmode=disable
+    command: ["migrate", "status", "--env", "local"]
+
+volumes:
+  postgres-data:
