@@ -57,17 +57,31 @@ server:format:
     - unformatted="$(gofmt -l .)"
     - if [ -n "$unformatted" ]; then echo "Not gofmt-formatted (run gofmt -w):"; echo "$unformatted"; exit 1; fi
 
-# OpenAPI contract: the generator reads api/openapi.yaml and fails on an invalid
-# file; the committed generated code must match a fresh generation. The app side
-# (typed client) joins with its generator in CR-0001.T04.
+# OpenAPI contract: the generators read api/openapi.yaml and fail on an invalid
+# file; the committed generated code must match a fresh generation. Server side
+# here (only the generated folders internal/api and ent are compared), app side
+# (typed client types) in app:contract below.
 api:contract:
   extends: .server
   stage: check
   script:
-    - cp -r . /tmp/server-before
+    - mkdir -p /tmp/generated-before
+    - cp -r internal/api /tmp/generated-before/api
+    - cp -r ent /tmp/generated-before/ent
     - go generate ./...
-    - diff -ru /tmp/server-before . || { echo "Generated code is out of date: run 'npm run generate:server' and commit the result."; exit 1; }
+    - status=0
+    - diff -ru /tmp/generated-before/api internal/api || status=1
+    - diff -ru /tmp/generated-before/ent ent || status=1
+    - if [ "$status" -ne 0 ]; then echo "Generated server code is out of date - run 'npm run generate:server' and commit the result."; exit 1; fi
     - go build ./...
+
+app:contract:
+  extends: .app
+  stage: check
+  script:
+    - cp src/api/generated/schema.ts /tmp/schema-before.ts
+    - npm run generate:api --ignore-scripts
+    - diff -u /tmp/schema-before.ts src/api/generated/schema.ts || { echo "Generated app API types are out of date - run 'npm run generate:api' and commit the result."; exit 1; }
 
 server:test:
   extends: .server

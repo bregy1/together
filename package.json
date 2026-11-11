@@ -18,6 +18,7 @@
     "generate:server": "node scripts/dev.mjs go generate ./...",
     "test:app": "npm --prefix app test --ignore-scripts",
     "typecheck:app": "npm --prefix app run typecheck --ignore-scripts",
-    "generate:theme": "npm --prefix app run generate:theme --ignore-scripts"
+    "generate:theme": "npm --prefix app run generate:theme --ignore-scripts",
+    "generate:api": "npm --prefix app run generate:api --ignore-scripts"
   }
 }

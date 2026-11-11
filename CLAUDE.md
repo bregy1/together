@@ -30,7 +30,7 @@ Details in `README.md`. npm always runs with `--ignore-scripts`; Go must be the 
 
 - **Everything (PostgreSQL in Docker, server with reload, Expo web):** `npm run dev --ignore-scripts` → app http://localhost:8081, server http://127.0.0.1:8080/healthz
 - **Server** (`server/`): install `go mod download` and `go install github.com/air-verse/air@v1.67.4` · build `go build ./...` · test `go test ./...` · format check `gofmt -l .` · generate `go generate ./...` · run `air` (or `go run ./cmd/server`) — from the root: `npm run build:server | test:server | format:server | generate:server`
-- **App** (`app/`): install `npm ci --ignore-scripts` · build (type check) `npm run typecheck` · test `npm test` · format check: none (no formatter is approved) · generate `npm run generate:theme` · run `npm run web` — from the root: `npm run install:app | typecheck:app | test:app | generate:theme`
+- **App** (`app/`): install `npm ci --ignore-scripts` · build (type check) `npm run typecheck` · test `npm test` · format check: none (no formatter is approved) · generate `npm run generate:theme` and `npm run generate:api` (API types from `api/openapi.yaml`) · run `npm run web` — from the root: `npm run install:app | typecheck:app | test:app | generate:theme | generate:api`
 - **Database:** `npm run db:start` / `npm run db:stop`; tests use `TEST_DATABASE_URL` (database `yaruno_test`)
 - **Pipeline:** `gitlab-ci-local` (runs `.gitlab-ci.yml` locally)
 
