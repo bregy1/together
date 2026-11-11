@@ -15,6 +15,11 @@ jest.mock('react-native/Libraries/Utilities/useColorScheme', () => ({
   default: () => mockColorScheme(),
 }));
 
+// The tabs are for signed-in members; without a session the app opens sign-up (ONB-001).
+jest.mock('../src/session/sessionStore', () => ({
+  sessionStore: { getToken: async () => 'member-token', setToken: async () => {}, clear: async () => {} },
+}));
+
 const tabs = [
   { id: 'discover', name: 'Entdecken' },
   { id: 'my-plans', name: 'Meine Pläne' },

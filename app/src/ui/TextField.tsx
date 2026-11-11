@@ -1,8 +1,9 @@
 // A text field: visible label above, 56 px high (a minimum), radius 16, input fill with a
 // line border; optional hint and error text below and an optional leading slot (e.g. "+41").
-// The error is shown as text with an icon, so it is not conveyed by colour alone, and it
-// is announced when it appears. The label, hint and error reach screen readers through
-// the input itself, so each is announced once.
+// The error is shown as text with an icon, so it is not conveyed by colour alone. It is
+// announced once when it appears and stays readable as text after the field; it is not
+// repeated in the input's hint. The label and hint reach screen readers through the
+// input itself, so each is announced once.
 // spec: NFR-ACC-001; design/direction.md → UI building blocks
 import { useEffect, useState, type ReactNode } from 'react';
 import { AccessibilityInfo, Text, TextInput, View, type TextInputProps } from 'react-native';
@@ -37,7 +38,6 @@ export function TextField({ label, hint, error, leading, testID, onFocus, onBlur
   // a border in the text colour, the error field one in the error colour, both thicker.
   const borderColor = error ? theme.colors.error : focused ? theme.colors.text : theme.colors.inputBorder;
   const borderWidth = error || focused ? theme.line.widthEmphasis : theme.line.width;
-  const description = [error, hint].filter(Boolean).join(' ');
 
   return (
     <View style={{ gap: theme.space[2] }}>
@@ -62,7 +62,7 @@ export function TextField({ label, hint, error, leading, testID, onFocus, onBlur
           {...inputProps}
           testID={testID}
           accessibilityLabel={label}
-          accessibilityHint={description || undefined}
+          accessibilityHint={hint}
           placeholderTextColor={theme.colors.textSecondary}
           onFocus={(e) => {
             setFocused(true);
@@ -79,8 +79,9 @@ export function TextField({ label, hint, error, leading, testID, onFocus, onBlur
         />
       </View>
       {error ? (
-        <View {...hidden} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: theme.space[2] }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: theme.space[2] }}>
           <View
+            {...hidden}
             testID={id('error-icon')}
             style={{
               width: theme.size.iconMin,
