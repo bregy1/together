@@ -95,6 +95,10 @@
   - **Deviation:** the ui-designer agent has no command line and could not update its copy of the repository; the task was rerun with a general-purpose agent and the same brief. 41 keys come from the spec, 47 were added for labels, placeholders, buttons and screen titles; most wording is draft copy for the boss and the designer
   - **Open (for the boss):** `onb.about.region` and `onb.about.region.noMatch` cannot both exist as nested keys; stored for now as a literal dotted key. `onb.about.error.birthDateInvalid` (an impossible date such as 31.02.) is not named in the spec
 
+**Review of waves 1 and 2 (code-reviewer, 2026-11-11):** approve with fixes; no high-severity finding. Taken into wave 3: the server allows the browser preview's origin in development only and writes the contract's error body everywhere, `Cache-Control: no-store` on the token response, spec tags on the contract test (all T08); the text field announces an error once and the hard-coded-text test covers more shapes (T09). Still open, for a small devops fix after wave 3: the pipeline does not check that the generated TypeScript types are current, the root has no `generate:api` script, and `scripts/dev.mjs` hangs when a process fails to start.
+
+**Order in wave 3:** T08 and T09 run in parallel; T10 follows T09 because both use the typed API client in `app/src/api/`. T07 (data model) waits for Docker: its migrations cannot be tested without PostgreSQL, and wave 4's server tasks build on it.
+
 ## Wave 3
 
 - [ ] **CR-0001.T07 [ADR-0004, ADR-0005]** Data model and seed data
