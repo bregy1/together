@@ -48,9 +48,6 @@ jest.mock('../src/session/sessionStore', () => ({
   },
 }));
 
-// The first render of the whole route tree loads every screen module; give it room on a cold cache.
-jest.setTimeout(30_000);
-
 const me = getMe as jest.MockedFunction<typeof getMe>;
 const saveAbout = updateSignUpAbout as jest.MockedFunction<typeof updateSignUpAbout>;
 const saveStep = setSignUpStep as jest.MockedFunction<typeof setSignUpStep>;
