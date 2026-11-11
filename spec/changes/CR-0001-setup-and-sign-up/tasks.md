@@ -189,7 +189,7 @@
   - **Depends on:** CR-0001.T10
   - **Done when:** a test tagged `@spec` exists and passes for each covered scenario; picking a file works in the browser preview; the permission texts are in `app.json` as `product/app.md` → Permissions says; no hard-coded text
 
-- [ ] **CR-0001.T15 [ONB-016, ONB-017, ONB-018]** App: Spielregeln and finish
+- [x] **CR-0001.T15 [ONB-016, ONB-017, ONB-018]** App: Spielregeln and finish
   - **Goal:** SCR-onb-rules with the six rules, the "not a dating app" line visible without scrolling, the legal texts opening and returning to the step, acceptance, finishing with the offline path, and landing on Entdecken (client side).
   - **Covers:** ONB-016.S1, ONB-016.S2, ONB-017.S1, ONB-018.S1, ONB-018.S2
   - **Tests:** written first in this task, against a mocked API client
@@ -197,6 +197,10 @@
   - **Specialist:** expo-react-native-expert
   - **Depends on:** CR-0001.T10
   - **Done when:** a test tagged `@spec` exists and passes for each covered scenario; the Entdecken tab is still the bare placeholder; no hard-coded text
+  - **Result:** 2026-11-11 · `npm test`: 14 suites, 251 tests passed on the second run (the first run after the merge timed out in `shell-test` and `i18n-add-language-test`, as after every merge so far); `tsc --noEmit` clean; all 5 covered scenarios have a tagged test · expo-react-native-expert (Opus) · commit 9aae2c6
+  - **Not run here:** nobody has looked at the screen in a browser or emulator; that the "not a dating app" line is visible without scrolling at phone size is proven only by the order of elements
+  - **Deviation:** the acceptance control is built inside the feature folder (no UI block fitted); the session is switched to member by calling the existing start function with the stored token, because the session module was outside the task's files
+  - **Carried into later tasks:** a small `becomeMember` function in the session module would be cleaner (after T14)
 
 ## Wave 5
 
