@@ -12,6 +12,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "generate:theme": "node ./scripts/generate-theme.mjs",
+    "generate:api": "openapi-typescript ../api/openapi.yaml --output ./src/api/generated/schema.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit"
@@ -36,6 +37,7 @@
     "expo-secure-store": "~58.0.2",
     "expo-status-bar": "~58.0.4",
     "i18next": "^27.1.1",
+    "openapi-fetch": "^0.17.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-i18next": "^18.0.1",
@@ -51,6 +53,12 @@
     "@types/react": "~19.3.0",
     "jest": "^30.5.2",
     "jest-expo": "~58.0.14",
+    "openapi-typescript": "^7.13.0",
     "typescript": "~6.0.3"
+  },
+  "overrides": {
+    "openapi-typescript": {
+      "typescript": "$typescript"
+    }
   }
 }

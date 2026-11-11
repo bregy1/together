@@ -18,6 +18,7 @@ Run from this folder.
 | Tests | `npm test` |
 | Type check | `npm run typecheck` |
 | Regenerate the theme after `spec/design/brand/tokens.json` changes | `npm run generate:theme` |
+| Regenerate the API types after `../api/openapi.yaml` changes | `npm run generate:api` (writes `src/api/generated/schema.ts`; use it with `openapi-fetch`) |
 
 ## Layout
 

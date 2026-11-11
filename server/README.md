@@ -8,6 +8,8 @@ The Go service of Yaruno (ADR-0004, ADR-0012): REST API from the hand-written co
 |---|---|---|
 | Go | 1.27.4 (windows/amd64) | `go.mod` |
 | oapi-codegen | v2.8.2 | `go tool oapi-codegen` (tool directive in `go.mod`) |
+| oapi-codegen runtime | v1.9.0 | imported by the generated code (dates, path parameters, the `Me` union) |
+| kin-openapi | v0.142.0 (the version oapi-codegen v2.8.2 uses) | `internal/api/contract_test.go` validates `../api/openapi.yaml` |
 | ent | v0.14.6 | `go tool ent` (tool directive); no generated code yet |
 | ariga.io/atlas (Go library) | v0.36.2-0.20250730182955-2c6300d0a3e1 (the version ent v0.14.6 requires) | migration directory checks in tests |
 | Atlas CLI | not installed (see *Migrations*) | `atlas.hcl` |
@@ -53,6 +55,7 @@ Run from `server/` with the 64-bit Go 1.27 first on the `PATH` (bash: `export PA
 | Vet | `go vet ./...` |
 | Format check | `gofmt -l .` (prints nothing when clean) |
 | Generate | `go generate ./...` (Go code from `../api/openapi.yaml`) |
+| Validate the contract | `go test ./internal/api/` (kin-openapi loads and validates `../api/openapi.yaml`; generation also fails on an invalid file) |
 | Run | `go run ./cmd/server` |
 | Run with reload on save | `go install github.com/air-verse/air@v1.67.4`, then `air` |
 | Health check | `curl -i http://127.0.0.1:8080/healthz` |
