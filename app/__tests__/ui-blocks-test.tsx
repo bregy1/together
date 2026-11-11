@@ -187,14 +187,17 @@ describe.each(looks)('UI blocks in the $scheme look', (look) => {
       expect(screen.getByLabelText('Name').props.accessibilityHint).toContain('So sehen dich andere.');
     });
 
-    it('shows an error as text with an icon (not colour alone) and announces it', async () => {
+    it('shows an error as text with an icon (not colour alone) and announces it once', async () => {
       await renderUi(
         <TextField label="Name" error="Bitte gib deinen Namen ein." value="" onChangeText={() => {}} testID="name" />,
       );
-      expect(screen.getByText('Bitte gib deinen Namen ein.', shown)).toBeOnTheScreen();
+      // Visible and reachable by screen readers as text after the field.
+      expect(screen.getByText('Bitte gib deinen Namen ein.')).toBeOnTheScreen();
       expect(screen.getByTestId('name-error-icon', shown)).toBeOnTheScreen();
+      // Announced once when it appears, not repeated through the input's hint.
+      expect(announce).toHaveBeenCalledTimes(1);
       expect(announce).toHaveBeenCalledWith('Bitte gib deinen Namen ein.');
-      expect(screen.getByLabelText('Name').props.accessibilityHint).toContain('Bitte gib deinen Namen ein.');
+      expect(screen.getByLabelText('Name').props.accessibilityHint ?? '').not.toContain('Bitte gib deinen Namen ein.');
       const field = styleOf(screen.getByTestId('name-field'));
       expect(field.borderColor).toBe(palette.koralle);
     });

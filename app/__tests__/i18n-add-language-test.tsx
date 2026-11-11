@@ -29,11 +29,16 @@ jest.mock('../src/i18n/localeFiles', () => {
   return { localeFiles: fsRequireContext(dir, /\.json$/) };
 });
 
+// The tabs are for signed-in members; without a session the app opens sign-up (ONB-001).
+jest.mock('../src/session/sessionStore', () => ({
+  sessionStore: { getToken: async () => 'member-token', setToken: async () => {}, clear: async () => {} },
+}));
+
 describe('@spec NFR-INTL-001.S2 a new language ships by adding its file', () => {
   it('shows French when fr.json is present and the device language is French', async () => {
     await renderRouter('./src/app', { initialUrl: '/' });
 
-    expect(screen.getByRole('header', { name: 'Découvrir' })).toBeOnTheScreen();
+    expect(await screen.findByRole('header', { name: 'Découvrir' })).toBeOnTheScreen();
     expect(screen.getByLabelText('Mes plans')).toBeOnTheScreen();
     expect(screen.queryByText('Entdecken')).toBeNull();
   });

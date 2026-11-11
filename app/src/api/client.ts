@@ -1,33 +1,35 @@
-// Thin wrapper around fetch: the one place where the API base URL and the
-// session token are attached. The typed client generated from api/openapi.yaml
-// (CR-0001.T04) will be built on top of this.
+// The typed API client, built with openapi-fetch on the types generated from
+// api/openapi.yaml. The one place where the base URL and the session token
+// (`Authorization: Bearer`, the `session` scheme of the contract) are attached.
 // spec: ADR-0004, ADR-0005
+import createClient, { type Client } from 'openapi-fetch';
+
 import { sessionStore as defaultSessionStore } from '../session/sessionStore';
 import type { SessionStore } from '../session/types';
+import type { paths } from './generated/schema';
+
+export type ApiClient = Client<paths>;
 
 export type ApiClientConfig = {
   baseUrl: string;
   sessionStore: SessionStore;
-  fetchImpl?: typeof fetch;
+  fetchImpl?: (request: Request) => Promise<Response>;
 };
 
-export type ApiClient = {
-  baseUrl: string;
-  request(path: string, init?: RequestInit): Promise<Response>;
-};
-
-export function createApiClient({ baseUrl, sessionStore, fetchImpl = fetch }: ApiClientConfig): ApiClient {
-  const base = baseUrl.replace(/\/+$/, '');
-  return {
-    baseUrl: base,
-    async request(path, init = {}) {
-      const headers = new Headers(init.headers);
+export function createApiClient({ baseUrl, sessionStore, fetchImpl }: ApiClientConfig): ApiClient {
+  const client = createClient<paths>({
+    baseUrl: baseUrl.replace(/\/+$/, ''),
+    // Resolved per call, so a fetch replaced after start-up (e.g. in tests) is used.
+    fetch: (request) => (fetchImpl ?? globalThis.fetch)(request),
+  });
+  client.use({
+    async onRequest({ request }) {
       const token = await sessionStore.getToken();
-      // The header format is provisional until the OpenAPI security scheme is written (CR-0001.T04).
-      if (token) headers.set('Authorization', `Bearer ${token}`);
-      return fetchImpl(`${base}/${path.replace(/^\/+/, '')}`, { ...init, headers });
+      if (token) request.headers.set('Authorization', `Bearer ${token}`);
+      return request;
     },
-  };
+  });
+  return client;
 }
 
 /**
