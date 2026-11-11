@@ -582,6 +582,18 @@ export interface components {
             };
         };
         /**
+         * @description `request_invalid`: the request body is over 64 KB; it is refused
+         *     before the session check, and nothing beyond the limit is read.
+         */
+        PayloadTooLarge: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /**
          * @description `validation_failed`: one or more fields break a rule;
          *     `details.fields` names each field with its problem. Nothing is saved.
          */
@@ -701,6 +713,7 @@ export interface operations {
                 };
             };
             400: components["responses"]["RequestInvalid"];
+            413: components["responses"]["PayloadTooLarge"];
             /**
              * @description The number is refused and no SMS is sent. `phone_invalid`: not a
              *     usable phone number (onb.phone.error.invalid); `phone_not_swiss`:
@@ -780,6 +793,7 @@ export interface operations {
                 };
             };
             400: components["responses"]["RequestInvalid"];
+            413: components["responses"]["PayloadTooLarge"];
             /**
              * @description The code is refused and no session is opened.
              *     `login_code_wrong`: wrong code, `details.attemptsLeft` says how
@@ -860,6 +874,7 @@ export interface operations {
                 };
             };
             409: components["responses"]["SignUpFinished"];
+            413: components["responses"]["PayloadTooLarge"];
             422: components["responses"]["ValidationFailed"];
             500: components["responses"]["InternalError"];
         };
@@ -889,6 +904,7 @@ export interface operations {
             400: components["responses"]["RequestInvalid"];
             401: components["responses"]["Unauthenticated"];
             409: components["responses"]["SignUpFinished"];
+            413: components["responses"]["PayloadTooLarge"];
             422: components["responses"]["ValidationFailed"];
             500: components["responses"]["InternalError"];
         };
@@ -930,6 +946,7 @@ export interface operations {
                     "application/json": components["schemas"]["Error"];
                 };
             };
+            413: components["responses"]["PayloadTooLarge"];
             500: components["responses"]["InternalError"];
         };
     };
@@ -1081,6 +1098,7 @@ export interface operations {
                     "application/json": components["schemas"]["Error"];
                 };
             };
+            413: components["responses"]["PayloadTooLarge"];
             500: components["responses"]["InternalError"];
         };
     };

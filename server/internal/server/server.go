@@ -6,12 +6,14 @@
 //  2. in development only, cross-origin access for the local web preview;
 //  3. `Cache-Control: no-store` on calls that carry or return a session
 //     token, and the holder through which handlers learn the session;
-//  4. request validation against the contract embedded in the generated
+//  4. request body limits (64 KB for JSON calls, 16 MB for the photo
+//     upload), answered 413 before anything reads more;
+//  5. request validation against the contract embedded in the generated
 //     code, including the session check (nethttp-middleware, kin-openapi).
 //
 // Every error it writes carries the contract's Error body.
 //
-// spec: ADR-0004, ADR-0005
+// spec: ADR-0004, ADR-0005, NFR-PRIV-003
 package server
 
 import (
@@ -185,6 +187,7 @@ func newHandler(o Options, ops api.StrictServerInterface) (http.Handler, error) 
 	})
 
 	var h http.Handler = validate(routes)
+	h = limitBodies(router, h)
 	h = sessionContext(router, h)
 	if o.Environment == config.Development {
 		h = devCORS(o.CORSAllowedOrigins, h)

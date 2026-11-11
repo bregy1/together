@@ -94,6 +94,8 @@ paths:
                 $ref: "#/components/schemas/LoginCodeSent"
         "400":
           $ref: "#/components/responses/RequestInvalid"
+        "413":
+          $ref: "#/components/responses/PayloadTooLarge"
         "422":
           description: |
             The number is refused and no SMS is sent. `phone_invalid`: not a
@@ -173,6 +175,8 @@ paths:
                 $ref: "#/components/schemas/SessionStarted"
         "400":
           $ref: "#/components/responses/RequestInvalid"
+        "413":
+          $ref: "#/components/responses/PayloadTooLarge"
         "422":
           description: |
             The code is refused and no session is opened.
@@ -268,6 +272,8 @@ paths:
                 $ref: "#/components/schemas/Error"
         "409":
           $ref: "#/components/responses/SignUpFinished"
+        "413":
+          $ref: "#/components/responses/PayloadTooLarge"
         "422":
           $ref: "#/components/responses/ValidationFailed"
         "500":
@@ -303,6 +309,8 @@ paths:
           $ref: "#/components/responses/Unauthenticated"
         "409":
           $ref: "#/components/responses/SignUpFinished"
+        "413":
+          $ref: "#/components/responses/PayloadTooLarge"
         "422":
           $ref: "#/components/responses/ValidationFailed"
         "500":
@@ -352,6 +360,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        "413":
+          $ref: "#/components/responses/PayloadTooLarge"
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -506,6 +516,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        "413":
+          $ref: "#/components/responses/PayloadTooLarge"
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -601,6 +613,14 @@ components:
       description: |
         `request_invalid`: the request does not match this contract (missing
         or malformed fields). The app should not send such requests.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    PayloadTooLarge:
+      description: |
+        `request_invalid`: the request body is over 64 KB; it is refused
+        before the session check, and nothing beyond the limit is read.
       content:
         application/json:
           schema:

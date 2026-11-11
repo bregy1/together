@@ -35,6 +35,8 @@ func writeError(w http.ResponseWriter, status int, code api.ErrorCode) {
 // contract's error codes:
 //   - no route for the path: 404 `not_found` (not logged: the path may hold anything);
 //   - the path exists with other methods: 405 `request_invalid` with Allow;
+//   - the body is over its limit: 413 `photo_too_large` for the photo
+//     upload, 413 `request_invalid` otherwise, even without a session;
 //   - the session store failed: 500 `internal_error`;
 //   - missing, malformed or unknown session token: 401 `unauthenticated`;
 //   - the request breaks the contract: 400 `request_invalid`.
@@ -55,10 +57,17 @@ func validationErrorHandler(logger *slog.Logger, router routers.Router) nethttpm
 			operation = route.Operation.OperationID
 		}
 
+		var tooLarge *http.MaxBytesError
 		var storeErr *sessionStoreError
 		var securityErr *openapi3filter.SecurityRequirementsError
 		var requestErr *openapi3filter.RequestError
 		switch {
+		case errors.As(err, &tooLarge):
+			// Checked first: the validator reads the body before the
+			// session check, so this can arrive wrapped in a security error.
+			_, code := bodyLimit(route)
+			logger.WarnContext(ctx, "request rejected", "operation", operation, "reason", "body too large")
+			writeError(w, http.StatusRequestEntityTooLarge, code)
 		case errors.As(err, &storeErr):
 			logger.ErrorContext(ctx, "session check failed", "operation", operation, "error", storeErr.err)
 			writeError(w, http.StatusInternalServerError, api.ErrorCodeInternalError)
