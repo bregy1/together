@@ -136,7 +136,7 @@
   - **Deviation:** the session state lives in `app/src/features/login/session.tsx`; four existing tests were adapted because a person without a session is now sent to sign-up; the wordmark is not on the phone screen (the spec does not ask for it and no text key for its name exists)
   - **Carried into later tasks:** on start-up the app asks the server who the person is and continues an unfinished sign-up at its step (T10, ONB-008); the privacy link opens the legal screen that T15 builds
 
-- [ ] **CR-0001.T10 [ONB-008 … ONB-013, ONB-020]** App: about you, age stop and interests
+- [x] **CR-0001.T10 [ONB-008 … ONB-013, ONB-020]** App: about you, age stop and interests
   - **Goal:** SCR-onb-about, SCR-onb-age-stop and SCR-onb-interests with all their states, the age confirmation, the municipality and interest search, and the sign-up state that survives going back and reopening the app (client side keeps what was typed; the server holds the unfinished sign-up).
   - **Covers:** ONB-008.S1, ONB-009.S1, ONB-009.S2, ONB-009.S3, ONB-010.S1, ONB-010.S2, ONB-010.S5, ONB-011.S1, ONB-011.S2, ONB-012.S1, ONB-012.S2, ONB-012.S3, ONB-013.S1, ONB-013.S2, ONB-013.S3, ONB-020.S1
   - **Tests:** written first in this task, against a mocked API client
@@ -144,6 +144,10 @@
   - **Specialist:** expo-react-native-expert
   - **Depends on:** CR-0001.T04, CR-0001.T05, CR-0001.T06
   - **Done when:** a test tagged `@spec` exists and passes for each covered scenario; the birth date is three number fields that work in the browser and on the phone; the no-match text uses the key `onb.about.regionNoMatch` and the literal dotted key in `de.json` is replaced (delta → MODIFIED ONB-012); no hard-coded text
+  - **Result:** 2026-11-11 · `npm test`: 12 suites, 236 tests passed; `tsc --noEmit` clean; all 16 covered scenarios have a tagged test · expo-react-native-expert (Opus) · commit 0c53ce5
+  - **Not run here:** nobody has looked at the three screens in a browser or emulator; the three date fields, the screen-reader reading of the date group and the save-while-typing need a look on a device
+  - **Deviation:** a visible back button on the interests screen (the screens have no header); the first name is saved shortly after typing stops and a chosen municipality at once; three existing tests now mock the start-up call; the type check is only strict about route names after the dev server has run once (typed routes are generated locally), which made it fail in the manager's checkout on the route to the not-yet-built photos screen until the stale generated file was removed
+  - **Carried into later tasks:** after the code check a returning person lands on their recorded step, not always on the about screen (T15); the server accepts both the straight and the curly apostrophe in first names (T12); the Jest timeout is raised because the first run after an install times out on a cold cache (T14)
 
 ## Wave 4
 
@@ -237,7 +241,7 @@ Kept at the boss's request (2026-11-11) to estimate what such an app takes. "Wal
 | Planning | change request and task plan | about 20 min | — | 00:05 to 00:24, including the boss's answers |
 | 1 | T01, T02 | about 30 min | 38 min (12 + 26) | two agents in parallel |
 | 2 | T03, T04, T05, T06 | about 21 min | 61 min (19 + 15 + 15 + 12) | four agents in parallel; T06 restarted once; plus a 1.5 min review |
-| 3 (so far) | T08, T09 | not measurable | at least 13 min after the restart | the computer shut down mid-wave; the time before the shutdown is not recorded |
+| 3 (app and wiring part) | T08, T09, T10 | not measurable | at least 15 min after the restarts (T08 6.5, T09 6, T10 1.7) | the computer shut down mid-wave and T10 was paused once; the time before each stop is not recorded. T07 still waits for Docker |
 
 ## Fix tasks (from /spec-verify)
 
