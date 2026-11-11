@@ -6,7 +6,9 @@
 // Every line of output is prefixed with the name of the process it came from.
 // Ctrl-C stops the server and the app together; PostgreSQL keeps running
 // (stop it with `npm run db:stop`). If the server or the app process dies,
-// the other one is stopped and this script exits with a non-zero code.
+// the other one is stopped and this script exits with a non-zero code; the same
+// happens when a process cannot be started at all. Before starting, it stops with
+// one message if port 8080 (server) or 8081 (app) is already in use.
 //
 // Plain Node, standard library only; run with `npm run dev` from the repository root.
 // `node scripts/dev.mjs go <args>` and `node scripts/dev.mjs gofmt <args>` run the
@@ -25,6 +27,7 @@
 
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
+import net from 'node:net';
 import path from 'node:path';
 import readline from 'node:readline';
 import { fileURLToPath } from 'node:url';
@@ -155,6 +158,39 @@ if (!existsSync(expoCli)) {
 log('dev', `Go: ${goVars.GOVERSION} ${goVars.GOOS}/${goVars.GOARCH} (${go})`);
 log('dev', `air: ${air}`);
 
+// ---------------------------------------------------------------- ports
+
+// True when something already accepts connections on the port on this machine
+// (IPv4 or IPv6 loopback), for example an earlier `npm run dev` still running.
+function portInUse(port) {
+  const probe = (host) =>
+    new Promise((resolve) => {
+      const socket = net.connect({ host, port });
+      const done = (busy) => {
+        socket.destroy();
+        resolve(busy);
+      };
+      socket.setTimeout(1000, () => done(false));
+      socket.once('connect', () => done(true));
+      socket.once('error', () => done(false));
+    });
+  return Promise.all([probe('127.0.0.1'), probe('::1')]).then((r) => r.some(Boolean));
+}
+
+const ports = [
+  { port: 8080, what: 'the server' },
+  { port: 8081, what: 'the app' },
+];
+const busy = [];
+for (const p of ports) if (await portInUse(p.port)) busy.push(p);
+if (busy.length > 0) {
+  fail(
+    `${busy.length > 1 ? 'Ports' : 'Port'} ${busy.map((p) => `${p.port} (${p.what})`).join(' and ')} ` +
+      `${busy.length > 1 ? 'are' : 'is'} already in use: ` +
+      'is `npm run dev` already running? Stop that process first.',
+  );
+}
+
 // ---------------------------------------------------------------- PostgreSQL
 
 function startDatabase() {
@@ -194,19 +230,40 @@ const children = new Map(); // name -> ChildProcess
 let stopping = false;
 let exitCode = 0;
 
+// A process that could not be started emits no 'exit': treat it like a process
+// that died, so the others are stopped and the script exits non-zero.
+function startFailed(name, err) {
+  log(name, `could not start: ${err.message}`);
+  children.delete(name);
+  exitCode = 1;
+  if (!stopping) stopAll();
+  else if (children.size === 0) finish();
+}
+
 function start(name, command, args, options) {
-  const child = spawn(command, args, {
-    ...options,
-    stdio: ['ignore', 'pipe', 'pipe'],
-    // POSIX: own process group, so the whole tree can be signalled at once.
-    detached: !isWindows,
-    windowsHide: true,
-  });
+  let child;
+  try {
+    child = spawn(command, args, {
+      ...options,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      // POSIX: own process group, so the whole tree can be signalled at once.
+      detached: !isWindows,
+      windowsHide: true,
+    });
+  } catch (err) {
+    // Some failures (e.g. a file that is not a program, EFTYPE) throw here
+    // instead of emitting 'error'.
+    startFailed(name, err);
+    return null;
+  }
   children.set(name, child);
   pipeLines(name, child.stdout);
   pipeLines(name, child.stderr);
   child.on('error', (err) => {
-    log(name, `could not start: ${err.message}`);
+    // Without a pid the process never started (e.g. ENOENT, EACCES). An error
+    // after a successful start (e.g. a failed kill) is followed by 'exit'.
+    if (child.pid === undefined) startFailed(name, err);
+    else log(name, `process error: ${err.message}`);
   });
   child.on('exit', (code, signal) => {
     children.delete(name);

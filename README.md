@@ -40,7 +40,7 @@ npm run dev --ignore-scripts
 2. **The Go server** through `air` in `server/`: rebuilds and restarts on every saved `.go` file.
 3. **The Expo dev server** for the web in `app/`: hot reload in the browser.
 
-Output is prefixed with `[db]`, `[server]`, `[app]`. **Ctrl-C** stops the server and the app together; if either of them dies, the other is stopped and the command fails. PostgreSQL keeps running in the background: `npm run db:stop` stops it.
+Output is prefixed with `[db]`, `[server]`, `[app]`. **Ctrl-C** stops the server and the app together; if either of them dies or cannot be started, the other is stopped and the command fails. If port 8080 or 8081 is already in use (for example by an earlier `npm run dev`), it stops before starting anything and says so. PostgreSQL keeps running in the background: `npm run db:stop` stops it.
 
 | What | Where |
 |---|---|
@@ -94,9 +94,10 @@ Add `--ignore-scripts` to every `npm run` (for example `npm run test:app --ignor
 | What | Command |
 |---|---|
 | Go server code from `api/openapi.yaml` | `npm run generate:server` (`cd server && go generate ./...`) |
+| App API types from `api/openapi.yaml` (`app/src/api/generated/schema.ts`) | `npm run generate:api` (`cd app && npm run generate:api`) |
 | App theme from `spec/design/brand/tokens.json` | `npm run generate:theme` |
 
-The typed app client from `api/openapi.yaml` follows with CR-0001.T04. Generated files are checked in; the pipeline fails when they are out of date.
+After a change to `api/openapi.yaml`, run both `generate:server` and `generate:api`. Generated files are checked in; the pipeline fails when they are out of date (`api:contract` for the server, `app:contract` for the app types).
 
 ## Migrations
 
@@ -119,7 +120,7 @@ gitlab-ci-local                 # the whole pipeline
 gitlab-ci-local server:test     # one job
 ```
 
-gitlab-ci-local copies only files Git tracks, so commit or `git add` first. Jobs: `server:build`, `server:format`, `api:contract` (regenerates from `api/openapi.yaml`; fails on an invalid contract or stale generated code), `app:typecheck`, then `server:test` (with a PostgreSQL service) and `app:test`. Run it before merging; nothing runs it on a push.
+gitlab-ci-local copies only files Git tracks, so commit or `git add` first. Jobs: `server:build`, `server:format`, `api:contract` (regenerates the server code from `api/openapi.yaml`; fails on an invalid contract or stale generated code in `server/internal/api` or `server/ent`), `app:typecheck`, `app:contract` (regenerates `app/src/api/generated/schema.ts`; fails when it differs from the committed file), then `server:test` (with a PostgreSQL service) and `app:test`. Run it before merging; nothing runs it on a push.
 
 ## Line endings
 
