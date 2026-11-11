@@ -1,8 +1,9 @@
 // SCR-onb-code: the code from the SMS. States: default (number, code field, resend
 // countdown, change number), wrong code with attempts left, expired with "send new
-// code", offline with retry. A new person continues to the about step, an existing
-// member lands on Entdecken. The "banned" state (ONB-022) is not part of this round.
-// spec: ONB-004, ONB-005, ONB-006, ONB-007
+// code", offline with retry. A new person continues to the about step, an unfinished
+// sign-up at its recorded step, an existing member lands on Entdecken. The "banned"
+// state (ONB-022) is not part of this round.
+// spec: ONB-004, ONB-005, ONB-006, ONB-007, ONB-008
 import { Redirect, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -85,7 +86,9 @@ export function CodeScreen() {
           return;
         }
         // A member is taken to the tabs by the root layout once the session says "member" (ONB-007).
-        if (result.data.me.status !== 'member') router.replace('/about');
+        // An unfinished sign-up continues at its recorded step; a new one's step is `about` (ONB-008).
+        const me = result.data.me;
+        if (me.status !== 'member') router.replace(`/${me.signUp.step}`);
         return;
       }
       const problem = problemFromCodeCheck(result);

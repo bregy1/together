@@ -1,9 +1,9 @@
 // The sign-up calls on the typed API client: who the session belongs to (getMe), saving
-// the about step, the interests and the current step, and the two lists the sign-up
-// chooses from. Every outcome comes back in one result shape, as with the login calls:
+// the about step, the interests and the current step, finishing the sign-up, and the
+// two lists the sign-up chooses from. Every outcome comes back in one result shape, as with the login calls:
 // the data, the server's error code with its details, or "offline" when no answer
 // arrived at all.
-// spec: ONB-008, ONB-009, ONB-010, ONB-011, ONB-012, ONB-013, ONB-020
+// spec: ONB-008, ONB-009, ONB-010, ONB-011, ONB-012, ONB-013, ONB-016, ONB-018, ONB-020
 import { apiClient, type ApiClient } from './client';
 import type { components } from './generated/schema';
 
@@ -14,6 +14,8 @@ export type SignUpStep = Schemas['SignUpStep'];
 export type SignUpAboutUpdate = Schemas['SignUpAboutUpdate'];
 export type Municipality = Schemas['Municipality'];
 export type Interest = Schemas['Interest'];
+export type Member = Schemas['Member'];
+export type SignUpPart = Schemas['SignUpPart'];
 export type ErrorDetails = Schemas['ErrorDetails'];
 
 /** The server's error code, or `unknown` when the answer carried no error body. */
@@ -53,6 +55,13 @@ export function createSignUpApi(client: ApiClient) {
     /** Replaces the chosen interests (0 to 5, in the chosen order). */
     setSignUpInterests: (interestIds: string[]): Promise<ApiResult<SignUp>> =>
       settle(() => client.PUT('/signup/interests', { body: { interestIds } })),
+    /**
+     * Accepts the terms of use and the Spielregeln and completes the account; answers with the
+     * member. Refused with `signup_incomplete` (`details.missing`) while a part is missing; safe
+     * to repeat after a dropped connection.
+     */
+    finishSignUp: (): Promise<ApiResult<Member>> =>
+      settle(() => client.POST('/signup/finish', { body: { acceptTermsOfUse: true, acceptRules: true } })),
     /** Swiss municipalities whose name matches the search text (at most 20). */
     searchMunicipalities: (q: string): Promise<ApiResult<Municipality[]>> =>
       settle(async () => {
@@ -73,5 +82,6 @@ export const getMe = signUpApi.getMe;
 export const updateSignUpAbout = signUpApi.updateSignUpAbout;
 export const setSignUpStep = signUpApi.setSignUpStep;
 export const setSignUpInterests = signUpApi.setSignUpInterests;
+export const finishSignUp = signUpApi.finishSignUp;
 export const searchMunicipalities = signUpApi.searchMunicipalities;
 export const listInterests = signUpApi.listInterests;

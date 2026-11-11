@@ -49,13 +49,19 @@ const offline = { ok: false as const, kind: 'offline' as const };
 const newPerson: Me = { status: 'signingUp', signUp: { step: 'about', interests: [], photos: [] } };
 const member: Me = { status: 'member', member: { id: 'm1', firstName: 'Lea' } };
 
-/** The next sign-up step is built by another task; a stub stands in for it. */
+/** The next sign-up steps are built by other tasks; stubs stand in for them. */
 function AboutStub() {
   return <Text testID="stub-about">about</Text>;
 }
+function InterestsStub() {
+  return <Text testID="stub-interests">interests</Text>;
+}
 
 async function openApp() {
-  await renderRouter({ appDir: './src/app', overrides: { '(onboarding)/about': AboutStub } }, { initialUrl: '/' });
+  await renderRouter(
+    { appDir: './src/app', overrides: { '(onboarding)/about': AboutStub, '(onboarding)/interests': InterestsStub } },
+    { initialUrl: '/' },
+  );
 }
 
 const phoneField = () => screen.getByLabelText('Handynummer');
@@ -328,6 +334,17 @@ describe('SCR-onb-code', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Nochmal versuchen' }));
     expect(await screen.findByTestId('stub-about')).toBeOnTheScreen();
     expect(verifyCode).toHaveBeenCalledTimes(2);
+  });
+
+  it('a person whose sign-up is unfinished continues at the recorded step after the code (ONB-008)', async () => {
+    await openCodeScreen();
+    const resumed: Me = { status: 'signingUp', signUp: { step: 'interests', firstName: 'Lea', interests: [], photos: [] } };
+    verifyCode.mockResolvedValueOnce({ ok: true, data: { sessionToken: 'tok-resume', me: resumed } });
+    await submitCode('123456');
+
+    expect(await screen.findByTestId('stub-interests')).toBeOnTheScreen();
+    expect(screen).toHavePathname('/interests');
+    expect(screen.queryByTestId('stub-about')).toBeNull();
   });
 
   it('the continue action stays disabled until six digits are entered', async () => {
