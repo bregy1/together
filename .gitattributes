@@ -1,0 +1,13 @@
+# Normalise text files in the repository; let Git detect what is text.
+* text=auto
+
+# Go source and module files stay on LF on every checkout, also on Windows,
+# so `gofmt -l` is clean and the pipeline sees the same bytes.
+*.go    text eol=lf
+go.mod  text eol=lf
+go.sum  text eol=lf
+
+# The contract the generators read, and files that run inside Linux containers.
+api/*.yaml text eol=lf
+*.sh       text eol=lf
+*.sql      text eol=lf
