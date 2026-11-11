@@ -10,7 +10,17 @@
     "web": {
       "output": "single"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Yaruno braucht Zugriff auf deine Fotos, damit du ein Porträt und weitere Fotos für dein Profil wählen kannst.",
+          "cameraPermission": "Yaruno braucht die Kamera, damit du ein Porträt oder weitere Fotos für dein Profil aufnehmen kannst.",
+          "microphonePermission": false
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     }
