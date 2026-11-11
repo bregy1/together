@@ -97,6 +97,8 @@
 
 **Review of waves 1 and 2 (code-reviewer, 2026-11-11):** approve with fixes; no high-severity finding. Taken into wave 3: the server allows the browser preview's origin in development only and writes the contract's error body everywhere, `Cache-Control: no-store` on the token response, spec tags on the contract test (all T08); the text field announces an error once and the hard-coded-text test covers more shapes (T09). Still open, for a small devops fix after wave 3: the pipeline does not check that the generated TypeScript types are current, the root has no `generate:api` script, and `scripts/dev.mjs` hangs when a process fails to start.
 
+**Review fixes done (2026-11-11):** the start script stops cleanly when a process cannot start and reports busy ports; the root has `generate:api`; the pipeline has a job that fails on stale generated TypeScript types, and the Go check compares only the generated folders (devops-engineer, commit 165c03b; the pipeline itself is still not run, no Docker). Request bodies are capped in the wiring before validation and the session check: 64 KB for JSON calls, 16 MB for the photo upload, refused with 413; the contract gained a shared 413 answer for the six JSON operations (backend-developer, commit 5e9afd4; 8 new tests, checked by the manager: server suite green, app type check clean, 236 app tests green on the second run). Still open: the type check depends on locally generated route types; `server/README.md` does not list the 413.
+
 **Order in wave 3:** T08 and T09 run in parallel; T10 follows T09 because both use the typed API client in `app/src/api/`. T07 (data model) waits for Docker: its migrations cannot be tested without PostgreSQL, and wave 4's server tasks build on it.
 
 ## Wave 3
@@ -241,6 +243,7 @@ Kept at the boss's request (2026-11-11) to estimate what such an app takes. "Wal
 | Planning | change request and task plan | about 20 min | — | 00:05 to 00:24, including the boss's answers |
 | 1 | T01, T02 | about 30 min | 38 min (12 + 26) | two agents in parallel |
 | 2 | T03, T04, T05, T06 | about 21 min | 61 min (19 + 15 + 15 + 12) | four agents in parallel; T06 restarted once; plus a 1.5 min review |
+| Review fixes | start script and pipeline, body size limit | about 15 min | 25 min (12.6 + 12.8) | two agents in parallel, alongside T10 |
 | 3 (app and wiring part) | T08, T09, T10 | not measurable | at least 15 min after the restarts (T08 6.5, T09 6, T10 1.7) | the computer shut down mid-wave and T10 was paused once; the time before each stop is not recorded. T07 still waits for Docker |
 
 ## Fix tasks (from /spec-verify)
