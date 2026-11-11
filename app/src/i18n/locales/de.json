@@ -15,5 +15,143 @@
       "title": "Diese Seite gibt es nicht.",
       "backToDiscover": "Zu Entdecken"
     }
+  },
+  "onb": {
+    "step": "Schritt {{current}} von {{total}}",
+    "action": {
+      "continue": "Weiter",
+      "back": "Zurück",
+      "change": "Ändern",
+      "confirm": "Bestätigen",
+      "retry": "Nochmal versuchen"
+    },
+    "error": {
+      "generic": "Das hat nicht geklappt. Nochmal?",
+      "offline": "Keine Verbindung. Deine Eingaben bleiben erhalten. Nochmal?"
+    },
+    "phone": {
+      "title": "Deine Handynummer",
+      "label": "Handynummer",
+      "placeholder": "79 123 45 67",
+      "countryCodeA11y": "Ländervorwahl +41, Schweiz",
+      "hint": "Wir brauchen deine Nummer nur, um dein Konto zu bestätigen. Andere Mitglieder sehen sie nie.",
+      "privacy": "Datenschutzerklärung",
+      "send": "Code senden",
+      "error": {
+        "notSwiss": "Yaruno gibt es nur in der Schweiz. Gib eine Schweizer Nummer mit +41 ein.",
+        "invalid": "Diese Nummer ist unvollständig. Prüf sie nochmal.",
+        "sendFailed": "Wir konnten den Code nicht senden. Nochmal?",
+        "tooMany": "Zu viele Codes für diese Nummer. Versuch es später nochmal.",
+        "unavailable": "Wir können gerade keine Codes senden. Versuch es später nochmal."
+      }
+    },
+    "code": {
+      "title": "Code eingeben",
+      "label": "Code",
+      "placeholder": "Code aus der SMS",
+      "sentTo": "Wir haben dir einen Code an {{phone}} geschickt.",
+      "resend": "Neuen Code senden",
+      "resendIn_one": "Neuer Code in {{count}} Sekunde",
+      "resendIn_other": "Neuer Code in {{count}} Sekunden",
+      "changeNumber": "Nummer ändern",
+      "error": {
+        "wrong_one": "Dieser Code stimmt nicht. Du hast noch {{count}} Versuch.",
+        "wrong_other": "Dieser Code stimmt nicht. Du hast noch {{count}} Versuche.",
+        "expired": "Dieser Code gilt nicht mehr. Lass dir einen neuen schicken."
+      }
+    },
+    "about": {
+      "title": "Das bist du",
+      "firstName": "Vorname",
+      "firstNamePlaceholder": "z. B. Lea",
+      "birthDate": {
+        "label": "Geburtsdatum",
+        "day": "Tag",
+        "month": "Monat",
+        "year": "Jahr",
+        "dayPlaceholder": "TT",
+        "monthPlaceholder": "MM",
+        "yearPlaceholder": "JJJJ"
+      },
+      "confirmAge": "Du bist {{age}}. Stimmt das?",
+      "region": "Wo möchtest du etwas unternehmen?",
+      "region.noMatch": "Keine Schweizer Gemeinde gefunden. Prüf die Schreibweise.",
+      "regionSearch": "Gemeinde suchen",
+      "error": {
+        "firstNameRequired": "Wie heisst du? Gib deinen Vornamen ein.",
+        "firstNameInvalid": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph, höchstens {{max}} Zeichen.",
+        "birthDateInvalid": "Dieses Datum gibt es nicht. Prüf es nochmal.",
+        "regionRequired": "Wähl deine Gemeinde aus der Liste."
+      }
+    },
+    "age": {
+      "title": "Yaruno ist ab 18",
+      "stop": "Schön, dass du Yaruno ausprobieren wolltest. Yaruno ist nur für Menschen ab 18 Jahren. Deine Angaben haben wir gelöscht. Komm gern wieder, wenn du 18 bist."
+    },
+    "interests": {
+      "title": "Was machst du gern?",
+      "hint": "Wähl bis zu {{max}} Interessen. Du kannst auch ohne weitermachen.",
+      "search": "Interesse suchen",
+      "counter": "{{chosen}} von {{max}} gewählt",
+      "noMatch": "Nichts gefunden. Versuch ein anderes Wort.",
+      "limit": "Du hast schon {{max}} Interessen. Entfern eins, um ein anderes zu wählen."
+    },
+    "photos": {
+      "title": "Deine Fotos",
+      "hint": "Ein Porträt, auf dem man dich gut erkennt. Bis zu {{more}} weitere Fotos sind freiwillig.",
+      "portrait": "Porträt",
+      "camera": "Foto aufnehmen",
+      "library": "Aus deinen Fotos wählen",
+      "remove": "Entfernen",
+      "openSettings": "Einstellungen öffnen",
+      "uploading": "Wird hochgeladen …",
+      "permissionDenied": "Ohne Zugriff auf Kamera oder Fotos kannst du kein Porträt hinzufügen, und ohne Porträt geht es nicht weiter. Du kannst den Zugriff in den Einstellungen erlauben.",
+      "error": {
+        "portraitRequired": "Füg ein Porträt hinzu, damit die anderen wissen, mit wem sie unterwegs sind.",
+        "uploadFailed": "Hochladen hat nicht geklappt. Nochmal?"
+      },
+      "a11y": {
+        "camera": "Foto mit der Kamera aufnehmen",
+        "library": "Foto aus deinen Fotos wählen",
+        "remove": "Foto {{position}} entfernen"
+      }
+    },
+    "rules": {
+      "title": "Spielregeln",
+      "notDating": "Yaruno ist keine Dating-App. Hier findest du Leute für gemeinsame Pläne, nicht für Dates.",
+      "accept": "Ich akzeptiere die Nutzungsbedingungen und halte mich an die Spielregeln.",
+      "termsLink": "Nutzungsbedingungen",
+      "privacyLink": "Datenschutzerklärung",
+      "finish": "Konto anlegen"
+    }
+  },
+  "mod": {
+    "rules": {
+      "1": {
+        "title": "Keine Dating-App.",
+        "text": "Yaruno ist für gemeinsame Aktivitäten und Freundschaften da, nicht für Dates."
+      },
+      "2": {
+        "title": "Kein Verkaufen.",
+        "text": "Keine Werbung, kein Handel und keine bezahlten Dienste."
+      },
+      "3": {
+        "title": "Kein Geld unter Teilnehmenden.",
+        "text": "Niemand verlangt private Überweisungen; vor Ort zahlt jede und jeder selbst."
+      },
+      "4": {
+        "title": "Keine Privatadressen.",
+        "text": "Pläne starten an öffentlichen, gut erreichbaren Treffpunkten."
+      },
+      "5": {
+        "title": "Absagen statt Ghosten.",
+        "text": "Wenn du nicht kommen kannst, gib deinen Platz rechtzeitig frei."
+      },
+      "6": {
+        "title": "Melden statt Aushalten.",
+        "text": "Wenn etwas nicht okay ist, melde es oder blockiere die Person."
+      },
+      "adultsOnly": "Yaruno ist für Menschen ab 18."
+    }
   }
 }

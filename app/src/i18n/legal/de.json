@@ -1,0 +1,28 @@
+{
+  "terms": {
+    "title": "Nutzungsbedingungen",
+    "placeholderNotice": "Platzhalter: Der endgültige Text folgt.",
+    "sections": [
+      { "heading": "Worum es geht", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Dein Konto", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Spielregeln", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Pläne und Treffen", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Haftung", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Änderungen", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Kontakt", "body": "Platzhalter: Der endgültige Text folgt." }
+    ]
+  },
+  "privacy": {
+    "title": "Datenschutzerklärung",
+    "placeholderNotice": "Platzhalter: Der endgültige Text folgt.",
+    "sections": [
+      { "heading": "Wer verantwortlich ist", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Welche Daten wir bearbeiten", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Wozu wir sie bearbeiten", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Wo deine Daten liegen", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Wie lange wir sie aufbewahren", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Deine Rechte", "body": "Platzhalter: Der endgültige Text folgt." },
+      { "heading": "Kontakt", "body": "Platzhalter: Der endgültige Text folgt." }
+    ]
+  }
+}
