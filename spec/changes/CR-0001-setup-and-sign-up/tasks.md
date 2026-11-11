@@ -228,6 +228,17 @@
   - **Depends on:** all other tasks, including fix rounds
   - **Done when:** `/spec-verify CR-0001` reports `converged`
 
+## Time log
+
+Kept at the boss's request (2026-11-11) to estimate what such an app takes. "Wall clock" is from the wave's start to its checked commit, taken from the commit times; "agent time" is the sum of the running times the agents reported. Waiting for answers, installs and shutdowns is not counted where it can be told apart.
+
+| Wave | Tasks | Wall clock | Agent time | Notes |
+|---|---|---|---|---|
+| Planning | change request and task plan | about 20 min | — | 00:05 to 00:24, including the boss's answers |
+| 1 | T01, T02 | about 30 min | 38 min (12 + 26) | two agents in parallel |
+| 2 | T03, T04, T05, T06 | about 21 min | 61 min (19 + 15 + 15 + 12) | four agents in parallel; T06 restarted once; plus a 1.5 min review |
+| 3 (so far) | T08, T09 | not measurable | at least 13 min after the restart | the computer shut down mid-wave; the time before the shutdown is not recorded |
+
 ## Fix tasks (from /spec-verify)
 
 <!-- /spec-verify appends "### Fix round N — /spec-verify YYYY-MM-DD" with tasks in the same shape,
