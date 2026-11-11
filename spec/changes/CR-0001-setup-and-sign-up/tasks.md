@@ -45,7 +45,7 @@
 
 ## Wave 2
 
-- [ ] **CR-0001.T03 [ADR-0012, ADR-0008]** Dev command, database, pipeline and docs
+- [x] **CR-0001.T03 [ADR-0012, ADR-0008]** Dev command, database, pipeline and docs
   - **Goal:** one root command starts PostgreSQL in Docker, the server with reload on save and the app dev server; the pipeline runs locally; the commands are documented.
   - **Covers:** ADR-0012, ADR-0008 (groundwork)
   - **Tests:** the pipeline itself: build and type checks, `gofmt`, Go tests with PostgreSQL, app tests, OpenAPI validation
@@ -53,8 +53,12 @@
   - **Specialist:** devops-engineer
   - **Depends on:** CR-0001.T01, CR-0001.T02
   - **Done when:** the root command brings up all three and a change in `server/` or `app/` shows without a manual restart; `gitlab-ci-local` runs the pipeline green; the *Commands* section of the project `CLAUDE.md` lists install, build, test, format check and run; a root `.gitattributes` keeps Go files on LF line endings and `.claude/` is ignored; `air` is not in any production image
+  - **Result:** 2026-11-11 · root scripts run by the manager: `format:server` clean, `build:server` ok, `test:server` ok (5 packages); the agent ran `npm run dev` and saw server and app start together, reload on save and stop together · devops-engineer (Opus) · commit 3bebbd2
+  - **Not run here:** Docker Compose (PostgreSQL, the extra databases, the Atlas service), the whole pipeline under gitlab-ci-local, the Go tests against a real database, and a real Ctrl-C; all wait for Docker
+  - **Deviation:** `scripts/dev.mjs` also has a tool mode so the root Go scripts use the 64-bit Go; an init script creates the test database and a scratch database for Atlas; PostgreSQL 18.6; no format check for the app (no formatter is approved)
+  - **Carried into later tasks:** the free Atlas image cannot create migrations from the ent schema, so T07 adds a small Go generator using ent and the Atlas Go library that are already dependencies; the server default `DATABASE_URL` gets the local development password (T07); the server allows the browser preview's origin in development (T08); the Android emulator needs its own API base URL (when it is installed)
 
-- [ ] **CR-0001.T04 [ADR-0004]** API contract for sign-up and generated code
+- [x] **CR-0001.T04 [ADR-0004]** API contract for sign-up and generated code
   - **Goal:** the OpenAPI file describes every call sign-up needs (request and check a code, sign-up steps and resume, municipality search, interest list, photo upload, finish, session), with one error shape, and the Go stubs and the typed client are generated from it.
   - **Covers:** ADR-0004 (groundwork for ONB-001 … ONB-018, ONB-020)
   - **Tests:** OpenAPI validation in the pipeline; generated code compiles on both sides
@@ -62,8 +66,11 @@
   - **Specialist:** api-designer
   - **Depends on:** CR-0001.T01
   - **Done when:** the file validates; every operation names the requirement it serves; no response that others could see carries a phone number or a birth date (NFR-PRIV-002); the code request answers the same for known and unknown numbers (NFR-SEC-003); generation is one documented command
+  - **Result:** 2026-11-11 · server: `go build` and `go test ./...` ok, incl. 4 contract tests; app: `tsc --noEmit` clean, Jest green · api-designer (Opus) · commit 5288072
+  - **Deviation:** a placeholder `server/internal/server/not_implemented.go` answers the 11 new operations with an error until T08 replaces it (the server would not build otherwise); `app/package.json` has an `overrides` entry so `openapi-typescript` 7.13 installs next to TypeScript 6; the READMEs list the generation commands
+  - **Carried into later tasks:** the birth date stays editable until finish (ONB-020); non-mobile `+41` numbers answer `phone_invalid` (ONB-002); the server stores the accepted version of the terms and the time itself; at most 20 municipality results; the sign-up step where the person left is recorded explicitly so a resume lands on that step (ONB-008), which needs one small addition to the contract in T12; responses to signed-in calls get `Cache-Control: no-store` in T08
 
-- [ ] **CR-0001.T05 [NFR-ACC-001]** UI building blocks
+- [x] **CR-0001.T05 [NFR-ACC-001]** UI building blocks
   - **Goal:** the shared pieces the sign-up screens are made of, as in `design/direction.md` → UI building blocks: buttons (primary, secondary, text), chip, text field, step progress, screen frame, wordmark placeholder (client side).
   - **Covers:** NFR-ACC-001 (groundwork; its scenarios are tested in T16)
   - **Tests:** written first in this task (each block renders in both looks, has a label and a touch area of at least 44 px)
@@ -71,8 +78,12 @@
   - **Specialist:** expo-react-native-expert
   - **Depends on:** CR-0001.T02
   - **Done when:** the block tests pass; sizes, radii and colours come from the theme, none is typed in by hand; no hard-coded text
+  - **Result:** 2026-11-11 · `npm test`: 34 block tests green within the full suite; `tsc --noEmit` clean · expo-react-native-expert (Opus) · commit 650b7ca
+  - **Not run here:** the blocks were not looked at in a browser or emulator (no screen uses them yet); they are checked by their tests only
+  - **Deviation:** no package added; the theme gained an input fill, a chip text style, line widths, a disabled opacity and the logo construction values, all marked `PLACEHOLDER(design)` where the designer has not decided; error text is in the text colour with a Koralle icon and border, because Koralle text fails the contrast bar in daylight
+  - **For the designer:** a daylight error colour; a field border on dark that reaches 3:1; chip text size, line widths, disabled look, progress segment look. React Native cannot set Fraunces' SOFT and optical-size axes, so the wordmark placeholder differs slightly from the guide
 
-- [ ] **CR-0001.T06 [NFR-INTL-001]** German texts for sign-up
+- [x] **CR-0001.T06 [NFR-INTL-001]** German texts for sign-up
   - **Goal:** every `onb.*` key the in-scope requirements and screens name, the six Spielregeln with their sentences (MOD-008), the shell labels and clearly marked placeholder legal texts, in German, in the tone of `design/direction.md`.
   - **Covers:** NFR-INTL-001 (groundwork)
   - **Tests:** a test that every key named in `product/onboarding.md` and the seven sign-up screens exists in the German file
@@ -80,6 +91,9 @@
   - **Specialist:** ui-designer
   - **Depends on:** CR-0001.T02
   - **Done when:** the key test passes; texts use the glossary terms; texts stay within the GSM-7 character set where they are sent by SMS; the legal texts are marked as placeholders
+  - **Result:** 2026-11-11 · `i18n-signup-keys-test`: 96 checks passed; full app suite green · general-purpose agent as writer (Opus) · commit 216987b
+  - **Deviation:** the ui-designer agent has no command line and could not update its copy of the repository; the task was rerun with a general-purpose agent and the same brief. 41 keys come from the spec, 47 were added for labels, placeholders, buttons and screen titles; most wording is draft copy for the boss and the designer
+  - **Open (for the boss):** `onb.about.region` and `onb.about.region.noMatch` cannot both exist as nested keys; stored for now as a literal dotted key. `onb.about.error.birthDateInvalid` (an impossible date such as 31.02.) is not named in the spec
 
 ## Wave 3
 
