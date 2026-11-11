@@ -126,12 +126,12 @@
 
 - [ ] **CR-0001.T10 [ONB-008 … ONB-013, ONB-020]** App: about you, age stop and interests
   - **Goal:** SCR-onb-about, SCR-onb-age-stop and SCR-onb-interests with all their states, the age confirmation, the municipality and interest search, and the sign-up state that survives going back and reopening the app (client side keeps what was typed; the server holds the unfinished sign-up).
-  - **Covers:** ONB-008.S1, ONB-009.S1, ONB-009.S2, ONB-009.S3, ONB-010.S1, ONB-010.S2, ONB-011.S1, ONB-011.S2, ONB-012.S1, ONB-012.S2, ONB-012.S3, ONB-013.S1, ONB-013.S2, ONB-013.S3, ONB-020.S1
+  - **Covers:** ONB-008.S1, ONB-009.S1, ONB-009.S2, ONB-009.S3, ONB-010.S1, ONB-010.S2, ONB-010.S5, ONB-011.S1, ONB-011.S2, ONB-012.S1, ONB-012.S2, ONB-012.S3, ONB-013.S1, ONB-013.S2, ONB-013.S3, ONB-020.S1
   - **Tests:** written first in this task, against a mocked API client
   - **Touches:** `app/app/(onboarding)/about.tsx`, `app/app/(onboarding)/age-stop.tsx`, `app/app/(onboarding)/interests.tsx`, `app/src/features/signup/`
   - **Specialist:** expo-react-native-expert
   - **Depends on:** CR-0001.T04, CR-0001.T05, CR-0001.T06
-  - **Done when:** a test tagged `@spec` exists and passes for each covered scenario; the birth date is three number fields that work in the browser and on the phone; no hard-coded text
+  - **Done when:** a test tagged `@spec` exists and passes for each covered scenario; the birth date is three number fields that work in the browser and on the phone; the no-match text uses the key `onb.about.regionNoMatch` and the literal dotted key in `de.json` is replaced (delta → MODIFIED ONB-012); no hard-coded text
 
 ## Wave 4
 

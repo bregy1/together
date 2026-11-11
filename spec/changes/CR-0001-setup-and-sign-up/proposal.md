@@ -30,6 +30,10 @@ Nothing is built yet. The boss wants a local prototype first (milestone M0), sta
 - **Areas and IDs:** ONB-001 … ONB-018, ONB-020; NFR-ACC-001, NFR-INTL-001, NFR-PRIV-002, NFR-PRIV-003, NFR-SEC-001 … NFR-SEC-004
 - **Screens, ADRs, journeys:** SCR-onb-phone, SCR-onb-code, SCR-onb-about, SCR-onb-age-stop, SCR-onb-interests, SCR-onb-photos, SCR-onb-rules; ADR-0001, ADR-0003, ADR-0004, ADR-0005, ADR-0007, ADR-0008, ADR-0009, ADR-0011, ADR-0012; J-01 steps 1 to 3
 
+## Other spec updates
+
+- **Screens (`design/screens.md`):** SCR-onb-about → state "region search": the key `onb.about.region.noMatch` becomes `onb.about.regionNoMatch`; state "invalid" also covers `onb.about.error.birthDateInvalid`.
+
 ## Regression guards
 
 - None: this is the first baseline; nothing is implemented yet.
@@ -56,3 +60,4 @@ Nothing is built yet. The boss wants a local prototype first (milestone M0), sta
 - 2026-11-11 amended during planning, approved by the boss: NFR-PRIV-001 moved out of scope to the first deployment round
 - 2026-11-11 approved by the boss, with the ten starter interests, placeholders for the open design values, and login codes that are checked but not sent
 - 2026-11-11 in progress
+- 2026-11-11 amended during the build, approved by the boss: ONB-012 names the no-match text `onb.about.regionNoMatch` (the old key clashed with `onb.about.region`), and ONB-010 gains S5 for a date that does not exist or lies in the future; `tasks.md` is updated for T10 and T12
