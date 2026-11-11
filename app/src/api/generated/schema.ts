@@ -73,13 +73,14 @@ export interface paths {
          *     is right, the number counts as verified and a new device session is
          *     opened:
          *     - a new number starts a sign-up (`me.status` = `signingUp`,
-         *       `me.signUp.nextStep` = `about`);
+         *       `me.signUp.step` = `about`);
          *     - a number with an unfinished sign-up resumes it with everything
-         *       entered so far (ONB-008);
+         *       entered so far, at the recorded step (ONB-008);
          *     - an existing member is signed in on this device (`me.status` =
          *       `member`, ONB-007).
          *     The returned token is shown only here; the server keeps only its hash
-         *     (ADR-0005). Needs no session.
+         *     (ADR-0005). Needs no session. The response is sent with
+         *     `Cache-Control: no-store`, because it carries the session token.
          *
          *     Serves ONB-004, ONB-007, ONB-008, NFR-SEC-001.
          */
@@ -172,6 +173,37 @@ export interface paths {
          *     Serves ONB-013, ONB-020.
          */
         put: operations["setSignUpInterests"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/signup/step": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Record the sign-up step the person is on
+         * @description Records the step the person is on, so a resumed sign-up continues at
+         *     the step where they left (ONB-008). Going back to an earlier step is
+         *     always allowed and keeps everything entered (ONB-020). Recording the
+         *     same step again is safe to retry.
+         *
+         *     A step is refused with `signup_incomplete` while an earlier step is
+         *     not complete; `details.missing` names the missing parts. `interests`
+         *     and `photos` need first name, birth date and home municipality;
+         *     `rules` needs those and the portrait. Interests never block a step,
+         *     because none are required (ONB-013.S3).
+         *
+         *     Serves ONB-008, ONB-020.
+         */
+        put: operations["setSignUpStep"];
         post?: never;
         delete?: never;
         options?: never;
@@ -432,7 +464,7 @@ export interface components {
          *     is the owner's own data; never the phone number.
          */
         SignUp: {
-            nextStep: components["schemas"]["SignUpStep"];
+            step: components["schemas"]["SignUpStep"];
             /** @description Absent until saved. */
             firstName?: string;
             /**
@@ -447,13 +479,16 @@ export interface components {
             photos: components["schemas"]["Photo"][];
         };
         /**
-         * @description The first step that is not done yet, where a resumed sign-up continues
-         *     (ONB-008): `about` until first name, birth date and home municipality
-         *     are saved; `interests` until the interests were saved; `photos` until
-         *     a portrait is stored; then `rules`.
+         * @description The sign-up step the person is on, as last recorded with
+         *     `setSignUpStep`; a resumed sign-up continues there (ONB-008). A new
+         *     sign-up starts at `about`. The steps in order: `about`, `interests`,
+         *     `photos`, `rules`.
          * @enum {string}
          */
         SignUpStep: "about" | "interests" | "photos" | "rules";
+        SignUpStepUpdate: {
+            step: components["schemas"]["SignUpStep"];
+        };
         /** @description Any of the three fields; omitted fields stay unchanged. */
         SignUpAboutUpdate: {
             /** @description 1 to 30 letters, spaces, hyphens or apostrophes (ONB-009); checked by the server. */
@@ -855,6 +890,46 @@ export interface operations {
             401: components["responses"]["Unauthenticated"];
             409: components["responses"]["SignUpFinished"];
             422: components["responses"]["ValidationFailed"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    setSignUpStep: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SignUpStepUpdate"];
+            };
+        };
+        responses: {
+            /** @description Recorded; the whole sign-up as it is now. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignUp"];
+                };
+            };
+            400: components["responses"]["RequestInvalid"];
+            401: components["responses"]["Unauthenticated"];
+            /**
+             * @description `signup_incomplete`: an earlier step is not complete;
+             *     `details.missing` lists the missing parts.
+             *     `signup_finished`: the sign-up is already complete.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
             500: components["responses"]["InternalError"];
         };
     };

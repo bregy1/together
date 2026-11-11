@@ -4,12 +4,14 @@ package api_test
 // it validates as OpenAPI 3.0, every operation names the requirements it
 // serves, no response carries a phone number and only the caller's own
 // sign-up carries a birth date (NFR-PRIV-002), and the code request has one
-// success answer without account-dependent fields (NFR-SEC-003).
+// success answer without account-dependent fields (NFR-SEC-003); and the
+// copy embedded in the generated code matches the file (CR-0001.T08).
 //
-// spec: ADR-0004
+// spec: ADR-0004, NFR-PRIV-002, NFR-SEC-003
 
 import (
 	"context"
+	"encoding/json"
 	"regexp"
 	"sort"
 	"testing"
@@ -17,6 +19,8 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/bregy1/together/server/internal/api"
 )
 
 const contractPath = "../../../api/openapi.yaml"
@@ -70,6 +74,7 @@ func propertyNames(ref *openapi3.SchemaRef, owner string, seen map[*openapi3.Sch
 	}
 }
 
+// @spec NFR-PRIV-002
 func TestContract_ResponsesKeepPhoneAndBirthDatePrivate(t *testing.T) {
 	doc := loadContract(t)
 	props := map[string][]string{}
@@ -97,6 +102,7 @@ func TestContract_ResponsesKeepPhoneAndBirthDatePrivate(t *testing.T) {
 		"only the caller's own sign-up may carry a birth date (NFR-PRIV-002)")
 }
 
+// @spec NFR-SEC-003
 func TestContract_CodeRequestAnswersAlike(t *testing.T) {
 	doc := loadContract(t)
 	op := doc.Paths.Find("/login/code-requests").Post
@@ -118,4 +124,19 @@ func TestContract_CodeRequestAnswersAlike(t *testing.T) {
 	sort.Strings(names)
 	assert.Equal(t, []string{"codeValidForSeconds", "resendAfterSeconds"}, names,
 		"the success answer carries nothing that depends on the account (NFR-SEC-003)")
+}
+
+// The server validates requests against the copy of the contract embedded
+// in the generated code (CR-0001.T08). This fails when api/openapi.yaml was
+// changed without running `go generate ./...`.
+func TestContract_EmbeddedCopyMatchesTheFile(t *testing.T) {
+	embedded, err := api.GetSpec()
+	require.NoError(t, err)
+	fromFile := loadContract(t)
+
+	want, err := json.Marshal(fromFile)
+	require.NoError(t, err)
+	got, err := json.Marshal(embedded)
+	require.NoError(t, err)
+	assert.JSONEq(t, string(want), string(got), "run `go generate ./...` in server/")
 }

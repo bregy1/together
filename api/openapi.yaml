@@ -147,13 +147,14 @@ paths:
         is right, the number counts as verified and a new device session is
         opened:
         - a new number starts a sign-up (`me.status` = `signingUp`,
-          `me.signUp.nextStep` = `about`);
+          `me.signUp.step` = `about`);
         - a number with an unfinished sign-up resumes it with everything
-          entered so far (ONB-008);
+          entered so far, at the recorded step (ONB-008);
         - an existing member is signed in on this device (`me.status` =
           `member`, ONB-007).
         The returned token is shown only here; the server keeps only its hash
-        (ADR-0005). Needs no session.
+        (ADR-0005). Needs no session. The response is sent with
+        `Cache-Control: no-store`, because it carries the session token.
 
         Serves ONB-004, ONB-007, ONB-008, NFR-SEC-001.
       security: []
@@ -304,6 +305,53 @@ paths:
           $ref: "#/components/responses/SignUpFinished"
         "422":
           $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /signup/step:
+    put:
+      operationId: setSignUpStep
+      tags: [signup]
+      summary: Record the sign-up step the person is on
+      description: |
+        Records the step the person is on, so a resumed sign-up continues at
+        the step where they left (ONB-008). Going back to an earlier step is
+        always allowed and keeps everything entered (ONB-020). Recording the
+        same step again is safe to retry.
+
+        A step is refused with `signup_incomplete` while an earlier step is
+        not complete; `details.missing` names the missing parts. `interests`
+        and `photos` need first name, birth date and home municipality;
+        `rules` needs those and the portrait. Interests never block a step,
+        because none are required (ONB-013.S3).
+
+        Serves ONB-008, ONB-020.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpStepUpdate"
+      responses:
+        "200":
+          description: Recorded; the whole sign-up as it is now.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignUp"
+        "400":
+          $ref: "#/components/responses/RequestInvalid"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "409":
+          description: |
+            `signup_incomplete`: an earlier step is not complete;
+            `details.missing` lists the missing parts.
+            `signup_finished`: the sign-up is already complete.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -806,9 +854,9 @@ components:
         The caller's own unfinished sign-up, with everything entered so far.
         Seen only by its owner (ONB-008.S2). Carries the birth date because it
         is the owner's own data; never the phone number.
-      required: [nextStep, interests, photos]
+      required: [step, interests, photos]
       properties:
-        nextStep:
+        step:
           $ref: "#/components/schemas/SignUpStep"
         firstName:
           type: string
@@ -835,11 +883,19 @@ components:
     SignUpStep:
       type: string
       description: |
-        The first step that is not done yet, where a resumed sign-up continues
-        (ONB-008): `about` until first name, birth date and home municipality
-        are saved; `interests` until the interests were saved; `photos` until
-        a portrait is stored; then `rules`.
+        The sign-up step the person is on, as last recorded with
+        `setSignUpStep`; a resumed sign-up continues there (ONB-008). A new
+        sign-up starts at `about`. The steps in order: `about`, `interests`,
+        `photos`, `rules`.
       enum: [about, interests, photos, rules]
+
+    SignUpStepUpdate:
+      type: object
+      additionalProperties: false
+      required: [step]
+      properties:
+        step:
+          $ref: "#/components/schemas/SignUpStep"
 
     SignUpAboutUpdate:
       type: object

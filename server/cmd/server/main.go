@@ -17,6 +17,7 @@ import (
 	"github.com/bregy1/together/server/internal/config"
 	"github.com/bregy1/together/server/internal/database"
 	"github.com/bregy1/together/server/internal/server"
+	"github.com/bregy1/together/server/internal/server/session"
 )
 
 const (
@@ -59,10 +60,21 @@ func run(logger *slog.Logger) error {
 		logger.Info("database connected")
 	}
 
-	srv := server.New(cfg.HTTPAddr, pool, logger)
+	srv, err := server.New(cfg.HTTPAddr, server.Options{
+		DB: pool,
+		// Device sessions come with CR-0001.T11; until then every
+		// signed-in call is answered with 401.
+		Sessions:           session.RejectAll{},
+		Logger:             logger,
+		Environment:        cfg.Environment,
+		CORSAllowedOrigins: cfg.CORSAllowedOrigins,
+	})
+	if err != nil {
+		return err
+	}
 	serveErr := make(chan error, 1)
 	go func() {
-		logger.Info("http server listening", "addr", cfg.HTTPAddr)
+		logger.Info("http server listening", "addr", cfg.HTTPAddr, "environment", cfg.Environment)
 		serveErr <- srv.ListenAndServe()
 	}()
 

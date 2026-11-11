@@ -1,9 +1,16 @@
 # Configuration for oapi-codegen v2 (ADR-0004, architecture.md -> APIs).
-# Generates the models and a strict server on the standard library net/http
-# router from ../../../api/openapi.yaml. Run with `go generate ./...` from server/.
+# Generates the models, a strict server on the standard library net/http
+# router and the embedded contract (GetSwagger, used by the request
+# validation middleware so the binary does not read the file at run time)
+# from ../../../api/openapi.yaml. Run with `go generate ./...` from server/.
 package: api
 output: api.gen.go
 generate:
   models: true
   std-http-server: true
   strict-server: true
+  embedded-spec: true
+compatibility:
+  # Keep the operationIds of the embedded contract as they are in the file
+  # (the generator would otherwise capitalise them).
+  preserve-original-operation-id-casing-in-embedded-spec: true
