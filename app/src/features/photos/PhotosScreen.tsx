@@ -106,7 +106,8 @@ export function PhotosScreen() {
     AccessibilityInfo.announceForAccessibility(t('onb.photos.error.uploadFailed'));
   };
 
-  // --- Adding: access asked only on the tap, then the picker, the preparation and the upload.
+  // --- Adding: access asked only on the tap and only where required, then the picker,
+  // the preparation and the upload.
   const add = async (origin: PhotoOrigin) => {
     if (picking.current) return;
     const slot = nextFreeSlot(photos);
@@ -119,7 +120,16 @@ export function PhotosScreen() {
         return;
       }
       setDenied((prev) => ({ ...prev, [origin]: false }));
-      const chosen = await choosePhoto(origin);
+      let chosen: string | null;
+      try {
+        chosen = await choosePhoto(origin);
+      } catch {
+        // The camera also asks for storage on Android 9 and older and refuses to open when
+        // that is denied; the library picker needs nothing, so its failure is a general one.
+        if (origin === 'camera') setDenied((prev) => ({ ...prev, camera: true }));
+        else setNotice({ key: 'onb.error.generic' });
+        return;
+      }
       if (!chosen) return;
       let prepared: string;
       try {

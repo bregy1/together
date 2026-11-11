@@ -10,6 +10,9 @@
     "web": {
       "output": "single"
     },
+    "android": {
+      "blockedPermissions": ["android.permission.READ_EXTERNAL_STORAGE"]
+    },
     "plugins": [
       "expo-router",
       [

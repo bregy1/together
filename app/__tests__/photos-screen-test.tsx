@@ -12,6 +12,7 @@ import { renderRouter, screen } from 'expo-router/testing-library';
 import { AccessibilityInfo, Linking, Text } from 'react-native';
 
 import { deleteSignUpPhoto, putSignUpPhoto, signUpPhotoSource } from '../src/api/photosApi';
+import { libraryNeedsPermission } from '../src/features/photos/libraryPermission';
 import { getMe, setSignUpInterests, setSignUpStep, type SignUp } from '../src/api/signUpApi';
 
 jest.mock('../src/api/signUpApi', () => ({
@@ -55,6 +56,10 @@ jest.mock('expo-image-picker', () => ({
   launchCameraAsync: jest.fn(),
   launchImageLibraryAsync: jest.fn(),
 }));
+
+// The system photo picker needs no permission on any supported platform; the tests of the
+// denied-library path switch this on to stand for a platform where it would.
+jest.mock('../src/features/photos/libraryPermission', () => ({ libraryNeedsPermission: jest.fn(() => false) }));
 
 // The manipulator records what was asked of it: the load bounds and the save options.
 const mockLoad = jest.fn();
@@ -138,6 +143,7 @@ beforeEach(() => {
   for (const mock of [requestCamera, requestLibrary, getCamera, getLibrary, takePhoto, pickPhoto, mockLoad, mockSave]) {
     mock.mockReset();
   }
+  (libraryNeedsPermission as jest.Mock).mockReturnValue(false);
   saveStep.mockImplementation(async (step) => ({ ok: true, data: { ...atPhotos, step } }));
   (setSignUpInterests as jest.Mock).mockResolvedValue({ ok: true, data: atPhotos });
   upload.mockImplementation(async (slot) => ({ ok: true, data: { slot, version: `new${slot}` } }));
@@ -183,13 +189,33 @@ describe('SCR-onb-photos: the portrait', () => {
     await fireEvent.press(libraryButton()!);
 
     await waitFor(() => expect(upload).toHaveBeenCalledWith(0, 'file:///library.heic.converted.jpg'));
-    expect(requestLibrary).toHaveBeenCalledTimes(1);
     expect(requestCamera).not.toHaveBeenCalled();
     expect(pickPhoto).toHaveBeenCalledWith(expect.objectContaining({ mediaTypes: ['images'] }));
     // Bounded to 2048 px on both edges, so the longer edge is at most 2048 px; never enlarged.
     expect(mockLoad).toHaveBeenCalledWith('file:///library.heic', { maxWidth: 2048, maxHeight: 2048 });
     expect(mockSave).toHaveBeenCalledWith('file:///library.heic', expect.objectContaining({ format: 'jpeg', compress: 0.85 }));
     expect(await screen.findByRole('button', { name: 'Foto 1 entfernen' })).toBeOnTheScreen();
+  });
+
+  it('the library opens the system photo picker on the tap without asking for any permission', async () => {
+    await openPhotos();
+    await fireEvent.press(libraryButton()!);
+    await waitFor(() => expect(pickPhoto).toHaveBeenCalledTimes(1));
+    expect(requestLibrary).not.toHaveBeenCalled();
+    expect(getLibrary).not.toHaveBeenCalled();
+    expect(requestCamera).not.toHaveBeenCalled();
+    expect(pickPhoto).toHaveBeenCalledWith(expect.objectContaining({ allowsEditing: false }));
+    await waitFor(() => expect(upload).toHaveBeenCalledWith(0, 'file:///library.heic.converted.jpg'));
+  });
+
+  it('where the library needs a permission, it is asked on the tap and the picker opens when granted', async () => {
+    (libraryNeedsPermission as jest.Mock).mockReturnValue(true);
+    await openPhotos();
+    expect(requestLibrary).not.toHaveBeenCalled();
+    await fireEvent.press(libraryButton()!);
+    await waitFor(() => expect(upload).toHaveBeenCalledWith(0, 'file:///library.heic.converted.jpg'));
+    expect(requestLibrary).toHaveBeenCalledTimes(1);
+    expect(pickPhoto).toHaveBeenCalledTimes(1);
   });
 
   it('asks for the camera only when the camera action is tapped', async () => {
@@ -330,6 +356,8 @@ describe('SCR-onb-photos: uploading', () => {
 
 describe('SCR-onb-photos: permission denied', () => {
   it('@spec ONB-015.S1 with photo-library access denied, tapping add explains it with a settings button and keeps the camera', async () => {
+    // Only where the library needs a permission can it be denied.
+    (libraryNeedsPermission as jest.Mock).mockReturnValue(true);
     requestLibrary.mockResolvedValue(denied);
     getLibrary.mockResolvedValue(denied);
     const openSettings = jest.spyOn(Linking, 'openSettings').mockResolvedValue(undefined);
@@ -356,6 +384,20 @@ describe('SCR-onb-photos: permission denied', () => {
     expect(takePhoto).not.toHaveBeenCalled();
     expect(libraryButton()).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Einstellungen öffnen' })).toBeOnTheScreen();
+
+    // The library still works without any permission.
+    await fireEvent.press(libraryButton()!);
+    await waitFor(() => expect(upload).toHaveBeenCalledWith(0, 'file:///library.heic.converted.jpg'));
+    expect(requestLibrary).not.toHaveBeenCalled();
+  });
+
+  it('when the camera refuses to open (storage denied on older Android), the explanation is shown', async () => {
+    takePhoto.mockRejectedValueOnce(new Error('User rejected permissions'));
+    await openPhotos();
+    await fireEvent.press(cameraButton()!);
+    expect(await screen.findByText(PERMISSION_DENIED)).toBeOnTheScreen();
+    expect(upload).not.toHaveBeenCalled();
+    expect(libraryButton()).toBeOnTheScreen();
   });
 });
 
