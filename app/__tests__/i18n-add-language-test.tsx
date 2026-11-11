@@ -33,6 +33,10 @@ jest.mock('../src/i18n/localeFiles', () => {
 jest.mock('../src/session/sessionStore', () => ({
   sessionStore: { getToken: async () => 'member-token', setToken: async () => {}, clear: async () => {} },
 }));
+// At start-up with a stored token the app asks the server who the person is (ONB-008).
+jest.mock('../src/api/signUpApi', () => ({
+  getMe: async () => ({ ok: true, data: { status: 'member', member: { id: 'm1', firstName: 'Lea' } } }),
+}));
 
 describe('@spec NFR-INTL-001.S2 a new language ships by adding its file', () => {
   it('shows French when fr.json is present and the device language is French', async () => {

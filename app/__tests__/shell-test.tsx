@@ -19,6 +19,9 @@ jest.mock('react-native/Libraries/Utilities/useColorScheme', () => ({
 jest.mock('../src/session/sessionStore', () => ({
   sessionStore: { getToken: async () => 'member-token', setToken: async () => {}, clear: async () => {} },
 }));
+jest.mock('../src/api/signUpApi', () => ({
+  getMe: async () => ({ ok: true, data: { status: 'member', member: { id: 'm1', firstName: 'Lea' } } }),
+}));
 
 const tabs = [
   { id: 'discover', name: 'Entdecken' },

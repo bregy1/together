@@ -75,7 +75,7 @@
       },
       "confirmAge": "Du bist {{age}}. Stimmt das?",
       "region": "Wo möchtest du etwas unternehmen?",
-      "region.noMatch": "Keine Schweizer Gemeinde gefunden. Prüf die Schreibweise.",
+      "regionNoMatch":"Keine Schweizer Gemeinde gefunden. Prüf die Schreibweise.",
       "regionSearch": "Gemeinde suchen",
       "error": {
         "firstNameRequired": "Wie heisst du? Gib deinen Vornamen ein.",
