@@ -31,7 +31,7 @@ const SPEC_KEYS = [
   'onb.about.error.firstNameInvalid',
   'onb.about.confirmAge',
   'onb.about.region',
-  'onb.about.region.noMatch',
+  'onb.about.regionNoMatch',
   'onb.about.error.regionRequired',
   'onb.age.stop',
   // SCR-onb-interests (ONB-013)

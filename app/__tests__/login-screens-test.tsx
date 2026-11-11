@@ -18,6 +18,11 @@ jest.mock('../src/features/login/loginApi', () => ({
   verifyLoginCode: jest.fn(),
 }));
 
+// At start-up with a stored token the app asks the server who the person is (ONB-008).
+jest.mock('../src/api/signUpApi', () => ({
+  getMe: jest.fn(async () => ({ ok: true, data: { status: 'member', member: { id: 'm1', firstName: 'Lea' } } })),
+}));
+
 let mockToken: string | null = null;
 jest.mock('../src/session/sessionStore', () => ({
   sessionStore: {
