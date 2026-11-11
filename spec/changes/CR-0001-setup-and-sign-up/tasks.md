@@ -180,7 +180,7 @@
   - **Depends on:** CR-0001.T07, CR-0001.T08
   - **Done when:** a test tagged `@spec` exists and passes for each covered scenario; only the standard library and `golang.org/x/image` are used; at most four photos per member; the full suite is green
 
-- [ ] **CR-0001.T14 [ONB-014, ONB-015]** App: photos screen
+- [x] **CR-0001.T14 [ONB-014, ONB-015]** App: photos screen
   - **Goal:** SCR-onb-photos with all its states: one portrait required, up to three more, from camera or library, the denied-permission path, and each photo resized and saved as JPEG on the phone before upload (client side does the conversion; the server still strips metadata).
   - **Covers:** ONB-014.S1, ONB-014.S2, ONB-015.S1
   - **Tests:** written first in this task, against a mocked API client and a mocked picker
@@ -188,6 +188,10 @@
   - **Specialist:** expo-react-native-expert
   - **Depends on:** CR-0001.T10
   - **Done when:** a test tagged `@spec` exists and passes for each covered scenario; picking a file works in the browser preview; the permission texts are in `app.json` as `product/app.md` → Permissions says; no hard-coded text
+  - **Result:** 2026-11-11 · `npm test`: 17 suites, 276 tests passed on the first run after the merge (the 30 s Jest timeout cured the cold-start failures); `tsc --noEmit` clean; all 3 covered scenarios have a tagged test · expo-react-native-expert (Opus) · commit fbd72a4
+  - **Not run here:** no browser or device run: the file chooser on the web, a real upload and the display of uploaded photos are checked only against mocks; the web export builds
+  - **Deviation:** `expo-image-picker` ~58.0.10 and `expo-image-manipulator` ~58.0.16 added (both approved); the microphone permission is switched off; the remove action is a small control of its own because the shared button has no separate screen-reader name; uploading shows a spinner, not a percentage; a new store build is needed for the two native modules and the permissions
+  - **Open (for the boss):** the system photo picker needs no photo-library permission on iOS and Android, so asking for it shows an extra prompt and may pull in Android media permissions that Google Play restricts; ONB-015 as written asks for the library permission path. No text exists yet for a photo the server refuses or for a failed conversion on the phone
 
 - [x] **CR-0001.T15 [ONB-016, ONB-017, ONB-018]** App: Spielregeln and finish
   - **Goal:** SCR-onb-rules with the six rules, the "not a dating app" line visible without scrolling, the legal texts opening and returning to the step, acceptance, finishing with the offline path, and landing on Entdecken (client side).
@@ -248,6 +252,7 @@ Kept at the boss's request (2026-11-11) to estimate what such an app takes. "Wal
 | 1 | T01, T02 | about 30 min | 38 min (12 + 26) | two agents in parallel |
 | 2 | T03, T04, T05, T06 | about 21 min | 61 min (19 + 15 + 15 + 12) | four agents in parallel; T06 restarted once; plus a 1.5 min review |
 | Review fixes | start script and pipeline, body size limit | about 15 min | 25 min (12.6 + 12.8) | two agents in parallel, alongside T10 |
+| 4 (app part) | T14, T15 | about 20 min | 25 min (15.5 + 9.4) | two agents in parallel, pulled forward while Docker was missing |
 | 3 (app and wiring part) | T08, T09, T10 | not measurable | at least 15 min after the restarts (T08 6.5, T09 6, T10 1.7) | the computer shut down mid-wave and T10 was paused once; the time before each stop is not recorded. T07 still waits for Docker |
 
 ## Fix tasks (from /spec-verify)
