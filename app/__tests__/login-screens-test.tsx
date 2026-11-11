@@ -41,7 +41,7 @@ const sent = { ok: true as const, data: { codeValidForSeconds: 300, resendAfterS
 const failure = (code: string, details?: Record<string, unknown>) => ({ ok: false as const, kind: 'error' as const, code, details });
 const offline = { ok: false as const, kind: 'offline' as const };
 
-const newPerson: Me = { status: 'signingUp', signUp: { nextStep: 'about', interests: [], photos: [] } };
+const newPerson: Me = { status: 'signingUp', signUp: { step: 'about', interests: [], photos: [] } };
 const member: Me = { status: 'member', member: { id: 'm1', firstName: 'Lea' } };
 
 /** The next sign-up step is built by another task; a stub stands in for it. */

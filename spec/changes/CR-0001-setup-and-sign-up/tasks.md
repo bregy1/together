@@ -110,7 +110,7 @@
   - **Depends on:** CR-0001.T01, CR-0001.T04
   - **Done when:** the migration tests pass; phone numbers are stored in E.164 and codes only as hashes (ADR-0005); the source and date of the municipality list are noted
 
-- [ ] **CR-0001.T08 [ADR-0004, ADR-0005]** Server wiring
+- [x] **CR-0001.T08 [ADR-0004, ADR-0005]** Server wiring
   - **Goal:** the generated server interface is mounted on the standard router with request validation and the session check, and each area (login, sign-up, photos) has its own handler file that answers "not implemented" until its task fills it (server side).
   - **Covers:** ADR-0004, ADR-0005 (groundwork)
   - **Tests:** written first in this task (invalid requests are refused by validation; calls without a session are refused where a session is needed)
@@ -118,8 +118,12 @@
   - **Specialist:** backend-developer
   - **Depends on:** CR-0001.T04
   - **Done when:** the wiring tests pass; the generator, its runtime and the validation middleware are on matching versions
+  - **Result:** 2026-11-11 · `go build` ok, `gofmt -l .` clean, `go test -count=1 ./...`: 9 packages ok; app type check and Jest green after regenerating the types · backend-developer (Opus) · commit 88b3bd0
+  - **Not run here:** the database test (no PostgreSQL)
+  - **Deviation:** the session interface lives in its own package `server/internal/server/session` (an import cycle otherwise); the contract is embedded through the generator's own option; `nethttp-middleware` v1.2.0 is used because newer releases need a newer kin-openapi than the generator; the contract gained `PUT /signup/step` and the recorded `step` as briefed
+  - **Carried into later tasks:** `APP_ENV` is `development` or `production`, and may be unset only on a loopback address (T11 refuses its development switches in production); `PUT /signup/step` accepts `interests` and `photos` once first name, birth date and municipality are saved and `rules` once the portrait exists, going back is always allowed (T12); request bodies have no size limit yet, so a fix task adds one in the wiring before T13; a photo part that is neither JPEG nor PNG is refused by validation with `request_invalid` (T13 keeps that in mind)
 
-- [ ] **CR-0001.T09 [ONB-001 … ONB-007]** App: phone number and code screens
+- [x] **CR-0001.T09 [ONB-001 … ONB-007]** App: phone number and code screens
   - **Goal:** SCR-onb-phone and SCR-onb-code with all their states, the resend countdown, changing the number, and landing on the next step or on Entdecken for an existing member (client side; the server decides whether a number or code is valid, the app only checks the format to save a round trip).
   - **Covers:** ONB-001.S1, ONB-001.S2, ONB-002.S1, ONB-002.S2, ONB-003.S1, ONB-003.S2, ONB-004.S1, ONB-004.S2, ONB-004.S3, ONB-005.S1, ONB-006.S1, ONB-007.S1
   - **Tests:** written first in this task, against a mocked API client
@@ -127,6 +131,10 @@
   - **Specialist:** expo-react-native-expert
   - **Depends on:** CR-0001.T04, CR-0001.T05, CR-0001.T06
   - **Done when:** a test tagged `@spec` exists and passes for each covered scenario; the states of both screens in `design/screens.md` are built except "banned" (ONB-022 is out of scope); no hard-coded text
+  - **Result:** 2026-11-11 · `npm test`: 10 suites, 189 tests passed (run twice by the manager); `tsc --noEmit` clean after one line of the test was aligned with the renamed `step` field from T08 · expo-react-native-expert (Opus) · commit 975b707
+  - **Not run here:** nobody has looked at the two screens in a browser or emulator yet (the agent has no browser, and the manager's browser pane refused the local address); no real server call was made
+  - **Deviation:** the session state lives in `app/src/features/login/session.tsx`; four existing tests were adapted because a person without a session is now sent to sign-up; the wordmark is not on the phone screen (the spec does not ask for it and no text key for its name exists)
+  - **Carried into later tasks:** on start-up the app asks the server who the person is and continues an unfinished sign-up at its step (T10, ONB-008); the privacy link opens the legal screen that T15 builds
 
 - [ ] **CR-0001.T10 [ONB-008 … ONB-013, ONB-020]** App: about you, age stop and interests
   - **Goal:** SCR-onb-about, SCR-onb-age-stop and SCR-onb-interests with all their states, the age confirmation, the municipality and interest search, and the sign-up state that survives going back and reopening the app (client side keeps what was typed; the server holds the unfinished sign-up).
