@@ -9,9 +9,108 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
+
+	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
+
+// Defines values for ErrorCode.
+const (
+	ErrorCodeAgeBelowMinimum      ErrorCode = "age_below_minimum"
+	ErrorCodeInternalError        ErrorCode = "internal_error"
+	ErrorCodeLoginCodeExpired     ErrorCode = "login_code_expired"
+	ErrorCodeLoginCodeRateLimited ErrorCode = "login_code_rate_limited"
+	ErrorCodeLoginCodeWrong       ErrorCode = "login_code_wrong"
+	ErrorCodeNotFound             ErrorCode = "not_found"
+	ErrorCodePhoneInvalid         ErrorCode = "phone_invalid"
+	ErrorCodePhoneNotSwiss        ErrorCode = "phone_not_swiss"
+	ErrorCodePhotoTooLarge        ErrorCode = "photo_too_large"
+	ErrorCodePhotoTooManyPixels   ErrorCode = "photo_too_many_pixels"
+	ErrorCodePhotoTypeUnsupported ErrorCode = "photo_type_unsupported"
+	ErrorCodePhotoUnreadable      ErrorCode = "photo_unreadable"
+	ErrorCodeRequestInvalid       ErrorCode = "request_invalid"
+	ErrorCodeSignupFinished       ErrorCode = "signup_finished"
+	ErrorCodeSignupIncomplete     ErrorCode = "signup_incomplete"
+	ErrorCodeSmsSendFailed        ErrorCode = "sms_send_failed"
+	ErrorCodeSmsUnavailable       ErrorCode = "sms_unavailable"
+	ErrorCodeUnauthenticated      ErrorCode = "unauthenticated"
+	ErrorCodeValidationFailed     ErrorCode = "validation_failed"
+)
+
+// Valid indicates whether the value is a known member of the ErrorCode enum.
+func (e ErrorCode) Valid() bool {
+	switch e {
+	case ErrorCodeAgeBelowMinimum:
+		return true
+	case ErrorCodeInternalError:
+		return true
+	case ErrorCodeLoginCodeExpired:
+		return true
+	case ErrorCodeLoginCodeRateLimited:
+		return true
+	case ErrorCodeLoginCodeWrong:
+		return true
+	case ErrorCodeNotFound:
+		return true
+	case ErrorCodePhoneInvalid:
+		return true
+	case ErrorCodePhoneNotSwiss:
+		return true
+	case ErrorCodePhotoTooLarge:
+		return true
+	case ErrorCodePhotoTooManyPixels:
+		return true
+	case ErrorCodePhotoTypeUnsupported:
+		return true
+	case ErrorCodePhotoUnreadable:
+		return true
+	case ErrorCodeRequestInvalid:
+		return true
+	case ErrorCodeSignupFinished:
+		return true
+	case ErrorCodeSignupIncomplete:
+		return true
+	case ErrorCodeSmsSendFailed:
+		return true
+	case ErrorCodeSmsUnavailable:
+		return true
+	case ErrorCodeUnauthenticated:
+		return true
+	case ErrorCodeValidationFailed:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for FieldProblem.
+const (
+	Invalid  FieldProblem = "invalid"
+	Required FieldProblem = "required"
+	TooMany  FieldProblem = "too_many"
+	Unknown  FieldProblem = "unknown"
+)
+
+// Valid indicates whether the value is a known member of the FieldProblem enum.
+func (e FieldProblem) Valid() bool {
+	switch e {
+	case Invalid:
+		return true
+	case Required:
+		return true
+	case TooMany:
+		return true
+	case Unknown:
+		return true
+	default:
+		return false
+	}
+}
 
 // Defines values for HealthStatusStatus.
 const (
@@ -31,6 +130,193 @@ func (e HealthStatusStatus) Valid() bool {
 	}
 }
 
+// Defines values for MeMemberStatus.
+const (
+	MeMemberStatusMember MeMemberStatus = "member"
+)
+
+// Valid indicates whether the value is a known member of the MeMemberStatus enum.
+func (e MeMemberStatus) Valid() bool {
+	switch e {
+	case MeMemberStatusMember:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MeSigningUpStatus.
+const (
+	SigningUp MeSigningUpStatus = "signingUp"
+)
+
+// Valid indicates whether the value is a known member of the MeSigningUpStatus enum.
+func (e MeSigningUpStatus) Valid() bool {
+	switch e {
+	case SigningUp:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SignUpFinishAcceptRules.
+const (
+	SignUpFinishAcceptRulesTrue SignUpFinishAcceptRules = true
+)
+
+// Valid indicates whether the value is a known member of the SignUpFinishAcceptRules enum.
+func (e SignUpFinishAcceptRules) Valid() bool {
+	switch e {
+	case SignUpFinishAcceptRulesTrue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SignUpFinishAcceptTermsOfUse.
+const (
+	SignUpFinishAcceptTermsOfUseTrue SignUpFinishAcceptTermsOfUse = true
+)
+
+// Valid indicates whether the value is a known member of the SignUpFinishAcceptTermsOfUse enum.
+func (e SignUpFinishAcceptTermsOfUse) Valid() bool {
+	switch e {
+	case SignUpFinishAcceptTermsOfUseTrue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SignUpPart.
+const (
+	BirthDate        SignUpPart = "birthDate"
+	FirstName        SignUpPart = "firstName"
+	HomeMunicipality SignUpPart = "homeMunicipality"
+	Portrait         SignUpPart = "portrait"
+)
+
+// Valid indicates whether the value is a known member of the SignUpPart enum.
+func (e SignUpPart) Valid() bool {
+	switch e {
+	case BirthDate:
+		return true
+	case FirstName:
+		return true
+	case HomeMunicipality:
+		return true
+	case Portrait:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SignUpStep.
+const (
+	About     SignUpStep = "about"
+	Interests SignUpStep = "interests"
+	Photos    SignUpStep = "photos"
+	Rules     SignUpStep = "rules"
+)
+
+// Valid indicates whether the value is a known member of the SignUpStep enum.
+func (e SignUpStep) Valid() bool {
+	switch e {
+	case About:
+		return true
+	case Interests:
+		return true
+	case Photos:
+		return true
+	case Rules:
+		return true
+	default:
+		return false
+	}
+}
+
+// Error The one error body of the API. `code` is stable and machine-readable;
+// the app maps it to a translation key. It never carries a sentence for
+// display, a stack trace or an internal identifier.
+type Error struct {
+	// Code Stable error codes. Clients treat an unknown code as a general error.
+	// - `request_invalid`: the request does not match the contract.
+	// - `validation_failed`: field rules broken, see `details.fields`.
+	// - `unauthenticated`: no valid session.
+	// - `not_found`: nothing here for the caller.
+	// - `internal_error`: server failure.
+	// - `phone_invalid`: not a usable phone number (ONB-002.S2).
+	// - `phone_not_swiss`: not a Swiss number (ONB-002.S1).
+	// - `login_code_rate_limited`: code limits reached, see `details.retryAfterSeconds` (NFR-SEC-002.S1).
+	// - `sms_unavailable`: the daily total of codes is reached (NFR-SEC-002.S2).
+	// - `sms_send_failed`: the SMS could not be sent (ONB-003.S2).
+	// - `login_code_wrong`: wrong code, see `details.attemptsLeft` (ONB-004.S2).
+	// - `login_code_expired`: no valid code; request a new one (ONB-004.S3, NFR-SEC-001).
+	// - `age_below_minimum`: under 18; the sign-up is deleted (ONB-010).
+	// - `signup_incomplete`: required parts missing, see `details.missing` (ONB-012.S2, ONB-014.S1).
+	// - `signup_finished`: the sign-up is already complete.
+	// - `photo_too_large`, `photo_type_unsupported`, `photo_too_many_pixels`, `photo_unreadable`: the photo is refused (ONB-014, NFR-PRIV-003).
+	Code ErrorCode `json:"code"`
+
+	// Details Machine-readable details; which ones are present depends on `code`.
+	Details *ErrorDetails `json:"details,omitempty"`
+}
+
+// ErrorCode Stable error codes. Clients treat an unknown code as a general error.
+// - `request_invalid`: the request does not match the contract.
+// - `validation_failed`: field rules broken, see `details.fields`.
+// - `unauthenticated`: no valid session.
+// - `not_found`: nothing here for the caller.
+// - `internal_error`: server failure.
+// - `phone_invalid`: not a usable phone number (ONB-002.S2).
+// - `phone_not_swiss`: not a Swiss number (ONB-002.S1).
+// - `login_code_rate_limited`: code limits reached, see `details.retryAfterSeconds` (NFR-SEC-002.S1).
+// - `sms_unavailable`: the daily total of codes is reached (NFR-SEC-002.S2).
+// - `sms_send_failed`: the SMS could not be sent (ONB-003.S2).
+// - `login_code_wrong`: wrong code, see `details.attemptsLeft` (ONB-004.S2).
+// - `login_code_expired`: no valid code; request a new one (ONB-004.S3, NFR-SEC-001).
+// - `age_below_minimum`: under 18; the sign-up is deleted (ONB-010).
+// - `signup_incomplete`: required parts missing, see `details.missing` (ONB-012.S2, ONB-014.S1).
+// - `signup_finished`: the sign-up is already complete.
+// - `photo_too_large`, `photo_type_unsupported`, `photo_too_many_pixels`, `photo_unreadable`: the photo is refused (ONB-014, NFR-PRIV-003).
+type ErrorCode string
+
+// ErrorDetails Machine-readable details; which ones are present depends on `code`.
+type ErrorDetails struct {
+	// AttemptsLeft With `login_code_wrong`.
+	AttemptsLeft *int `json:"attemptsLeft,omitempty"`
+
+	// Fields With `validation_failed` and `request_invalid`; one entry per refused field.
+	Fields *[]FieldError `json:"fields,omitempty"`
+
+	// Missing With `signup_incomplete`; the parts still missing.
+	Missing *[]SignUpPart `json:"missing,omitempty"`
+
+	// RetryAfterSeconds With `login_code_rate_limited`.
+	RetryAfterSeconds *int `json:"retryAfterSeconds,omitempty"`
+}
+
+// FieldError defines model for FieldError.
+type FieldError struct {
+	// Field The request field, e.g. `firstName`, `birthDate`, `homeMunicipalityId`, `interestIds`.
+	Field string `json:"field"`
+
+	// Problem - `required`: empty or missing (e.g. onb.about.error.firstNameRequired).
+	// - `invalid`: breaks the format rule (e.g. onb.about.error.firstNameInvalid; a date that does not exist or lies in the future).
+	// - `unknown`: refers to something that does not exist or cannot be chosen (a municipality or interest).
+	// - `too_many`: more items than allowed (onb.interests.limit).
+	Problem FieldProblem `json:"problem"`
+}
+
+// FieldProblem - `required`: empty or missing (e.g. onb.about.error.firstNameRequired).
+// - `invalid`: breaks the format rule (e.g. onb.about.error.firstNameInvalid; a date that does not exist or lies in the future).
+// - `unknown`: refers to something that does not exist or cannot be chosen (a municipality or interest).
+// - `too_many`: more items than allowed (onb.interests.limit).
+type FieldProblem string
+
 // HealthStatus defines model for HealthStatus.
 type HealthStatus struct {
 	// Status Machine-readable state; never shown to members as text.
@@ -40,11 +326,398 @@ type HealthStatus struct {
 // HealthStatusStatus Machine-readable state; never shown to members as text.
 type HealthStatusStatus string
 
+// Interest defines model for Interest.
+type Interest struct {
+	// Id Opaque, stable id.
+	Id string `json:"id"`
+
+	// Names The name per UI language; German is the source and always present.
+	Names LocalizedName `json:"names"`
+}
+
+// InterestList defines model for InterestList.
+type InterestList struct {
+	Items []Interest `json:"items"`
+}
+
+// LocalizedName The name per UI language; German is the source and always present.
+type LocalizedName struct {
+	De string  `json:"de"`
+	En *string `json:"en,omitempty"`
+	Fr *string `json:"fr,omitempty"`
+}
+
+// LoginCodeRequest defines model for LoginCodeRequest.
+type LoginCodeRequest struct {
+	// PhoneNumber The number in E.164 form (`+41…`, no spaces). Format and country
+	// are checked by the server and answered with `phone_invalid` or
+	// `phone_not_swiss`, not with `request_invalid`.
+	//
+	//
+	// Example: +41791234567
+	PhoneNumber string `json:"phoneNumber"`
+}
+
+// LoginCodeSent The same for every number that passes the checks (NFR-SEC-003).
+type LoginCodeSent struct {
+	// CodeValidForSeconds How long the code is valid (300, NFR-SEC-001).
+	CodeValidForSeconds int `json:"codeValidForSeconds"`
+
+	// ResendAfterSeconds Seconds until a new code can be requested, for the countdown (onb.code.resendIn, ONB-005).
+	ResendAfterSeconds int `json:"resendAfterSeconds"`
+}
+
+// LoginCodeVerification defines model for LoginCodeVerification.
+type LoginCodeVerification struct {
+	// Code The 6-digit code from the SMS.
+	Code string `json:"code"`
+
+	// PhoneNumber The number the code was sent to, in E.164 form, as sent to `requestLoginCode`.
+	PhoneNumber string `json:"phoneNumber"`
+}
+
+// Me The caller's own state; `status` tells which.
+type Me struct {
+	union json.RawMessage
+}
+
+// MeMember defines model for MeMember.
+type MeMember struct {
+	// Member The caller's own member record. Kept minimal in this round; the
+	// profile area adds fields later.
+	Member Member         `json:"member"`
+	Status MeMemberStatus `json:"status"`
+}
+
+// MeMemberStatus defines model for MeMember.Status.
+type MeMemberStatus string
+
+// MeSigningUp defines model for MeSigningUp.
+type MeSigningUp struct {
+	// SignUp The caller's own unfinished sign-up, with everything entered so far.
+	// Seen only by its owner (ONB-008.S2). Carries the birth date because it
+	// is the owner's own data; never the phone number.
+	SignUp SignUp            `json:"signUp"`
+	Status MeSigningUpStatus `json:"status"`
+}
+
+// MeSigningUpStatus defines model for MeSigningUp.Status.
+type MeSigningUpStatus string
+
+// Member The caller's own member record. Kept minimal in this round; the
+// profile area adds fields later.
+type Member struct {
+	FirstName string `json:"firstName"`
+
+	// Id Opaque member id.
+	Id string `json:"id"`
+}
+
+// Municipality defines model for Municipality.
+type Municipality struct {
+	// Canton Two-letter canton abbreviation, to tell same-named municipalities apart.
+	Canton string `json:"canton"`
+
+	// Id The official BFS municipality number.
+	Id int `json:"id"`
+
+	// Name The official name.
+	Name string `json:"name"`
+}
+
+// MunicipalityList defines model for MunicipalityList.
+type MunicipalityList struct {
+	Items []Municipality `json:"items"`
+}
+
+// Photo defines model for Photo.
+type Photo struct {
+	// Slot 0 is the portrait.
+	Slot int `json:"slot"`
+
+	// Version Changes whenever the slot gets a new photo; for the app's image cache.
+	Version string `json:"version"`
+}
+
+// PhotoUpload defines model for PhotoUpload.
+type PhotoUpload struct {
+	// Photo The image file, JPEG or PNG.
+	Photo openapi_types.File `json:"photo"`
+}
+
+// SessionStarted defines model for SessionStarted.
+type SessionStarted struct {
+	// Me The caller's own state; `status` tells which.
+	Me Me `json:"me"`
+
+	// SessionToken Opaque device-session token for `Authorization: Bearer`. The app
+	// keeps it in expo-secure-store and never logs it (ADR-0005).
+	SessionToken string `json:"sessionToken"`
+}
+
+// SignUp The caller's own unfinished sign-up, with everything entered so far.
+// Seen only by its owner (ONB-008.S2). Carries the birth date because it
+// is the owner's own data; never the phone number.
+type SignUp struct {
+	// BirthDate Absent until saved. Own data only (NFR-PRIV-002).
+	BirthDate *openapi_types.Date `json:"birthDate,omitempty"`
+
+	// FirstName Absent until saved.
+	FirstName        *string       `json:"firstName,omitempty"`
+	HomeMunicipality *Municipality `json:"homeMunicipality,omitempty"`
+
+	// Interests The chosen interests in the chosen order.
+	Interests []Interest `json:"interests"`
+
+	// NextStep The first step that is not done yet, where a resumed sign-up continues
+	// (ONB-008): `about` until first name, birth date and home municipality
+	// are saved; `interests` until the interests were saved; `photos` until
+	// a portrait is stored; then `rules`.
+	NextStep SignUpStep `json:"nextStep"`
+
+	// Photos The filled slots, in slot order.
+	Photos []Photo `json:"photos"`
+}
+
+// SignUpAboutUpdate Any of the three fields; omitted fields stay unchanged.
+type SignUpAboutUpdate struct {
+	// BirthDate Sent only after the age was confirmed, or at once when under 18 (ONB-010, ONB-011).
+	BirthDate *openapi_types.Date `json:"birthDate,omitempty"`
+
+	// FirstName 1 to 30 letters, spaces, hyphens or apostrophes (ONB-009); checked by the server.
+	FirstName *string `json:"firstName,omitempty"`
+
+	// HomeMunicipalityId BFS number of the municipality (ONB-012).
+	HomeMunicipalityId *int `json:"homeMunicipalityId,omitempty"`
+}
+
+// SignUpFinish defines model for SignUpFinish.
+type SignUpFinish struct {
+	// AcceptRules The person accepts the Spielregeln (ONB-016).
+	AcceptRules SignUpFinishAcceptRules `json:"acceptRules"`
+
+	// AcceptTermsOfUse The person accepts the terms of use (ONB-016).
+	AcceptTermsOfUse SignUpFinishAcceptTermsOfUse `json:"acceptTermsOfUse"`
+}
+
+// SignUpFinishAcceptRules The person accepts the Spielregeln (ONB-016).
+type SignUpFinishAcceptRules bool
+
+// SignUpFinishAcceptTermsOfUse The person accepts the terms of use (ONB-016).
+type SignUpFinishAcceptTermsOfUse bool
+
+// SignUpInterestsUpdate defines model for SignUpInterestsUpdate.
+type SignUpInterestsUpdate struct {
+	// InterestIds 0 to 5 interest ids in the chosen order (ONB-013). More than 5 is
+	// answered with `validation_failed` / `too_many`.
+	InterestIds []string `json:"interestIds"`
+}
+
+// SignUpPart A required part of the sign-up.
+type SignUpPart string
+
+// SignUpStep The first step that is not done yet, where a resumed sign-up continues
+// (ONB-008): `about` until first name, birth date and home municipality
+// are saved; `interests` until the interests were saved; `photos` until
+// a portrait is stored; then `rules`.
+type SignUpStep string
+
+// PhotoSlot defines model for PhotoSlot.
+type PhotoSlot = int
+
+// InternalError The one error body of the API. `code` is stable and machine-readable;
+// the app maps it to a translation key. It never carries a sentence for
+// display, a stack trace or an internal identifier.
+type InternalError = Error
+
+// NotFound The one error body of the API. `code` is stable and machine-readable;
+// the app maps it to a translation key. It never carries a sentence for
+// display, a stack trace or an internal identifier.
+type NotFound = Error
+
+// RequestInvalid The one error body of the API. `code` is stable and machine-readable;
+// the app maps it to a translation key. It never carries a sentence for
+// display, a stack trace or an internal identifier.
+type RequestInvalid = Error
+
+// SignUpFinished The one error body of the API. `code` is stable and machine-readable;
+// the app maps it to a translation key. It never carries a sentence for
+// display, a stack trace or an internal identifier.
+type SignUpFinished = Error
+
+// Unauthenticated The one error body of the API. `code` is stable and machine-readable;
+// the app maps it to a translation key. It never carries a sentence for
+// display, a stack trace or an internal identifier.
+type Unauthenticated = Error
+
+// ValidationFailed The one error body of the API. `code` is stable and machine-readable;
+// the app maps it to a translation key. It never carries a sentence for
+// display, a stack trace or an internal identifier.
+type ValidationFailed = Error
+
+// SearchMunicipalitiesParams defines parameters for SearchMunicipalities.
+type SearchMunicipalitiesParams struct {
+	// Q Search text, matched against the start of words in the name, ignoring case and accents.
+	Q string `form:"q" json:"q"`
+}
+
+// RequestLoginCodeJSONRequestBody defines body for RequestLoginCode for application/json ContentType.
+type RequestLoginCodeJSONRequestBody = LoginCodeRequest
+
+// VerifyLoginCodeJSONRequestBody defines body for VerifyLoginCode for application/json ContentType.
+type VerifyLoginCodeJSONRequestBody = LoginCodeVerification
+
+// UpdateSignUpAboutJSONRequestBody defines body for UpdateSignUpAbout for application/json ContentType.
+type UpdateSignUpAboutJSONRequestBody = SignUpAboutUpdate
+
+// FinishSignUpJSONRequestBody defines body for FinishSignUp for application/json ContentType.
+type FinishSignUpJSONRequestBody = SignUpFinish
+
+// SetSignUpInterestsJSONRequestBody defines body for SetSignUpInterests for application/json ContentType.
+type SetSignUpInterestsJSONRequestBody = SignUpInterestsUpdate
+
+// PutSignUpPhotoMultipartRequestBody defines body for PutSignUpPhoto for multipart/form-data ContentType.
+type PutSignUpPhotoMultipartRequestBody = PhotoUpload
+
+// AsMeSigningUp returns the union data inside the Me as a MeSigningUp
+func (t Me) AsMeSigningUp() (MeSigningUp, error) {
+	var body MeSigningUp
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromMeSigningUp overwrites any union data inside the Me as the provided MeSigningUp
+func (t *Me) FromMeSigningUp(v MeSigningUp) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"status":"signingUp"}`))
+	t.union = b
+	return err
+}
+
+// MergeMeSigningUp performs a merge with any union data inside the Me, using the provided MeSigningUp
+func (t *Me) MergeMeSigningUp(v MeSigningUp) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"status":"signingUp"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsMeMember returns the union data inside the Me as a MeMember
+func (t Me) AsMeMember() (MeMember, error) {
+	var body MeMember
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromMeMember overwrites any union data inside the Me as the provided MeMember
+func (t *Me) FromMeMember(v MeMember) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"status":"member"}`))
+	t.union = b
+	return err
+}
+
+// MergeMeMember performs a merge with any union data inside the Me, using the provided MeMember
+func (t *Me) MergeMeMember(v MeMember) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"status":"member"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t Me) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"status"`
+	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
+
+func (t Me) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
+	}
+	switch discriminator {
+	case "member":
+		return t.AsMeMember()
+	case "signingUp":
+		return t.AsMeSigningUp()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
+	}
+}
+
+func (t Me) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *Me) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// GetHealthz Health check
 	// (GET /healthz)
 	GetHealthz(w http.ResponseWriter, r *http.Request)
+	// ListInterests List the interests
+	// (GET /interests)
+	ListInterests(w http.ResponseWriter, r *http.Request)
+	// RequestLoginCode Send a login code by SMS
+	// (POST /login/code-requests)
+	RequestLoginCode(w http.ResponseWriter, r *http.Request)
+	// VerifyLoginCode Check a login code and open a device session
+	// (POST /login/code-verifications)
+	VerifyLoginCode(w http.ResponseWriter, r *http.Request)
+	// GetMe Read the own unfinished sign-up or the own member record
+	// (GET /me)
+	GetMe(w http.ResponseWriter, r *http.Request)
+	// SearchMunicipalities Search Swiss municipalities
+	// (GET /municipalities)
+	SearchMunicipalities(w http.ResponseWriter, r *http.Request, params SearchMunicipalitiesParams)
+	// UpdateSignUpAbout Save first name, birth date and home municipality
+	// (PATCH /signup/about)
+	UpdateSignUpAbout(w http.ResponseWriter, r *http.Request)
+	// FinishSignUp Accept terms and Spielregeln and complete the account
+	// (POST /signup/finish)
+	FinishSignUp(w http.ResponseWriter, r *http.Request)
+	// SetSignUpInterests Save the chosen interests
+	// (PUT /signup/interests)
+	SetSignUpInterests(w http.ResponseWriter, r *http.Request)
+	// DeleteSignUpPhoto Remove a sign-up photo
+	// (DELETE /signup/photos/{slot})
+	DeleteSignUpPhoto(w http.ResponseWriter, r *http.Request, slot PhotoSlot)
+	// GetSignUpPhoto Read an own sign-up photo
+	// (GET /signup/photos/{slot})
+	GetSignUpPhoto(w http.ResponseWriter, r *http.Request, slot PhotoSlot)
+	// PutSignUpPhoto Upload a sign-up photo into a slot
+	// (PUT /signup/photos/{slot})
+	PutSignUpPhoto(w http.ResponseWriter, r *http.Request, slot PhotoSlot)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -61,6 +734,215 @@ func (siw *ServerInterfaceWrapper) GetHealthz(w http.ResponseWriter, r *http.Req
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetHealthz(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListInterests operation middleware
+func (siw *ServerInterfaceWrapper) ListInterests(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListInterests(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RequestLoginCode operation middleware
+func (siw *ServerInterfaceWrapper) RequestLoginCode(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RequestLoginCode(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// VerifyLoginCode operation middleware
+func (siw *ServerInterfaceWrapper) VerifyLoginCode(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.VerifyLoginCode(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMe operation middleware
+func (siw *ServerInterfaceWrapper) GetMe(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMe(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SearchMunicipalities operation middleware
+func (siw *ServerInterfaceWrapper) SearchMunicipalities(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SearchMunicipalitiesParams
+
+	// ------------- Required query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "q", r.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "q"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "q", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SearchMunicipalities(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateSignUpAbout operation middleware
+func (siw *ServerInterfaceWrapper) UpdateSignUpAbout(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateSignUpAbout(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// FinishSignUp operation middleware
+func (siw *ServerInterfaceWrapper) FinishSignUp(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.FinishSignUp(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetSignUpInterests operation middleware
+func (siw *ServerInterfaceWrapper) SetSignUpInterests(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetSignUpInterests(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteSignUpPhoto operation middleware
+func (siw *ServerInterfaceWrapper) DeleteSignUpPhoto(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slot" -------------
+	var slot PhotoSlot
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slot", r.PathValue("slot"), &slot, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "integer", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slot", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteSignUpPhoto(w, r, slot)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetSignUpPhoto operation middleware
+func (siw *ServerInterfaceWrapper) GetSignUpPhoto(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slot" -------------
+	var slot PhotoSlot
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slot", r.PathValue("slot"), &slot, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "integer", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slot", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSignUpPhoto(w, r, slot)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutSignUpPhoto operation middleware
+func (siw *ServerInterfaceWrapper) PutSignUpPhoto(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slot" -------------
+	var slot PhotoSlot
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slot", r.PathValue("slot"), &slot, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "integer", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slot", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutSignUpPhoto(w, r, slot)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -191,9 +1073,32 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	}
 
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/healthz", wrapper.GetHealthz)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/login/code-requests", wrapper.RequestLoginCode)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/login/code-verifications", wrapper.VerifyLoginCode)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/me", wrapper.GetMe)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/signup/about", wrapper.UpdateSignUpAbout)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/signup/interests", wrapper.SetSignUpInterests)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/signup/photos/{slot}", wrapper.DeleteSignUpPhoto)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/signup/photos/{slot}", wrapper.GetSignUpPhoto)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/signup/photos/{slot}", wrapper.PutSignUpPhoto)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/signup/finish", wrapper.FinishSignUp)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/municipalities", wrapper.SearchMunicipalities)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/interests", wrapper.ListInterests)
 
 	return m
 }
+
+type InternalErrorJSONResponse Error
+
+type NotFoundJSONResponse Error
+
+type RequestInvalidJSONResponse Error
+
+type SignUpFinishedJSONResponse Error
+
+type UnauthenticatedJSONResponse Error
+
+type ValidationFailedJSONResponse Error
 
 type GetHealthzRequestObject struct {
 }
@@ -230,11 +1135,933 @@ func (response GetHealthz503JSONResponse) VisitGetHealthzResponse(w http.Respons
 	return err
 }
 
+type ListInterestsRequestObject struct {
+}
+
+type ListInterestsResponseObject interface {
+	VisitListInterestsResponse(w http.ResponseWriter) error
+}
+
+type ListInterests200JSONResponse InterestList
+
+func (response ListInterests200JSONResponse) VisitListInterestsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListInterests401JSONResponse struct{ UnauthenticatedJSONResponse }
+
+func (response ListInterests401JSONResponse) VisitListInterestsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListInterests500JSONResponse struct{ InternalErrorJSONResponse }
+
+func (response ListInterests500JSONResponse) VisitListInterestsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RequestLoginCodeRequestObject struct {
+	Body *RequestLoginCodeJSONRequestBody
+}
+
+type RequestLoginCodeResponseObject interface {
+	VisitRequestLoginCodeResponse(w http.ResponseWriter) error
+}
+
+type RequestLoginCode202JSONResponse LoginCodeSent
+
+func (response RequestLoginCode202JSONResponse) VisitRequestLoginCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(202)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RequestLoginCode400JSONResponse struct{ RequestInvalidJSONResponse }
+
+func (response RequestLoginCode400JSONResponse) VisitRequestLoginCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RequestLoginCode422JSONResponse Error
+
+func (response RequestLoginCode422JSONResponse) VisitRequestLoginCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RequestLoginCode429ResponseHeaders struct {
+	RetryAfter *int
+}
+
+type RequestLoginCode429JSONResponse struct {
+	Body    Error
+	Headers RequestLoginCode429ResponseHeaders
+}
+
+func (response RequestLoginCode429JSONResponse) VisitRequestLoginCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	if response.Headers.RetryAfter != nil {
+		w.Header().Set("Retry-After", fmt.Sprint(*response.Headers.RetryAfter))
+	}
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RequestLoginCode500JSONResponse struct{ InternalErrorJSONResponse }
+
+func (response RequestLoginCode500JSONResponse) VisitRequestLoginCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RequestLoginCode502JSONResponse Error
+
+func (response RequestLoginCode502JSONResponse) VisitRequestLoginCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(502)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RequestLoginCode503JSONResponse Error
+
+func (response RequestLoginCode503JSONResponse) VisitRequestLoginCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(503)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyLoginCodeRequestObject struct {
+	Body *VerifyLoginCodeJSONRequestBody
+}
+
+type VerifyLoginCodeResponseObject interface {
+	VisitVerifyLoginCodeResponse(w http.ResponseWriter) error
+}
+
+type VerifyLoginCode200JSONResponse SessionStarted
+
+func (response VerifyLoginCode200JSONResponse) VisitVerifyLoginCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyLoginCode400JSONResponse struct{ RequestInvalidJSONResponse }
+
+func (response VerifyLoginCode400JSONResponse) VisitVerifyLoginCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyLoginCode422JSONResponse Error
+
+func (response VerifyLoginCode422JSONResponse) VisitVerifyLoginCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyLoginCode500JSONResponse struct{ InternalErrorJSONResponse }
+
+func (response VerifyLoginCode500JSONResponse) VisitVerifyLoginCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMeRequestObject struct {
+}
+
+type GetMeResponseObject interface {
+	VisitGetMeResponse(w http.ResponseWriter) error
+}
+
+type GetMe200JSONResponse Me
+
+func (t GetMe200JSONResponse) MarshalJSON() ([]byte, error) {
+	return Me(t).MarshalJSON()
+}
+
+func (t *GetMe200JSONResponse) UnmarshalJSON(b []byte) error {
+	return (*Me)(t).UnmarshalJSON(b)
+}
+
+func (response GetMe200JSONResponse) VisitGetMeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMe401JSONResponse struct{ UnauthenticatedJSONResponse }
+
+func (response GetMe401JSONResponse) VisitGetMeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMe500JSONResponse struct{ InternalErrorJSONResponse }
+
+func (response GetMe500JSONResponse) VisitGetMeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SearchMunicipalitiesRequestObject struct {
+	Params SearchMunicipalitiesParams
+}
+
+type SearchMunicipalitiesResponseObject interface {
+	VisitSearchMunicipalitiesResponse(w http.ResponseWriter) error
+}
+
+type SearchMunicipalities200JSONResponse MunicipalityList
+
+func (response SearchMunicipalities200JSONResponse) VisitSearchMunicipalitiesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SearchMunicipalities400JSONResponse struct{ RequestInvalidJSONResponse }
+
+func (response SearchMunicipalities400JSONResponse) VisitSearchMunicipalitiesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SearchMunicipalities401JSONResponse struct{ UnauthenticatedJSONResponse }
+
+func (response SearchMunicipalities401JSONResponse) VisitSearchMunicipalitiesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SearchMunicipalities500JSONResponse struct{ InternalErrorJSONResponse }
+
+func (response SearchMunicipalities500JSONResponse) VisitSearchMunicipalitiesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSignUpAboutRequestObject struct {
+	Body *UpdateSignUpAboutJSONRequestBody
+}
+
+type UpdateSignUpAboutResponseObject interface {
+	VisitUpdateSignUpAboutResponse(w http.ResponseWriter) error
+}
+
+type UpdateSignUpAbout200JSONResponse SignUp
+
+func (response UpdateSignUpAbout200JSONResponse) VisitUpdateSignUpAboutResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSignUpAbout400JSONResponse struct{ RequestInvalidJSONResponse }
+
+func (response UpdateSignUpAbout400JSONResponse) VisitUpdateSignUpAboutResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSignUpAbout401JSONResponse struct{ UnauthenticatedJSONResponse }
+
+func (response UpdateSignUpAbout401JSONResponse) VisitUpdateSignUpAboutResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSignUpAbout403JSONResponse Error
+
+func (response UpdateSignUpAbout403JSONResponse) VisitUpdateSignUpAboutResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSignUpAbout409JSONResponse struct{ SignUpFinishedJSONResponse }
+
+func (response UpdateSignUpAbout409JSONResponse) VisitUpdateSignUpAboutResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSignUpAbout422JSONResponse struct{ ValidationFailedJSONResponse }
+
+func (response UpdateSignUpAbout422JSONResponse) VisitUpdateSignUpAboutResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSignUpAbout500JSONResponse struct{ InternalErrorJSONResponse }
+
+func (response UpdateSignUpAbout500JSONResponse) VisitUpdateSignUpAboutResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type FinishSignUpRequestObject struct {
+	Body *FinishSignUpJSONRequestBody
+}
+
+type FinishSignUpResponseObject interface {
+	VisitFinishSignUpResponse(w http.ResponseWriter) error
+}
+
+type FinishSignUp200JSONResponse Member
+
+func (response FinishSignUp200JSONResponse) VisitFinishSignUpResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type FinishSignUp400JSONResponse struct{ RequestInvalidJSONResponse }
+
+func (response FinishSignUp400JSONResponse) VisitFinishSignUpResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type FinishSignUp401JSONResponse struct{ UnauthenticatedJSONResponse }
+
+func (response FinishSignUp401JSONResponse) VisitFinishSignUpResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type FinishSignUp409JSONResponse Error
+
+func (response FinishSignUp409JSONResponse) VisitFinishSignUpResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type FinishSignUp500JSONResponse struct{ InternalErrorJSONResponse }
+
+func (response FinishSignUp500JSONResponse) VisitFinishSignUpResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSignUpInterestsRequestObject struct {
+	Body *SetSignUpInterestsJSONRequestBody
+}
+
+type SetSignUpInterestsResponseObject interface {
+	VisitSetSignUpInterestsResponse(w http.ResponseWriter) error
+}
+
+type SetSignUpInterests200JSONResponse SignUp
+
+func (response SetSignUpInterests200JSONResponse) VisitSetSignUpInterestsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSignUpInterests400JSONResponse struct{ RequestInvalidJSONResponse }
+
+func (response SetSignUpInterests400JSONResponse) VisitSetSignUpInterestsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSignUpInterests401JSONResponse struct{ UnauthenticatedJSONResponse }
+
+func (response SetSignUpInterests401JSONResponse) VisitSetSignUpInterestsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSignUpInterests409JSONResponse struct{ SignUpFinishedJSONResponse }
+
+func (response SetSignUpInterests409JSONResponse) VisitSetSignUpInterestsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSignUpInterests422JSONResponse struct{ ValidationFailedJSONResponse }
+
+func (response SetSignUpInterests422JSONResponse) VisitSetSignUpInterestsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSignUpInterests500JSONResponse struct{ InternalErrorJSONResponse }
+
+func (response SetSignUpInterests500JSONResponse) VisitSetSignUpInterestsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSignUpPhotoRequestObject struct {
+	Slot PhotoSlot `json:"slot"`
+}
+
+type DeleteSignUpPhotoResponseObject interface {
+	VisitDeleteSignUpPhotoResponse(w http.ResponseWriter) error
+}
+
+type DeleteSignUpPhoto204Response struct {
+}
+
+func (response DeleteSignUpPhoto204Response) VisitDeleteSignUpPhotoResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteSignUpPhoto401JSONResponse struct{ UnauthenticatedJSONResponse }
+
+func (response DeleteSignUpPhoto401JSONResponse) VisitDeleteSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSignUpPhoto409JSONResponse struct{ SignUpFinishedJSONResponse }
+
+func (response DeleteSignUpPhoto409JSONResponse) VisitDeleteSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSignUpPhoto500JSONResponse struct{ InternalErrorJSONResponse }
+
+func (response DeleteSignUpPhoto500JSONResponse) VisitDeleteSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSignUpPhotoRequestObject struct {
+	Slot PhotoSlot `json:"slot"`
+}
+
+type GetSignUpPhotoResponseObject interface {
+	VisitGetSignUpPhotoResponse(w http.ResponseWriter) error
+}
+
+type GetSignUpPhoto200ImagejpegResponse struct {
+	Body          io.Reader
+	ContentLength int64
+}
+
+func (response GetSignUpPhoto200ImagejpegResponse) VisitGetSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	w.Header().Set("Content-Type", "image/jpeg")
+	if response.ContentLength != 0 {
+		w.Header().Set("Content-Length", fmt.Sprint(response.ContentLength))
+	}
+	w.WriteHeader(200)
+
+	if closer, ok := response.Body.(io.ReadCloser); ok {
+		defer closer.Close()
+	}
+	_, err := io.Copy(w, response.Body)
+	return err
+}
+
+type GetSignUpPhoto401JSONResponse struct{ UnauthenticatedJSONResponse }
+
+func (response GetSignUpPhoto401JSONResponse) VisitGetSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSignUpPhoto404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response GetSignUpPhoto404JSONResponse) VisitGetSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSignUpPhoto409JSONResponse struct{ SignUpFinishedJSONResponse }
+
+func (response GetSignUpPhoto409JSONResponse) VisitGetSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSignUpPhoto500JSONResponse struct{ InternalErrorJSONResponse }
+
+func (response GetSignUpPhoto500JSONResponse) VisitGetSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PutSignUpPhotoRequestObject struct {
+	Slot PhotoSlot `json:"slot"`
+	Body *multipart.Reader
+}
+
+type PutSignUpPhotoResponseObject interface {
+	VisitPutSignUpPhotoResponse(w http.ResponseWriter) error
+}
+
+type PutSignUpPhoto200JSONResponse Photo
+
+func (response PutSignUpPhoto200JSONResponse) VisitPutSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PutSignUpPhoto400JSONResponse struct{ RequestInvalidJSONResponse }
+
+func (response PutSignUpPhoto400JSONResponse) VisitPutSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PutSignUpPhoto401JSONResponse struct{ UnauthenticatedJSONResponse }
+
+func (response PutSignUpPhoto401JSONResponse) VisitPutSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PutSignUpPhoto409JSONResponse struct{ SignUpFinishedJSONResponse }
+
+func (response PutSignUpPhoto409JSONResponse) VisitPutSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PutSignUpPhoto413JSONResponse Error
+
+func (response PutSignUpPhoto413JSONResponse) VisitPutSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(413)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PutSignUpPhoto415JSONResponse Error
+
+func (response PutSignUpPhoto415JSONResponse) VisitPutSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(415)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PutSignUpPhoto422JSONResponse Error
+
+func (response PutSignUpPhoto422JSONResponse) VisitPutSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PutSignUpPhoto500JSONResponse struct{ InternalErrorJSONResponse }
+
+func (response PutSignUpPhoto500JSONResponse) VisitPutSignUpPhotoResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// GetHealthz Health check
 	// (GET /healthz)
 	GetHealthz(ctx context.Context, request GetHealthzRequestObject) (GetHealthzResponseObject, error)
+	// ListInterests List the interests
+	// (GET /interests)
+	ListInterests(ctx context.Context, request ListInterestsRequestObject) (ListInterestsResponseObject, error)
+	// RequestLoginCode Send a login code by SMS
+	// (POST /login/code-requests)
+	RequestLoginCode(ctx context.Context, request RequestLoginCodeRequestObject) (RequestLoginCodeResponseObject, error)
+	// VerifyLoginCode Check a login code and open a device session
+	// (POST /login/code-verifications)
+	VerifyLoginCode(ctx context.Context, request VerifyLoginCodeRequestObject) (VerifyLoginCodeResponseObject, error)
+	// GetMe Read the own unfinished sign-up or the own member record
+	// (GET /me)
+	GetMe(ctx context.Context, request GetMeRequestObject) (GetMeResponseObject, error)
+	// SearchMunicipalities Search Swiss municipalities
+	// (GET /municipalities)
+	SearchMunicipalities(ctx context.Context, request SearchMunicipalitiesRequestObject) (SearchMunicipalitiesResponseObject, error)
+	// UpdateSignUpAbout Save first name, birth date and home municipality
+	// (PATCH /signup/about)
+	UpdateSignUpAbout(ctx context.Context, request UpdateSignUpAboutRequestObject) (UpdateSignUpAboutResponseObject, error)
+	// FinishSignUp Accept terms and Spielregeln and complete the account
+	// (POST /signup/finish)
+	FinishSignUp(ctx context.Context, request FinishSignUpRequestObject) (FinishSignUpResponseObject, error)
+	// SetSignUpInterests Save the chosen interests
+	// (PUT /signup/interests)
+	SetSignUpInterests(ctx context.Context, request SetSignUpInterestsRequestObject) (SetSignUpInterestsResponseObject, error)
+	// DeleteSignUpPhoto Remove a sign-up photo
+	// (DELETE /signup/photos/{slot})
+	DeleteSignUpPhoto(ctx context.Context, request DeleteSignUpPhotoRequestObject) (DeleteSignUpPhotoResponseObject, error)
+	// GetSignUpPhoto Read an own sign-up photo
+	// (GET /signup/photos/{slot})
+	GetSignUpPhoto(ctx context.Context, request GetSignUpPhotoRequestObject) (GetSignUpPhotoResponseObject, error)
+	// PutSignUpPhoto Upload a sign-up photo into a slot
+	// (PUT /signup/photos/{slot})
+	PutSignUpPhoto(ctx context.Context, request PutSignUpPhotoRequestObject) (PutSignUpPhotoResponseObject, error)
 }
 
 type StrictHandlerFunc func(ctx context.Context, w http.ResponseWriter, r *http.Request, request any) (any, error)
@@ -293,6 +2120,320 @@ func (sh *strictHandler) GetHealthz(w http.ResponseWriter, r *http.Request) {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(GetHealthzResponseObject); ok {
 		if err := validResponse.VisitGetHealthzResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListInterests operation middleware
+func (sh *strictHandler) ListInterests(w http.ResponseWriter, r *http.Request) {
+	var request ListInterestsRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListInterests(ctx, request.(ListInterestsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListInterests")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListInterestsResponseObject); ok {
+		if err := validResponse.VisitListInterestsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// RequestLoginCode operation middleware
+func (sh *strictHandler) RequestLoginCode(w http.ResponseWriter, r *http.Request) {
+	var request RequestLoginCodeRequestObject
+
+	var body RequestLoginCodeJSONRequestBody
+	if err := runtime.BindJSONBody(r, &body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RequestLoginCode(ctx, request.(RequestLoginCodeRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RequestLoginCode")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RequestLoginCodeResponseObject); ok {
+		if err := validResponse.VisitRequestLoginCodeResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// VerifyLoginCode operation middleware
+func (sh *strictHandler) VerifyLoginCode(w http.ResponseWriter, r *http.Request) {
+	var request VerifyLoginCodeRequestObject
+
+	var body VerifyLoginCodeJSONRequestBody
+	if err := runtime.BindJSONBody(r, &body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.VerifyLoginCode(ctx, request.(VerifyLoginCodeRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "VerifyLoginCode")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(VerifyLoginCodeResponseObject); ok {
+		if err := validResponse.VisitVerifyLoginCodeResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetMe operation middleware
+func (sh *strictHandler) GetMe(w http.ResponseWriter, r *http.Request) {
+	var request GetMeRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetMe(ctx, request.(GetMeRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetMe")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetMeResponseObject); ok {
+		if err := validResponse.VisitGetMeResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SearchMunicipalities operation middleware
+func (sh *strictHandler) SearchMunicipalities(w http.ResponseWriter, r *http.Request, params SearchMunicipalitiesParams) {
+	var request SearchMunicipalitiesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SearchMunicipalities(ctx, request.(SearchMunicipalitiesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SearchMunicipalities")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SearchMunicipalitiesResponseObject); ok {
+		if err := validResponse.VisitSearchMunicipalitiesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateSignUpAbout operation middleware
+func (sh *strictHandler) UpdateSignUpAbout(w http.ResponseWriter, r *http.Request) {
+	var request UpdateSignUpAboutRequestObject
+
+	var body UpdateSignUpAboutJSONRequestBody
+	if err := runtime.BindJSONBody(r, &body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateSignUpAbout(ctx, request.(UpdateSignUpAboutRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateSignUpAbout")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateSignUpAboutResponseObject); ok {
+		if err := validResponse.VisitUpdateSignUpAboutResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// FinishSignUp operation middleware
+func (sh *strictHandler) FinishSignUp(w http.ResponseWriter, r *http.Request) {
+	var request FinishSignUpRequestObject
+
+	var body FinishSignUpJSONRequestBody
+	if err := runtime.BindJSONBody(r, &body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.FinishSignUp(ctx, request.(FinishSignUpRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "FinishSignUp")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(FinishSignUpResponseObject); ok {
+		if err := validResponse.VisitFinishSignUpResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SetSignUpInterests operation middleware
+func (sh *strictHandler) SetSignUpInterests(w http.ResponseWriter, r *http.Request) {
+	var request SetSignUpInterestsRequestObject
+
+	var body SetSignUpInterestsJSONRequestBody
+	if err := runtime.BindJSONBody(r, &body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SetSignUpInterests(ctx, request.(SetSignUpInterestsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SetSignUpInterests")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SetSignUpInterestsResponseObject); ok {
+		if err := validResponse.VisitSetSignUpInterestsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteSignUpPhoto operation middleware
+func (sh *strictHandler) DeleteSignUpPhoto(w http.ResponseWriter, r *http.Request, slot PhotoSlot) {
+	var request DeleteSignUpPhotoRequestObject
+
+	request.Slot = slot
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteSignUpPhoto(ctx, request.(DeleteSignUpPhotoRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteSignUpPhoto")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteSignUpPhotoResponseObject); ok {
+		if err := validResponse.VisitDeleteSignUpPhotoResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetSignUpPhoto operation middleware
+func (sh *strictHandler) GetSignUpPhoto(w http.ResponseWriter, r *http.Request, slot PhotoSlot) {
+	var request GetSignUpPhotoRequestObject
+
+	request.Slot = slot
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetSignUpPhoto(ctx, request.(GetSignUpPhotoRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetSignUpPhoto")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetSignUpPhotoResponseObject); ok {
+		if err := validResponse.VisitGetSignUpPhotoResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// PutSignUpPhoto operation middleware
+func (sh *strictHandler) PutSignUpPhoto(w http.ResponseWriter, r *http.Request, slot PhotoSlot) {
+	var request PutSignUpPhotoRequestObject
+
+	request.Slot = slot
+
+	if reader, err := r.MultipartReader(); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode multipart body: %w", err))
+		return
+	} else {
+		request.Body = reader
+	}
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.PutSignUpPhoto(ctx, request.(PutSignUpPhotoRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "PutSignUpPhoto")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(PutSignUpPhotoResponseObject); ok {
+		if err := validResponse.VisitPutSignUpPhotoResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

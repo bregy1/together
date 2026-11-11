@@ -25,6 +25,7 @@ const (
 // each area of the contract.
 type operations struct {
 	*health.Handler
+	notImplemented // until CR-0001.T08
 }
 
 var _ api.StrictServerInterface = operations{}

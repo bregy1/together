@@ -1,16 +1,38 @@
 openapi: 3.0.3
 info:
   title: Yaruno API
-  version: 0.1.0
+  version: 0.2.0
   description: |
     The contract between the Yaruno app and the Go service (ADR-0004).
-    Written by hand first; the Go server code and the app's typed client are
-    generated from this file. For now it describes only the health check.
+    Written by hand first; the Go server code (oapi-codegen) and the app's
+    typed client (openapi-typescript with openapi-fetch) are generated from
+    this file. Every operation names the requirement IDs it serves.
+
+    Conventions:
+    - JSON bodies, field names in camelCase.
+    - Every error answers with the `Error` body: a stable machine-readable
+      `code` the app maps to its translation keys, never a sentence to show.
+      Clients treat a code they do not know as a general error, so codes can
+      be added without breaking installed apps.
+    - Authentication: an opaque device-session token (ADR-0005) in
+      `Authorization: Bearer <token>`. Operations that work without a
+      session say so with `security: []`.
+    - The server checks every rule; the app may pre-check formats only.
+    - Responses to authenticated calls carry `Cache-Control: no-store`.
+    - No personal data in paths or query strings.
 servers:
   - url: /
 tags:
   - name: health
     description: Operational endpoints.
+  - name: login
+    description: Login codes and device sessions (sign-up and sign-in).
+  - name: signup
+    description: The steps of an unfinished sign-up.
+  - name: reference
+    description: Lists the sign-up chooses from (municipalities, interests).
+security:
+  - session: []
 paths:
   /healthz:
     get:
@@ -20,6 +42,7 @@ paths:
       description: |
         Answers whether the service is running and can reach its database.
         Carries no personal data and needs no session. Serves ADR-0004.
+      security: []
       responses:
         "200":
           description: The service runs and its database answers.
@@ -33,7 +56,542 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /login/code-requests:
+    post:
+      operationId: requestLoginCode
+      tags: [login]
+      summary: Send a login code by SMS
+      description: |
+        Sends a 6-digit one-time code by SMS to a Swiss phone number. Used for
+        the first send and for every resend; a new code makes the previous one
+        invalid. Needs no session.
+
+        The answer is the same, in content and in about the same time,
+        whether or not the number belongs to an account (NFR-SEC-003): no
+        account is looked up or created here.
+
+        Limits (NFR-SEC-002): per number one code per 60 seconds, 3 per 15
+        minutes and 5 per day; 10 per network address per hour; 200 in total
+        per day.
+
+        Serves ONB-002, ONB-003, ONB-005, NFR-SEC-001, NFR-SEC-002, NFR-SEC-003.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginCodeRequest"
+      responses:
+        "202":
+          description: |
+            The code was handed to the SMS service. Identical for known and
+            unknown numbers.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginCodeSent"
+        "400":
+          $ref: "#/components/responses/RequestInvalid"
+        "422":
+          description: |
+            The number is refused and no SMS is sent. `phone_invalid`: not a
+            usable phone number (onb.phone.error.invalid); `phone_not_swiss`:
+            not a Swiss number (onb.phone.error.notSwiss). Serves ONB-002.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "429":
+          description: |
+            `login_code_rate_limited`: a per-number or per-network-address
+            limit is reached; no SMS is sent (onb.phone.error.tooMany).
+            `details.retryAfterSeconds` and the `Retry-After` header say when
+            a new code can be requested. Serves NFR-SEC-002.S1.
+          headers:
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "502":
+          description: |
+            `sms_send_failed`: the SMS service did not accept the message;
+            nothing is created, the app offers a retry
+            (onb.phone.error.sendFailed). Serves ONB-003.S2.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "503":
+          description: |
+            `sms_unavailable`: the daily total of codes is reached; no SMS is
+            sent (onb.phone.error.unavailable). Serves NFR-SEC-002.S2.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /login/code-verifications:
+    post:
+      operationId: verifyLoginCode
+      tags: [login]
+      summary: Check a login code and open a device session
+      description: |
+        Checks the code last sent to the number (6 digits, valid for 5
+        minutes, single use, at most 5 wrong attempts; NFR-SEC-001). When it
+        is right, the number counts as verified and a new device session is
+        opened:
+        - a new number starts a sign-up (`me.status` = `signingUp`,
+          `me.signUp.nextStep` = `about`);
+        - a number with an unfinished sign-up resumes it with everything
+          entered so far (ONB-008);
+        - an existing member is signed in on this device (`me.status` =
+          `member`, ONB-007).
+        The returned token is shown only here; the server keeps only its hash
+        (ADR-0005). Needs no session.
+
+        Serves ONB-004, ONB-007, ONB-008, NFR-SEC-001.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginCodeVerification"
+      responses:
+        "200":
+          description: The code was right; a device session is open.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionStarted"
+        "400":
+          $ref: "#/components/responses/RequestInvalid"
+        "422":
+          description: |
+            The code is refused and no session is opened.
+            `login_code_wrong`: wrong code, `details.attemptsLeft` says how
+            many tries remain (onb.code.error.wrong, ONB-004.S2).
+            `login_code_expired`: no valid code for this number, because it
+            expired, was used, was replaced by a newer code, all attempts are
+            used, or none was requested (onb.code.error.expired, ONB-004.S3,
+            NFR-SEC-001.S1, NFR-SEC-001.S2).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /me:
+    get:
+      operationId: getMe
+      tags: [login]
+      summary: Read the own unfinished sign-up or the own member record
+      description: |
+        Answers who the session belongs to: a person in the middle of
+        sign-up, with everything entered so far and the step to continue at
+        (ONB-008, ONB-020), or a member. Only ever returns the caller's own
+        data; an unfinished sign-up is never visible to anyone else
+        (ONB-008.S2). The phone number is never returned (NFR-PRIV-002).
+
+        Serves ONB-007, ONB-008, ONB-020, NFR-PRIV-002.
+      responses:
+        "200":
+          description: The caller's own state.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Me"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /signup/about:
+    patch:
+      operationId: updateSignUpAbout
+      tags: [signup]
+      summary: Save first name, birth date and home municipality
+      description: |
+        Saves any of the three fields of SCR-onb-about; omitted fields stay
+        as they are, so the step can be saved field by field and resumed
+        (ONB-008, ONB-020). Nothing is saved when any sent field is refused.
+
+        - `firstName`: 1 to 30 characters of letters (including accented
+          letters), spaces, hyphens and apostrophes (ONB-009).
+        - `birthDate`: the app sends it only after the person confirmed the
+          shown age (ONB-011), or at once when its own check finds the person
+          under 18. The server decides the age on the current date in
+          Switzerland (Europe/Zurich); turning 18 today counts as 18
+          (ONB-010.S2).
+        - `homeMunicipalityId`: the BFS number of a Swiss municipality from
+          `searchMunicipalities` (ONB-012).
+
+        Under 18 (ONB-010): the answer is 403 `age_below_minimum`; the
+        sign-up and everything entered for it, including the phone number,
+        are deleted at once and the session is closed (ONB-010.S3), so the
+        same number later starts like any new number (ONB-010.S4).
+
+        Serves ONB-008, ONB-009, ONB-010, ONB-011, ONB-012, ONB-020, NFR-PRIV-002.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpAboutUpdate"
+      responses:
+        "200":
+          description: Saved; the whole sign-up as it is now.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignUp"
+        "400":
+          $ref: "#/components/responses/RequestInvalid"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: |
+            `age_below_minimum`: the person is under 18. The sign-up, the
+            phone number and the session are deleted (onb.age.stop,
+            ONB-010.S1, ONB-010.S3).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          $ref: "#/components/responses/SignUpFinished"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /signup/interests:
+    put:
+      operationId: setSignUpInterests
+      tags: [signup]
+      summary: Save the chosen interests
+      description: |
+        Replaces the chosen interests with the given list, in the given
+        order: 0 to 5 general activities from `listInterests`. An empty list
+        is valid and completes the step (ONB-013.S3).
+
+        Serves ONB-013, ONB-020.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpInterestsUpdate"
+      responses:
+        "200":
+          description: Saved; the whole sign-up as it is now.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignUp"
+        "400":
+          $ref: "#/components/responses/RequestInvalid"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "409":
+          $ref: "#/components/responses/SignUpFinished"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /signup/photos/{slot}:
+    parameters:
+      - $ref: "#/components/parameters/PhotoSlot"
+    put:
+      operationId: putSignUpPhoto
+      tags: [signup]
+      summary: Upload a sign-up photo into a slot
+      description: |
+        Stores a photo in a slot, replacing the photo already there. Slot 0
+        is the portrait (required to finish); slots 1 to 3 hold up to three
+        more photos (ONB-014). Putting the same slot again is safe to retry.
+
+        Only JPEG or PNG are accepted, recognised by their first bytes; files
+        over about 15 MB, over 8000 px on an edge or over about 40 megapixels
+        are refused. The server applies the orientation, re-encodes the photo
+        as JPEG without any metadata (including location) and never keeps the
+        original (NFR-PRIV-003, `tech/architecture.md` → Storage).
+
+        Serves ONB-014, NFR-PRIV-003.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/PhotoUpload"
+            encoding:
+              photo:
+                contentType: image/jpeg, image/png
+      responses:
+        "200":
+          description: Stored; the photo as it is now.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Photo"
+        "400":
+          $ref: "#/components/responses/RequestInvalid"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "409":
+          $ref: "#/components/responses/SignUpFinished"
+        "413":
+          description: "`photo_too_large`: the file is over the size limit."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "415":
+          description: "`photo_type_unsupported`: the file is neither JPEG nor PNG."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: |
+            `photo_too_many_pixels`: over 8000 px on an edge or about 40
+            megapixels. `photo_unreadable`: the image cannot be decoded.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/InternalError"
+    get:
+      operationId: getSignUpPhoto
+      tags: [signup]
+      summary: Read an own sign-up photo
+      description: |
+        Returns the 400 px version of the caller's own photo in the slot, so a
+        resumed sign-up can show the photos already uploaded (ONB-008,
+        ONB-020). Only the caller's own photos.
+
+        Serves ONB-008, ONB-014, ONB-020.
+      responses:
+        "200":
+          description: The re-encoded photo.
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/SignUpFinished"
+        "500":
+          $ref: "#/components/responses/InternalError"
+    delete:
+      operationId: deleteSignUpPhoto
+      tags: [signup]
+      summary: Remove a sign-up photo
+      description: |
+        Removes the photo in the slot and its stored files. Removing an empty
+        slot also answers 204, so a retry is safe.
+
+        Serves ONB-014.
+      responses:
+        "204":
+          description: The slot is empty.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "409":
+          $ref: "#/components/responses/SignUpFinished"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /signup/finish:
+    post:
+      operationId: finishSignUp
+      tags: [signup]
+      summary: Accept terms and Spielregeln and complete the account
+      description: |
+        Records that the person accepts the terms of use and the Spielregeln
+        and completes the member account (ONB-016, ONB-018). Refused with
+        `signup_incomplete` while a required part is missing (first name,
+        birth date, home municipality, portrait); `details.missing` names
+        them so the app can open that step (onb.about.error.regionRequired,
+        onb.photos.error.portraitRequired).
+
+        Safe to retry after a dropped connection (ONB-018.S2): when the
+        sign-up of this session is already finished, it answers 200 with the
+        same member record.
+
+        Serves ONB-012, ONB-014, ONB-016, ONB-018.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpFinish"
+      responses:
+        "200":
+          description: The sign-up is complete; the caller is a member.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "400":
+          $ref: "#/components/responses/RequestInvalid"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "409":
+          description: |
+            `signup_incomplete`: a required part is missing;
+            `details.missing` lists them.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /municipalities:
+    get:
+      operationId: searchMunicipalities
+      tags: [reference]
+      summary: Search Swiss municipalities
+      description: |
+        Finds Swiss municipalities whose name matches the search text, for
+        choosing the home region without location permission (ONB-012). Only
+        Swiss municipalities exist here, so a place outside Switzerland finds
+        nothing (ONB-012.S3, onb.about.region.noMatch). At most 20 results.
+
+        Serves ONB-012.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search text, matched against the start of words in the name, ignoring case and accents.
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+      responses:
+        "200":
+          description: Matching municipalities; an empty list when nothing matches.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MunicipalityList"
+        "400":
+          $ref: "#/components/responses/RequestInvalid"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /interests:
+    get:
+      operationId: listInterests
+      tags: [reference]
+      summary: List the interests
+      description: |
+        The general activities of the curated activity list that can be
+        chosen as interests, with their names in every language that has
+        one. The list is short; the app searches it on the phone, so search
+        never creates anything (ONB-013.S1).
+
+        Serves ONB-013.
+      responses:
+        "200":
+          description: The interests that can be chosen.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InterestList"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
 components:
+  securitySchemes:
+    session:
+      type: http
+      scheme: bearer
+      description: |
+        Opaque device-session token from `verifyLoginCode` (ADR-0005). Not a
+        JWT; the server stores only its hash. Missing, unknown or expired
+        tokens are answered with 401 `unauthenticated`.
+
+  parameters:
+    PhotoSlot:
+      name: slot
+      in: path
+      required: true
+      description: 0 is the portrait; 1 to 3 are the further photos.
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 3
+
+  headers:
+    RetryAfter:
+      description: Seconds until the request may be made again.
+      schema:
+        type: integer
+        minimum: 1
+
+  responses:
+    RequestInvalid:
+      description: |
+        `request_invalid`: the request does not match this contract (missing
+        or malformed fields). The app should not send such requests.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    ValidationFailed:
+      description: |
+        `validation_failed`: one or more fields break a rule;
+        `details.fields` names each field with its problem. Nothing is saved.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthenticated:
+      description: "`unauthenticated`: no session, or the session is unknown or expired."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    SignUpFinished:
+      description: |
+        `signup_finished`: the session belongs to a member whose sign-up is
+        complete; sign-up steps can no longer be changed.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: "`not_found`: there is nothing here for the caller."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    InternalError:
+      description: "`internal_error`: something failed on the server; the app offers a retry."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
   schemas:
     HealthStatus:
       type: object
@@ -44,3 +602,387 @@ components:
           type: string
           description: Machine-readable state; never shown to members as text.
           enum: [ok, unavailable]
+
+    Error:
+      type: object
+      additionalProperties: false
+      description: |
+        The one error body of the API. `code` is stable and machine-readable;
+        the app maps it to a translation key. It never carries a sentence for
+        display, a stack trace or an internal identifier.
+      required: [code]
+      properties:
+        code:
+          $ref: "#/components/schemas/ErrorCode"
+        details:
+          $ref: "#/components/schemas/ErrorDetails"
+
+    ErrorCode:
+      type: string
+      description: |
+        Stable error codes. Clients treat an unknown code as a general error.
+        - `request_invalid`: the request does not match the contract.
+        - `validation_failed`: field rules broken, see `details.fields`.
+        - `unauthenticated`: no valid session.
+        - `not_found`: nothing here for the caller.
+        - `internal_error`: server failure.
+        - `phone_invalid`: not a usable phone number (ONB-002.S2).
+        - `phone_not_swiss`: not a Swiss number (ONB-002.S1).
+        - `login_code_rate_limited`: code limits reached, see `details.retryAfterSeconds` (NFR-SEC-002.S1).
+        - `sms_unavailable`: the daily total of codes is reached (NFR-SEC-002.S2).
+        - `sms_send_failed`: the SMS could not be sent (ONB-003.S2).
+        - `login_code_wrong`: wrong code, see `details.attemptsLeft` (ONB-004.S2).
+        - `login_code_expired`: no valid code; request a new one (ONB-004.S3, NFR-SEC-001).
+        - `age_below_minimum`: under 18; the sign-up is deleted (ONB-010).
+        - `signup_incomplete`: required parts missing, see `details.missing` (ONB-012.S2, ONB-014.S1).
+        - `signup_finished`: the sign-up is already complete.
+        - `photo_too_large`, `photo_type_unsupported`, `photo_too_many_pixels`, `photo_unreadable`: the photo is refused (ONB-014, NFR-PRIV-003).
+      enum:
+        - request_invalid
+        - validation_failed
+        - unauthenticated
+        - not_found
+        - internal_error
+        - phone_invalid
+        - phone_not_swiss
+        - login_code_rate_limited
+        - sms_unavailable
+        - sms_send_failed
+        - login_code_wrong
+        - login_code_expired
+        - age_below_minimum
+        - signup_incomplete
+        - signup_finished
+        - photo_too_large
+        - photo_type_unsupported
+        - photo_too_many_pixels
+        - photo_unreadable
+
+    ErrorDetails:
+      type: object
+      additionalProperties: false
+      description: Machine-readable details; which ones are present depends on `code`.
+      properties:
+        fields:
+          type: array
+          description: With `validation_failed` and `request_invalid`; one entry per refused field.
+          items:
+            $ref: "#/components/schemas/FieldError"
+        attemptsLeft:
+          type: integer
+          minimum: 0
+          maximum: 4
+          description: With `login_code_wrong`.
+        retryAfterSeconds:
+          type: integer
+          minimum: 1
+          description: With `login_code_rate_limited`.
+        missing:
+          type: array
+          description: With `signup_incomplete`; the parts still missing.
+          items:
+            $ref: "#/components/schemas/SignUpPart"
+
+    FieldError:
+      type: object
+      additionalProperties: false
+      required: [field, problem]
+      properties:
+        field:
+          type: string
+          description: The request field, e.g. `firstName`, `birthDate`, `homeMunicipalityId`, `interestIds`.
+        problem:
+          $ref: "#/components/schemas/FieldProblem"
+
+    FieldProblem:
+      type: string
+      description: |
+        - `required`: empty or missing (e.g. onb.about.error.firstNameRequired).
+        - `invalid`: breaks the format rule (e.g. onb.about.error.firstNameInvalid; a date that does not exist or lies in the future).
+        - `unknown`: refers to something that does not exist or cannot be chosen (a municipality or interest).
+        - `too_many`: more items than allowed (onb.interests.limit).
+      enum: [required, invalid, unknown, too_many]
+
+    SignUpPart:
+      type: string
+      description: A required part of the sign-up.
+      enum: [firstName, birthDate, homeMunicipality, portrait]
+
+    LoginCodeRequest:
+      type: object
+      additionalProperties: false
+      required: [phoneNumber]
+      properties:
+        phoneNumber:
+          type: string
+          description: |
+            The number in E.164 form (`+41…`, no spaces). Format and country
+            are checked by the server and answered with `phone_invalid` or
+            `phone_not_swiss`, not with `request_invalid`.
+          minLength: 1
+          maxLength: 32
+          example: "+41791234567"
+
+    LoginCodeSent:
+      type: object
+      additionalProperties: false
+      description: The same for every number that passes the checks (NFR-SEC-003).
+      required: [codeValidForSeconds, resendAfterSeconds]
+      properties:
+        codeValidForSeconds:
+          type: integer
+          minimum: 1
+          description: How long the code is valid (300, NFR-SEC-001).
+        resendAfterSeconds:
+          type: integer
+          minimum: 0
+          description: Seconds until a new code can be requested, for the countdown (onb.code.resendIn, ONB-005).
+
+    LoginCodeVerification:
+      type: object
+      additionalProperties: false
+      required: [phoneNumber, code]
+      properties:
+        phoneNumber:
+          type: string
+          description: The number the code was sent to, in E.164 form, as sent to `requestLoginCode`.
+          minLength: 1
+          maxLength: 32
+        code:
+          type: string
+          description: The 6-digit code from the SMS.
+          pattern: "^[0-9]{6}$"
+
+    SessionStarted:
+      type: object
+      additionalProperties: false
+      required: [sessionToken, me]
+      properties:
+        sessionToken:
+          type: string
+          description: |
+            Opaque device-session token for `Authorization: Bearer`. The app
+            keeps it in expo-secure-store and never logs it (ADR-0005).
+        me:
+          $ref: "#/components/schemas/Me"
+
+    Me:
+      description: The caller's own state; `status` tells which.
+      oneOf:
+        - $ref: "#/components/schemas/MeSigningUp"
+        - $ref: "#/components/schemas/MeMember"
+      discriminator:
+        propertyName: status
+        mapping:
+          signingUp: "#/components/schemas/MeSigningUp"
+          member: "#/components/schemas/MeMember"
+
+    MeSigningUp:
+      type: object
+      additionalProperties: false
+      required: [status, signUp]
+      properties:
+        status:
+          type: string
+          enum: [signingUp]
+        signUp:
+          $ref: "#/components/schemas/SignUp"
+
+    MeMember:
+      type: object
+      additionalProperties: false
+      required: [status, member]
+      properties:
+        status:
+          type: string
+          enum: [member]
+        member:
+          $ref: "#/components/schemas/Member"
+
+    SignUp:
+      type: object
+      additionalProperties: false
+      description: |
+        The caller's own unfinished sign-up, with everything entered so far.
+        Seen only by its owner (ONB-008.S2). Carries the birth date because it
+        is the owner's own data; never the phone number.
+      required: [nextStep, interests, photos]
+      properties:
+        nextStep:
+          $ref: "#/components/schemas/SignUpStep"
+        firstName:
+          type: string
+          description: Absent until saved.
+        birthDate:
+          type: string
+          format: date
+          description: Absent until saved. Own data only (NFR-PRIV-002).
+        homeMunicipality:
+          $ref: "#/components/schemas/Municipality"
+        interests:
+          type: array
+          description: The chosen interests in the chosen order.
+          maxItems: 5
+          items:
+            $ref: "#/components/schemas/Interest"
+        photos:
+          type: array
+          description: The filled slots, in slot order.
+          maxItems: 4
+          items:
+            $ref: "#/components/schemas/Photo"
+
+    SignUpStep:
+      type: string
+      description: |
+        The first step that is not done yet, where a resumed sign-up continues
+        (ONB-008): `about` until first name, birth date and home municipality
+        are saved; `interests` until the interests were saved; `photos` until
+        a portrait is stored; then `rules`.
+      enum: [about, interests, photos, rules]
+
+    SignUpAboutUpdate:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      description: Any of the three fields; omitted fields stay unchanged.
+      properties:
+        firstName:
+          type: string
+          description: 1 to 30 letters, spaces, hyphens or apostrophes (ONB-009); checked by the server.
+          maxLength: 200
+        birthDate:
+          type: string
+          format: date
+          description: Sent only after the age was confirmed, or at once when under 18 (ONB-010, ONB-011).
+        homeMunicipalityId:
+          type: integer
+          description: BFS number of the municipality (ONB-012).
+
+    SignUpInterestsUpdate:
+      type: object
+      additionalProperties: false
+      required: [interestIds]
+      properties:
+        interestIds:
+          type: array
+          description: |
+            0 to 5 interest ids in the chosen order (ONB-013). More than 5 is
+            answered with `validation_failed` / `too_many`.
+          maxItems: 20
+          uniqueItems: true
+          items:
+            type: string
+            maxLength: 64
+
+    SignUpFinish:
+      type: object
+      additionalProperties: false
+      required: [acceptTermsOfUse, acceptRules]
+      properties:
+        acceptTermsOfUse:
+          type: boolean
+          enum: [true]
+          description: The person accepts the terms of use (ONB-016).
+        acceptRules:
+          type: boolean
+          enum: [true]
+          description: The person accepts the Spielregeln (ONB-016).
+
+    Member:
+      type: object
+      additionalProperties: false
+      description: |
+        The caller's own member record. Kept minimal in this round; the
+        profile area adds fields later.
+      required: [id, firstName]
+      properties:
+        id:
+          type: string
+          description: Opaque member id.
+        firstName:
+          type: string
+
+    PhotoUpload:
+      type: object
+      required: [photo]
+      properties:
+        photo:
+          type: string
+          format: binary
+          description: The image file, JPEG or PNG.
+
+    Photo:
+      type: object
+      additionalProperties: false
+      required: [slot, version]
+      properties:
+        slot:
+          type: integer
+          minimum: 0
+          maximum: 3
+          description: 0 is the portrait.
+        version:
+          type: string
+          description: Changes whenever the slot gets a new photo; for the app's image cache.
+
+    Municipality:
+      type: object
+      additionalProperties: false
+      required: [id, name, canton]
+      properties:
+        id:
+          type: integer
+          description: The official BFS municipality number.
+        name:
+          type: string
+          description: The official name.
+        canton:
+          type: string
+          description: Two-letter canton abbreviation, to tell same-named municipalities apart.
+          pattern: "^[A-Z]{2}$"
+
+    MunicipalityList:
+      type: object
+      additionalProperties: false
+      required: [items]
+      properties:
+        items:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/Municipality"
+
+    Interest:
+      type: object
+      additionalProperties: false
+      required: [id, names]
+      properties:
+        id:
+          type: string
+          description: Opaque, stable id.
+        names:
+          $ref: "#/components/schemas/LocalizedName"
+
+    LocalizedName:
+      type: object
+      additionalProperties: false
+      description: The name per UI language; German is the source and always present.
+      required: [de]
+      properties:
+        de:
+          type: string
+        fr:
+          type: string
+        en:
+          type: string
+
+    InterestList:
+      type: object
+      additionalProperties: false
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Interest"
